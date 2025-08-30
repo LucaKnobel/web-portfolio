@@ -1,0 +1,212 @@
+---
+import { useTranslation } from "@/i18n";
+import "@/styles/tokens.css";
+import "@/styles/base.css";
+const t = useTranslation(Astro.currentLocale ?? "en");
+---
+
+<header class="header">
+  <div class="container">
+    <a href={`/${Astro.currentLocale}/`} class="logo">Luca Knobel</a>
+
+    <!-- Burger button (only visible on mobile) -->
+    <button class="burger" onclick="toggleMenu()" aria-label="Open menu"
+      >☰</button
+    >
+
+    <!-- Mobile nav overlay -->
+    <div id="mobile-menu" class="mobile-menu hidden">
+      <button onclick="toggleMenu()" class="close" aria-label="Close menu"
+        >✕</button
+      >
+
+      <nav class="nav-mobile">
+        <a href={`/${Astro.currentLocale}/projects`}>{t.nav.projects}</a>
+        <a href={`/${Astro.currentLocale}/career`}>{t.nav.career}</a>
+        <a href={`/${Astro.currentLocale}/contact`}>{t.nav.contact}</a>
+
+        <select onchange="location.href=this.value">
+          <option value="/de/" selected={Astro.currentLocale === "de"}
+            >DE</option
+          >
+          <option value="/en/" selected={Astro.currentLocale === "en"}
+            >EN</option
+          >
+        </select>
+
+        <select id="theme-select-mobile">
+          <option value="light">{t.theme.light}</option>
+          <option value="dark">{t.theme.dark}</option>
+        </select>
+      </nav>
+    </div>
+
+    <!-- Desktop nav -->
+    <nav class="nav-desktop">
+      <a href={`/${Astro.currentLocale}/projects`}>{t.nav.projects}</a>
+      <a href={`/${Astro.currentLocale}/career`}>{t.nav.career}</a>
+      <a href={`/${Astro.currentLocale}/contact`}>{t.nav.contact}</a>
+
+      <select onchange="location.href=this.value">
+        <option value="/de/" selected={Astro.currentLocale === "de"}>DE</option>
+        <option value="/en/" selected={Astro.currentLocale === "en"}>EN</option>
+      </select>
+
+      <select id="theme-select">
+        <option value="light">{t.theme.light}</option>
+        <option value="dark">{t.theme.dark}</option>
+      </select>
+    </nav>
+  </div>
+</header>
+
+<script type="module">
+  // Theme handling (shared for both selects)
+  const themeSelects = [
+    document.getElementById("theme-select"),
+    document.getElementById("theme-select-mobile"),
+  ].filter(Boolean);
+
+  const applyTheme = (theme) => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+    themeSelects.forEach((select) => {
+      if (select) select.value = theme;
+    });
+  };
+
+  const current = localStorage.getItem("theme") || "light";
+  applyTheme(current);
+
+  themeSelects.forEach((select) => {
+    select?.addEventListener("change", () => {
+      applyTheme(select.value);
+    });
+  });
+
+  // Burger menu toggle
+  window.toggleMenu = () => {
+    const menu = document.getElementById("mobile-menu");
+    menu?.classList.toggle("hidden");
+  };
+</script>
+
+<style>
+  /* Header Container */
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: var(--color-bg);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  /* Flex Container */
+  .header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* Logo */
+  .header .logo {
+    font-size: var(--font-size-h3);
+    font-weight: bold;
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  /* Burger Button (visible only on mobile) */
+  .header .burger {
+    font-size: 2rem;
+    background: none;
+    border: none;
+    color: var(--color-text);
+    cursor: pointer;
+    padding: 0.25rem;
+  }
+
+  /* Desktop Navigation */
+  .header .nav-desktop {
+    display: none;
+    gap: var(--spacing-sm);
+    align-items: center;
+  }
+
+  .header .nav-desktop a {
+    color: var(--color-text);
+    text-decoration: none;
+    font-size: var(--font-size-p);
+  }
+
+  .header .nav-desktop select {
+    font-size: var(--font-size-p);
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--btn-radius);
+    background-color: var(--btn-bg);
+    color: var(--btn-text);
+    border: 1px solid var(--color-border);
+  }
+
+  /* Mobile Menu Overlay */
+  #mobile-menu {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background-color: var(--color-bg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+  }
+
+  #mobile-menu.hidden {
+    display: none;
+  }
+
+  #mobile-menu .close {
+    align-self: flex-end;
+    font-size: 2rem;
+    background: none;
+    border: none;
+    color: var(--color-text);
+    cursor: pointer;
+  }
+
+  .nav-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  .nav-mobile a {
+    font-size: var(--font-size-p);
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .nav-mobile select {
+    font-size: var(--font-size-p);
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--btn-radius);
+    background-color: var(--btn-bg);
+    color: var(--btn-text);
+    border: 1px solid var(--color-border);
+  }
+
+  /* Desktop Breakpoint */
+  @media (min-width: 768px) {
+    .header .burger {
+      display: none;
+    }
+
+    .header .nav-desktop {
+      display: flex;
+    }
+
+    #mobile-menu {
+      display: none !important;
+    }
+  }
+</style>
