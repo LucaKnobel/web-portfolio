@@ -6,8 +6,8 @@ const en = {
     contact: "Contact"
   },
   theme: {
-    light: "Light mode",
-    dark: "Dark mode"
+    light: "Light",
+    dark: "Dark"
   }
 } as const;
 

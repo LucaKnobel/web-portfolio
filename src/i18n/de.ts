@@ -6,8 +6,8 @@ const de = {
     contact: "Kontakt"
   },
   theme: {
-    light: "Heller Modus",
-    dark: "Dunkler Modus"
+    light: "Hell",
+    dark: "Dunkel"
   }
 } as const;
 

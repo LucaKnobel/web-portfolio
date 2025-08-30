@@ -10,16 +10,18 @@
     --color-text-muted: rgb(108, 117, 125);
     --color-primary: rgb(211, 211, 211);
     --color-secondary: rgb(245, 245, 245);
+    --select-bg: rgba(245, 245, 245, 0.7);
 
     --color-success-bg: rgb(224, 255, 224);
     --color-success-text: rgb(43, 102, 43);
 
     --color-link: rgb(26, 43, 76);
     --color-link-hover: rgb(102, 103, 106);
-    --color-border: rgb(0, 0, 0);
+    --color-border: rgba(0, 0, 0, 0.2);
+    --color-shadow: rgba(0, 0, 0, 0.1);
 
     /* Button */
-    --btn-bg: rgb(0, 0, 0);
+    --btn-bg: rgba(0, 0, 0, 0.4);
     --btn-text: rgb(255, 255, 255);
     --btn-hover-bg: rgb(194, 194, 194);
     --btn-radius: 4px;
@@ -77,15 +79,17 @@
     --color-text-muted: rgb(140, 140, 140);
     --color-primary: rgb(60, 60, 60);
     --color-secondary: rgb(30, 30, 30);
+    --select-bg: rgba(32, 32, 32, 0.7);
 
     --color-success-bg: rgb(34, 80, 34);
     --color-success-text: rgb(200, 255, 200);
 
     --color-link: rgb(160, 200, 255);
     --color-link-hover: rgb(220, 220, 255);
-    --color-border: rgb(80, 80, 80);
+    --color-border: rgba(80, 80, 80, 1);
+    --color-shadow: rgba(255, 255, 255, 0.1);
 
-    --btn-bg: rgb(255, 255, 255);
+    --btn-bg: rgba(255, 255, 255, 0.6);
     --btn-text: rgb(0, 0, 0);
     --btn-hover-bg: rgb(240, 240, 240);
 

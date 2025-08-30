@@ -10,34 +10,46 @@ const t = useTranslation(Astro.currentLocale ?? "en");
     <a href={`/${Astro.currentLocale}/`} class="logo">Luca Knobel</a>
 
     <!-- Burger button (only visible on mobile) -->
-    <button class="burger" onclick="toggleMenu()" aria-label="Open menu"
-      >☰</button
-    >
+    <button class="burger" onclick="toggleMenu()" aria-label="Open menu">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="28"
+        height="28"
+        viewBox="0 -960 960 960"
+        fill="currentColor"
+      >
+        <path
+          d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z"
+        ></path>
+      </svg>
+    </button>
 
     <!-- Mobile nav overlay -->
     <div id="mobile-menu" class="mobile-menu hidden">
-      <button onclick="toggleMenu()" class="close" aria-label="Close menu"
-        >✕</button
-      >
+      <button onclick="toggleMenu()" class="close" aria-label="Close menu">
+        &times;
+      </button>
 
       <nav class="nav-mobile">
-        <a href={`/${Astro.currentLocale}/projects`}>{t.nav.projects}</a>
-        <a href={`/${Astro.currentLocale}/career`}>{t.nav.career}</a>
-        <a href={`/${Astro.currentLocale}/contact`}>{t.nav.contact}</a>
+        <div class="nav-links">
+          <a href={`/${Astro.currentLocale}/projects`}>{t.nav.projects}</a>
+          <a href={`/${Astro.currentLocale}/career`}>{t.nav.career}</a>
+          <a href={`/${Astro.currentLocale}/contact`}>{t.nav.contact}</a>
+        </div>
 
-        <select onchange="location.href=this.value">
-          <option value="/de/" selected={Astro.currentLocale === "de"}
-            >DE</option
-          >
-          <option value="/en/" selected={Astro.currentLocale === "en"}
-            >EN</option
-          >
-        </select>
+        <div class="nav-selects">
+          <select onchange="location.href=this.value">
+            <option value="/de/" selected={Astro.currentLocale === "de"}>🌐 Deutsch</option
+            >
+            <option value="/en/" selected={Astro.currentLocale === "en"}>🌐 English</option
+            >
+          </select>
 
-        <select id="theme-select-mobile">
-          <option value="light">{t.theme.light}</option>
-          <option value="dark">{t.theme.dark}</option>
-        </select>
+          <select id="theme-select-mobile">
+            <option value="light">☀️ {t.theme.light}</option>
+            <option value="dark">🌙 {t.theme.dark}</option>
+          </select>
+        </div>
       </nav>
     </div>
 
@@ -48,13 +60,13 @@ const t = useTranslation(Astro.currentLocale ?? "en");
       <a href={`/${Astro.currentLocale}/contact`}>{t.nav.contact}</a>
 
       <select onchange="location.href=this.value">
-        <option value="/de/" selected={Astro.currentLocale === "de"}>DE</option>
-        <option value="/en/" selected={Astro.currentLocale === "en"}>EN</option>
+        <option value="/de/" selected={Astro.currentLocale === "de"}>🌐 Deutsch</option>
+        <option value="/en/" selected={Astro.currentLocale === "en"}>🌐 English</option>
       </select>
 
       <select id="theme-select">
-        <option value="light">{t.theme.light}</option>
-        <option value="dark">{t.theme.dark}</option>
+        <option value="light">☀️ {t.theme.light}</option>
+        <option value="dark">🌙 {t.theme.dark}</option>
       </select>
     </nav>
   </div>
@@ -98,7 +110,7 @@ const t = useTranslation(Astro.currentLocale ?? "en");
     top: 0;
     z-index: 100;
     background-color: var(--color-bg);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px var(--color-shadow);
     padding: var(--spacing-sm) var(--spacing-md);
   }
 
@@ -107,14 +119,19 @@ const t = useTranslation(Astro.currentLocale ?? "en");
     display: flex;
     justify-content: space-between;
     align-items: center;
+    min-height: 45px;
   }
 
   /* Logo */
   .header .logo {
-    font-size: var(--font-size-h3);
+    font-size: var(--font-size-h4);
     font-weight: bold;
     color: var(--color-text);
     text-decoration: none;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    padding: 0;
   }
 
   /* Burger Button (visible only on mobile) */
@@ -124,7 +141,13 @@ const t = useTranslation(Astro.currentLocale ?? "en");
     border: none;
     color: var(--color-text);
     cursor: pointer;
-    padding: 0.25rem;
+    padding: 0;
+    margin: 0;
+    width: 45px;
+    height: 45px;
+    align-items: center;
+    display: flex;
+    justify-content: center;
   }
 
   /* Desktop Navigation */
@@ -140,14 +163,6 @@ const t = useTranslation(Astro.currentLocale ?? "en");
     font-size: var(--font-size-p);
   }
 
-  .header .nav-desktop select {
-    font-size: var(--font-size-p);
-    padding: 0.25rem 0.5rem;
-    border-radius: var(--btn-radius);
-    background-color: var(--btn-bg);
-    color: var(--btn-text);
-    border: 1px solid var(--color-border);
-  }
 
   /* Mobile Menu Overlay */
   #mobile-menu {
@@ -157,7 +172,6 @@ const t = useTranslation(Astro.currentLocale ?? "en");
     background-color: var(--color-bg);
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-md);
     padding: var(--spacing-lg);
   }
 
@@ -166,34 +180,74 @@ const t = useTranslation(Astro.currentLocale ?? "en");
   }
 
   #mobile-menu .close {
-    align-self: flex-end;
-    font-size: 2rem;
+    position: absolute;
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+    width: 45px;
+    height: 45px;
+    min-width: 45px;
+    min-height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background: none;
     border: none;
     color: var(--color-text);
     cursor: pointer;
+    z-index: 10;
   }
+
+ #mobile-menu .close {
+  font-size: 2.5rem; 
+}
 
   .nav-mobile {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-sm);
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    width: 100%;
   }
 
-  .nav-mobile a {
-    font-size: var(--font-size-p);
+  .nav-links {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: var(--spacing-md);
+    margin-top: 10vh;
+  }
+
+  .nav-links a {
+    font-size: var(--font-size-h4);
     color: var(--color-text);
     text-decoration: none;
+    font-weight: bold;
   }
 
-  .nav-mobile select {
-    font-size: var(--font-size-p);
-    padding: 0.25rem 0.5rem;
-    border-radius: var(--btn-radius);
-    background-color: var(--btn-bg);
-    color: var(--btn-text);
-    border: 1px solid var(--color-border);
+  .nav-selects {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: var(--spacing-lg);
+    
   }
+
+.nav-selects select,
+.header .nav-desktop select {
+  background-color: var(--select-bg);
+  color: var(--select-text);
+  border: 1px solid var(--color-border);    /* Hier: 2px für deutlicheren, aber dezenten Rahmen */
+  font-family: var(--font-family);
+  font-size: var(--font-size-p);
+  padding: 0.5rem 2rem 0.5rem 1rem;
+  border-radius: var(--btn-radius);
+  box-shadow: none;
+  transition: border-color 0.2s;
+}
 
   /* Desktop Breakpoint */
   @media (min-width: 768px) {
