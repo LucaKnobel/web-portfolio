@@ -1,5 +1,34 @@
 {
   "extends": "astro/tsconfigs/strict",
-  "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist"]
+  "compilerOptions": {
+   
+    "outDir": "./dist",
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["*"]
+    },
+
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+
+    "verbatimModuleSyntax": true,
+    "moduleResolution": "bundler", 
+    "resolveJsonModule": true,
+
+   
+    "allowJs": true,
+    "checkJs": false,
+
+    "skipLibCheck": true
+  },
+  "include": [
+    "src",
+    ".astro/types.d.ts",
+    "astro.config.mjs",
+    "env.d.ts"
+  ],
+  "exclude": ["dist", "node_modules"]
 }
