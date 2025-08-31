@@ -2,6 +2,7 @@
 import { useTranslation } from "@/i18n";
 import "@/styles/tokens.css";
 import "@/styles/base.css";
+import { Icon } from "astro-icon/components";
 const t = useTranslation(Astro.currentLocale ?? "en");
 ---
 
@@ -10,24 +11,19 @@ const t = useTranslation(Astro.currentLocale ?? "en");
     <a href={`/${Astro.currentLocale}/`} class="logo logo-mobile">Luca Knobel</a
     >
     <!-- Burger button (only visible on mobile) -->
-    <button class="burger" onclick="toggleMenu()" aria-label="Open menu">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="28"
-        height="28"
-        viewBox="0 -960 960 960"
-        fill="currentColor"
-      >
-        <path
-          d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z"
-        ></path>
-      </svg>
+    <button
+      class="burger"
+      id="burger-btn"
+      aria-label="Open menu"
+      aria-controls="mobile-menu"
+      aria-expanded="false"
+    >
+      <Icon name="mdi:menu" class="burger-icon" />
     </button>
-
     <!-- Mobile nav overlay -->
-    <div id="mobile-menu" class="mobile-menu hidden">
-      <button onclick="toggleMenu()" class="close" aria-label="Close menu">
-        &times;
+    <div id="mobile-menu" class="mobile-menu hidden" hidden>
+      <button class="close-btn" id="close-menu" aria-label="Close menu">
+        <Icon name="mdi:close" class="close-icon" />
       </button>
 
       <nav class="nav-mobile">
@@ -53,159 +49,262 @@ const t = useTranslation(Astro.currentLocale ?? "en");
           </select>
         </div>
       </nav>
+      
     </div>
-
     <!-- Desktop nav -->
-    <nav class="nav-desktop">
-      <a href={`/${Astro.currentLocale}/`} class="logo">Luca Knobel</a>
-      <a href={`/${Astro.currentLocale}/projects`}>{t.nav.projects}</a>
-      <a href={`/${Astro.currentLocale}/career`}>{t.nav.career}</a>
-      <a href={`/${Astro.currentLocale}/contact`}>{t.nav.contact}</a>
-    </nav>
-    <div class="desktop-selects">
-      <select onchange="location.href=this.value">
-        <option value="/de/" selected={Astro.currentLocale === "de"}
-          >🌐 Deutsch</option
-        >
-        <option value="/en/" selected={Astro.currentLocale === "en"}
-          >🌐 English</option
-        >
-      </select>
-      <select class="theme-select">
-        <option value="light">☀️ {t.theme.light}</option>
-        <option value="dark">🌙 {t.theme.dark}</option>
-      </select>
-    </div>
+      <nav class="nav-desktop">
+        <a href={`/${Astro.currentLocale}/`} class="logo">Luca Knobel</a>
+        <a href={`/${Astro.currentLocale}/projects`}>{t.nav.projects}</a>
+        <a href={`/${Astro.currentLocale}/career`}>{t.nav.career}</a>
+        <a href={`/${Astro.currentLocale}/contact`}>{t.nav.contact}</a>
+      </nav>
+      <div class="desktop-selects">
+        <select onchange="location.href=this.value">
+          <option value="/de/" selected={Astro.currentLocale === "de"}
+            >🌐 Deutsch</option
+          >
+          <option value="/en/" selected={Astro.currentLocale === "en"}
+            >🌐 English</option
+          >
+        </select>
+        <select class="theme-select">
+          <option value="light">☀️ {t.theme.light}</option>
+          <option value="dark">🌙 {t.theme.dark}</option>
+        </select>
+      </div>
   </div>
-</header>
 
-<script>
-  type Theme = "light" | "dark";
+  <script>
+    type Theme = "light" | "dark";
 
-  const themeSelects = Array.from(
-    document.querySelectorAll<HTMLSelectElement>(".theme-select"),
-  );
+    /* Global toggle function for burger menu */
+    const menu = document.getElementById("mobile-menu") as HTMLElement;
+    const openBtn = document.getElementById("burger-btn") as HTMLButtonElement;
+    const closeBtn = document.getElementById("close-menu") as HTMLButtonElement;
 
-  const applyTheme = (theme: Theme) => {
-    document.documentElement.setAttribute("data-theme", theme);
-    localStorage.setItem("theme", theme);
+    const open = () => {
+      menu.classList.remove("hidden");
+      menu.removeAttribute("hidden");
+      openBtn.setAttribute("aria-expanded", "true");
+    };
+    const close = () => {
+      menu.classList.add("hidden");
+      menu.setAttribute("hidden", "");
+      openBtn.setAttribute("aria-expanded", "false");
+      openBtn.focus();
+    };
+
+    openBtn.addEventListener("click", open);
+    closeBtn.addEventListener("click", close);
+    document.addEventListener(
+      "keydown",
+      (e: KeyboardEvent) =>
+        e.key === "Escape" && !menu.classList.contains("hidden") && close(),
+    );
+
+    /* Theme Change */
+    const themeSelects = Array.from(
+      document.querySelectorAll<HTMLSelectElement>(".theme-select"),
+    );
+
+    const applyTheme = (theme: Theme) => {
+      document.documentElement.setAttribute("data-theme", theme);
+      localStorage.setItem("theme", theme);
+      themeSelects.forEach((select) => {
+        select.value = theme;
+      });
+    };
+
+    const current = (localStorage.getItem("theme") as Theme) || "light";
+    applyTheme(current);
+
     themeSelects.forEach((select) => {
-      select.value = theme;
+      select.addEventListener("change", () => {
+        applyTheme(select.value as Theme);
+      });
     });
-  };
+  </script>
 
-  const current = (localStorage.getItem("theme") as Theme) || "light";
-  applyTheme(current);
+  <style>
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background-color: var(--color-bg);
+      box-shadow: 0 2px 8px var(--color-shadow);
+      padding: var(--spacing-sm) var(--spacing-md);
 
-  themeSelects.forEach((select) => {
-    select.addEventListener("change", () => {
-      applyTheme(select.value as Theme);
-    });
-  });
-
-  // Global toggle function for burger menu
-  (window as any).toggleMenu = () => {
-    const menu = document.getElementById("mobile-menu");
-    menu?.classList.toggle("hidden");
-  };
-</script>
-
-<style>
-  .header {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background-color: var(--color-bg);
-    box-shadow: 0 2px 8px var(--color-shadow);
-    padding: var(--spacing-sm) var(--spacing-md);
-
-    .container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      min-height: 45px;
-
-      .logo {
-        font-size: var(--font-size-h4);
-        font-weight: bold;
-        color: var(--color-text);
-        text-decoration: none;
-        height: 45px;
+      .container {
         display: flex;
+        justify-content: space-between;
         align-items: center;
-        justify-content: center;
-      }
+        flex-wrap: wrap;
+        min-height: 45px;
 
-      .burger {
-        font-size: 2rem;
-        background: none;
-        border: none;
-        color: var(--color-text);
-        cursor: pointer;
-        padding: 0;
-        width: 45px;
-        height: 45px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      #mobile-menu {
-        position: fixed;
-        inset: 0;
-        z-index: 200;
-        background-color: var(--color-bg);
-        display: flex;
-        flex-direction: column;
-        padding: var(--spacing-lg);
-
-        &.hidden {
-          display: none;
-        }
-
-        .close {
-          position: absolute;
-          top: var(--spacing-md);
-          right: var(--spacing-md);
-          width: 45px;
-          height: 45px;
-          font-size: 2.5rem;
-          background: none;
-          border: none;
+        .logo {
+          font-size: var(--font-size-h4);
+          font-weight: bold;
           color: var(--color-text);
-          cursor: pointer;
+          text-decoration: none;
+          height: 45px;
           display: flex;
           align-items: center;
           justify-content: center;
         }
 
-        .nav-mobile {
-          flex: 1;
+        .burger {
+          background: none;
+          border: none;
+          color: var(--color-text);
+          cursor: pointer;
+          padding: 0;
+          width: 45px;
+          height: 45px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          .burger-icon {
+            width: 28px;
+            height: 28px;
+            flex-shrink: 0;
+          }
+        }
+
+        #mobile-menu {
+          position: fixed;
+          inset: 0;
+          z-index: 200;
+          background-color: var(--color-bg);
           display: flex;
           flex-direction: column;
-          justify-content: space-between;
-          align-items: center;
+          padding: var(--spacing-lg);
 
-          .nav-links {
+          &.hidden {
+            display: none;
+          }
+
+          .close-btn {
+            position: absolute;
+            top: var(--spacing-sm);
+            right: var(--spacing-sm);
+            width: 45px;
+            height: 45px;
+            background: none;
+            border: none;
+            color: var(--color-text);
+            cursor: pointer;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            gap: var(--spacing-md);
-            margin-top: 10vh;
-
-            a {
-              font-size: var(--font-size-h4);
-              color: var(--color-text);
-              text-decoration: none;
-              font-weight: bold;
+            justify-content: center;
+            & .close-icon {
+              width: 28px;
+              height: 28px;
+              flex-shrink: 0;
             }
           }
 
-          .mobile-selects {
+          .nav-mobile {
+            flex: 1;
             display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+
+            .nav-links {
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              gap: var(--spacing-md);
+              margin-top: 10vh;
+
+              a {
+                font-size: var(--font-size-h4);
+                color: var(--color-text);
+                text-decoration: none;
+                font-weight: bold;
+              }
+            }
+
+            .mobile-selects {
+              display: flex;
+              gap: var(--spacing-md);
+              justify-content: center;
+
+              select {
+                background: var(--select-gradient-bg);
+                color: var(--select-text);
+                border: 1px solid var(--select-border);
+                font-family: var(--font-family);
+                font-size: var(--font-size-p);
+                padding: 0.5rem 1.25rem 0.5rem 0.75rem;
+                border-radius: var(--select-radius);
+                transition: border-color 0.2s;
+                width: 15ch;
+                min-width: 15ch;
+                max-width: 15ch;
+                text-align: left;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                option {
+                  background-color: var(--color-bg);
+                  color: var(--select-text);
+                }
+              }
+            }
+          }
+        }
+
+        .nav-desktop,
+        .desktop-selects {
+          display: none;
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .container {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: var(--spacing-md);
+
+          .burger,
+          .logo-mobile,
+          #mobile-menu {
+            display: none !important;
+          }
+
+          .nav-desktop {
+            display: flex;
+            align-items: center;
             gap: var(--spacing-md);
-            justify-content: center;
+
+            a {
+              font-size: var(--font-size-h5);
+              color: var(--color-text);
+              text-decoration: none;
+            }
+            a:hover {
+              scale: 1.05;
+            }
+
+            .logo {
+              font-size: var(--font-size-h4);
+              font-weight: bold;
+              color: var(--color-text);
+              text-decoration: none;
+              height: 45px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            }
+          }
+
+          .desktop-selects {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: var(--spacing-sm);
 
             select {
               background: var(--select-gradient-bg);
@@ -216,9 +315,9 @@ const t = useTranslation(Astro.currentLocale ?? "en");
               padding: 0.5rem 1.25rem 0.5rem 0.75rem;
               border-radius: var(--select-radius);
               transition: border-color 0.2s;
-              width: 15ch;
-              min-width: 15ch;
-              max-width: 15ch;
+              width: 14ch;
+              min-width: 14ch;
+              max-width: 14ch;
               text-align: left;
               text-overflow: ellipsis;
               white-space: nowrap;
@@ -230,80 +329,6 @@ const t = useTranslation(Astro.currentLocale ?? "en");
           }
         }
       }
-
-      .nav-desktop,
-      .desktop-selects {
-        display: none;
-      }
     }
-
-    @media (min-width: 1024px) {
-      .container {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: var(--spacing-md);
-
-        .burger,
-        .logo-mobile,
-        #mobile-menu {
-          display: none !important;
-        }
-
-        .nav-desktop {
-          display: flex;
-          align-items: center;
-          gap: var(--spacing-md);
-
-          a {
-            font-size: var(--font-size-h5);
-            color: var(--color-text);
-            text-decoration: none;
-          }
-          a:hover {
-            scale: 1.05;
-          }
-
-          .logo {
-            font-size: var(--font-size-h4);
-            font-weight: bold;
-            color: var(--color-text);
-            text-decoration: none;
-            height: 45px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-          }
-        }
-
-        .desktop-selects {
-          display: flex;
-          justify-content: flex-end;
-          align-items: center;
-          gap: var(--spacing-sm);
-
-          select {
-            background: var(--select-gradient-bg);
-            color: var(--select-text);
-            border: 1px solid var(--select-border);
-            font-family: var(--font-family);
-            font-size: var(--font-size-p);
-            padding: 0.5rem 1.25rem 0.5rem 0.75rem;
-            border-radius: var(--select-radius);
-            transition: border-color 0.2s;
-            width: 14ch;
-            min-width: 14ch;
-            max-width: 14ch;
-            text-align: left;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            option {
-              background-color: var(--color-bg);
-              color: var(--select-text);
-            }
-          }
-        }
-      }
-    }
-  }
-</style>
+  </style>
+</header>

@@ -66,3 +66,15 @@ button {
     background-color: var(--btn-hover-bg);
   }
 }
+
+svg {
+  height: 28px;
+  width: 28px;
+}
+
+.header .close-btn .icon,
+.header .burger    .icon {
+  inline-size: 28px;   /* = width */
+  block-size: 28px;    /* = height */
+  display: block;
+}

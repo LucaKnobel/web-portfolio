@@ -1,4 +1,5 @@
 import { defineConfig } from "astro/config";
+import icon from "astro-icon";
 
 export default defineConfig({
   i18n: {
@@ -7,5 +8,11 @@ export default defineConfig({
     routing: {
       prefixDefaultLocale: true
     }
-  }
+  },
+   integrations: [
+    icon({
+      iconDir: "src/assets/icons",
+    })
+  ]
+
 });
