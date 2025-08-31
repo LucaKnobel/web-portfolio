@@ -37,15 +37,17 @@ const t = useTranslation(Astro.currentLocale ?? "en");
           <a href={`/${Astro.currentLocale}/contact`}>{t.nav.contact}</a>
         </div>
 
-        <div class="nav-selects">
+        <div class="mobile-selects">
           <select onchange="location.href=this.value">
-            <option value="/de/" selected={Astro.currentLocale === "de"}>🌐 Deutsch</option
+            <option value="/de/" selected={Astro.currentLocale === "de"}
+              >🌐 Deutsch</option
             >
-            <option value="/en/" selected={Astro.currentLocale === "en"}>🌐 English</option
+            <option value="/en/" selected={Astro.currentLocale === "en"}
+              >🌐 English</option
             >
           </select>
 
-          <select id="theme-select-mobile">
+          <select>
             <option value="light">☀️ {t.theme.light}</option>
             <option value="dark">🌙 {t.theme.dark}</option>
           </select>
@@ -54,50 +56,57 @@ const t = useTranslation(Astro.currentLocale ?? "en");
     </div>
 
     <!-- Desktop nav -->
-    <nav class="nav-desktop">
-      <a href={`/${Astro.currentLocale}/projects`}>{t.nav.projects}</a>
-      <a href={`/${Astro.currentLocale}/career`}>{t.nav.career}</a>
-      <a href={`/${Astro.currentLocale}/contact`}>{t.nav.contact}</a>
-
-      <select onchange="location.href=this.value">
-        <option value="/de/" selected={Astro.currentLocale === "de"}>🌐 Deutsch</option>
-        <option value="/en/" selected={Astro.currentLocale === "en"}>🌐 English</option>
-      </select>
-
-      <select id="theme-select">
-        <option value="light">☀️ {t.theme.light}</option>
-        <option value="dark">🌙 {t.theme.dark}</option>
-      </select>
-    </nav>
+    <div class="desktop-menu">
+      <nav class="nav-desktop">
+        <a href={`/${Astro.currentLocale}/projects`}>{t.nav.projects}</a>
+        <a href={`/${Astro.currentLocale}/career`}>{t.nav.career}</a>
+        <a href={`/${Astro.currentLocale}/contact`}>{t.nav.contact}</a>
+      </nav>
+      <div class="desktop-selects">
+        <select onchange="location.href=this.value">
+          <option value="/de/" selected={Astro.currentLocale === "de"}
+            >🌐 Deutsch</option
+          >
+          <option value="/en/" selected={Astro.currentLocale === "en"}
+            >🌐 English</option
+          >
+        </select>
+        <select>
+          <option value="light">☀️ {t.theme.light}</option>
+          <option value="dark">🌙 {t.theme.dark}</option>
+        </select>
+      </div>
+    </div>
   </div>
 </header>
 
-<script type="module">
-  // Theme handling (shared for both selects)
+<script>
+  type Theme = "light" | "dark";
+
   const themeSelects = [
     document.getElementById("theme-select"),
     document.getElementById("theme-select-mobile"),
-  ].filter(Boolean);
+  ].filter((el): el is HTMLSelectElement => el instanceof HTMLSelectElement);
 
-  const applyTheme = (theme) => {
+  const applyTheme = (theme: Theme) => {
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem("theme", theme);
     themeSelects.forEach((select) => {
-      if (select) select.value = theme;
+      select.value = theme;
     });
   };
 
-  const current = localStorage.getItem("theme") || "light";
+  const current = (localStorage.getItem("theme") as Theme) || "light";
   applyTheme(current);
 
   themeSelects.forEach((select) => {
-    select?.addEventListener("change", () => {
-      applyTheme(select.value);
+    select.addEventListener("change", () => {
+      applyTheme(select.value as Theme);
     });
   });
 
-  // Burger menu toggle
-  window.toggleMenu = () => {
+  // Global toggle function for burger menu
+  (window as any).toggleMenu = () => {
     const menu = document.getElementById("mobile-menu");
     menu?.classList.toggle("hidden");
   };
@@ -112,57 +121,69 @@ const t = useTranslation(Astro.currentLocale ?? "en");
     background-color: var(--color-bg);
     box-shadow: 0 2px 8px var(--color-shadow);
     padding: var(--spacing-sm) var(--spacing-md);
-  }
 
-  /* Flex Container */
-  .header .container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    min-height: 45px;
-  }
+    .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 45px;
 
-  /* Logo */
-  .header .logo {
-    font-size: var(--font-size-h4);
-    font-weight: bold;
-    color: var(--color-text);
-    text-decoration: none;
-    height: 45px;
-    display: flex;
-    align-items: center;
-    padding: 0;
-  }
+      a:hover {
+        scale: 1.05;
+        color: var(--color-link-hover);
+      }
 
-  /* Burger Button (visible only on mobile) */
-  .header .burger {
-    font-size: 2rem;
-    background: none;
-    border: none;
-    color: var(--color-text);
-    cursor: pointer;
-    padding: 0;
-    margin: 0;
-    width: 45px;
-    height: 45px;
-    align-items: center;
-    display: flex;
-    justify-content: center;
-  }
+      .logo {
+        font-size: var(--font-size-h4);
+        font-weight: bold;
+        color: var(--color-text);
+        text-decoration: none;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        padding: 0;
+      }
 
-  /* Desktop Navigation */
-  .header .nav-desktop {
-    display: none;
-    gap: var(--spacing-sm);
-    align-items: center;
-  }
+      .burger {
+        font-size: 2rem;
+        background: none;
+        border: none;
+        color: var(--color-text);
+        cursor: pointer;
+        padding: 0;
+        margin: 0;
+        width: 45px;
+        height: 45px;
+        align-items: center;
+        display: flex;
+        justify-content: center;
+      }
 
-  .header .nav-desktop a {
-    color: var(--color-text);
-    text-decoration: none;
-    font-size: var(--font-size-p);
-  }
+      .desktop-menu {
+        display: none;
+        gap: var(--spacing-sm);
+        align-items: center;
 
+        a {
+          color: var(--color-text);
+          text-decoration: none;
+          font-size: var(--font-size-h5);
+        }
+
+        select {
+          background-color: var(--select-bg);
+          color: var(--select-text);
+          border: 1px solid var(--color-border);
+          font-family: var(--font-family);
+          font-size: var(--font-size-p);
+          padding: 0.5rem 1rem 0.5rem 1rem;
+          border-radius: var(--btn-radius);
+          box-shadow: none;
+          transition: border-color 0.2s;
+        }
+      }
+    }
+  }
 
   /* Mobile Menu Overlay */
   #mobile-menu {
@@ -173,89 +194,84 @@ const t = useTranslation(Astro.currentLocale ?? "en");
     display: flex;
     flex-direction: column;
     padding: var(--spacing-lg);
-  }
 
-  #mobile-menu.hidden {
-    display: none;
-  }
-
-  #mobile-menu .close {
-    position: absolute;
-    top: var(--spacing-md);
-    right: var(--spacing-md);
-    width: 45px;
-    height: 45px;
-    min-width: 45px;
-    min-height: 45px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: none;
-    border: none;
-    color: var(--color-text);
-    cursor: pointer;
-    z-index: 10;
-  }
-
- #mobile-menu .close {
-  font-size: 2.5rem; 
-}
-
-  .nav-mobile {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    height: 100%;
-    width: 100%;
-  }
-
-  .nav-links {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: var(--spacing-md);
-    margin-top: 10vh;
-  }
-
-  .nav-links a {
-    font-size: var(--font-size-h4);
-    color: var(--color-text);
-    text-decoration: none;
-    font-weight: bold;
-  }
-
-  .nav-selects {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    gap: var(--spacing-lg);
-    
-  }
-
-.nav-selects select,
-.header .nav-desktop select {
-  background-color: var(--select-bg);
-  color: var(--select-text);
-  border: 1px solid var(--color-border);    /* Hier: 2px für deutlicheren, aber dezenten Rahmen */
-  font-family: var(--font-family);
-  font-size: var(--font-size-p);
-  padding: 0.5rem 2rem 0.5rem 1rem;
-  border-radius: var(--btn-radius);
-  box-shadow: none;
-  transition: border-color 0.2s;
-}
-
-  /* Desktop Breakpoint */
-  @media (min-width: 768px) {
-    .header .burger {
+    &.hidden {
       display: none;
     }
 
-    .header .nav-desktop {
+    .close {
+      position: absolute;
+      top: var(--spacing-md);
+      right: var(--spacing-md);
+      width: 45px;
+      height: 45px;
+      min-width: 45px;
+      min-height: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      color: var(--color-text);
+      cursor: pointer;
+      z-index: 10;
+      font-size: 2.5rem;
+    }
+
+    .nav-mobile {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      height: 100%;
+      width: 100%;
+
+      .nav-links {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: var(--spacing-md);
+        margin-top: 10vh;
+
+        a {
+          font-size: var(--font-size-h4);
+          color: var(--color-text);
+          text-decoration: none;
+          font-weight: bold;
+        }
+      }
+
+      .mobile-selects {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: var(--spacing-lg);
+
+        select {
+          background-color: var(--select-bg);
+          color: var(--select-text);
+          border: 1px solid var(--color-border);
+          font-family: var(--font-family);
+          font-size: var(--font-size-p);
+          padding: 0.5rem 2rem 0.5rem 1rem;
+          border-radius: var(--btn-radius);
+          box-shadow: none;
+          transition: border-color 0.2s;
+        }
+      }
+    }
+  }
+
+  /* Desktop Breakpoint */
+  @media (min-width: 768px) {
+    .header .container .burger {
+      display: none;
+    }
+
+    .header .container .desktop-menu {
       display: flex;
     }
 

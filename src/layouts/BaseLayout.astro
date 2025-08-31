@@ -1,10 +1,10 @@
 ---
 import Header from "@/components/Header.astro"
-const { title = "Portfolio", lang = "de" } = Astro.props;
+const { title = "Portfolio" } = Astro.props;
 ---
 
 <!doctype html>
-<html lang={lang}>
+<html lang={Astro.currentLocale}>
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
