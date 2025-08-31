@@ -1,5 +1,5 @@
 ---
-import Header from "@/components/Header.astro"
+import Header from "@/components/Header.astro";
 const { title = "Portfolio" } = Astro.props;
 ---
 
@@ -11,7 +11,7 @@ const { title = "Portfolio" } = Astro.props;
         <title>{title}</title>
     </head>
     <body>
-        <Header></Header>
+        <Header />
         <slot />
     </body>
 </html>

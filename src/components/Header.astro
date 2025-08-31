@@ -7,8 +7,8 @@ const t = useTranslation(Astro.currentLocale ?? "en");
 
 <header class="header">
   <div class="container">
-    <a href={`/${Astro.currentLocale}/`} class="logo">Luca Knobel</a>
-
+    <a href={`/${Astro.currentLocale}/`} class="logo logo-mobile">Luca Knobel</a
+    >
     <!-- Burger button (only visible on mobile) -->
     <button class="burger" onclick="toggleMenu()" aria-label="Open menu">
       <svg
@@ -47,7 +47,7 @@ const t = useTranslation(Astro.currentLocale ?? "en");
             >
           </select>
 
-          <select>
+          <select class="theme-select">
             <option value="light">☀️ {t.theme.light}</option>
             <option value="dark">🌙 {t.theme.dark}</option>
           </select>
@@ -56,26 +56,25 @@ const t = useTranslation(Astro.currentLocale ?? "en");
     </div>
 
     <!-- Desktop nav -->
-    <div class="desktop-menu">
-      <nav class="nav-desktop">
-        <a href={`/${Astro.currentLocale}/projects`}>{t.nav.projects}</a>
-        <a href={`/${Astro.currentLocale}/career`}>{t.nav.career}</a>
-        <a href={`/${Astro.currentLocale}/contact`}>{t.nav.contact}</a>
-      </nav>
-      <div class="desktop-selects">
-        <select onchange="location.href=this.value">
-          <option value="/de/" selected={Astro.currentLocale === "de"}
-            >🌐 Deutsch</option
-          >
-          <option value="/en/" selected={Astro.currentLocale === "en"}
-            >🌐 English</option
-          >
-        </select>
-        <select>
-          <option value="light">☀️ {t.theme.light}</option>
-          <option value="dark">🌙 {t.theme.dark}</option>
-        </select>
-      </div>
+    <nav class="nav-desktop">
+      <a href={`/${Astro.currentLocale}/`} class="logo">Luca Knobel</a>
+      <a href={`/${Astro.currentLocale}/projects`}>{t.nav.projects}</a>
+      <a href={`/${Astro.currentLocale}/career`}>{t.nav.career}</a>
+      <a href={`/${Astro.currentLocale}/contact`}>{t.nav.contact}</a>
+    </nav>
+    <div class="desktop-selects">
+      <select onchange="location.href=this.value">
+        <option value="/de/" selected={Astro.currentLocale === "de"}
+          >🌐 Deutsch</option
+        >
+        <option value="/en/" selected={Astro.currentLocale === "en"}
+          >🌐 English</option
+        >
+      </select>
+      <select class="theme-select">
+        <option value="light">☀️ {t.theme.light}</option>
+        <option value="dark">🌙 {t.theme.dark}</option>
+      </select>
     </div>
   </div>
 </header>
@@ -83,10 +82,9 @@ const t = useTranslation(Astro.currentLocale ?? "en");
 <script>
   type Theme = "light" | "dark";
 
-  const themeSelects = [
-    document.getElementById("theme-select"),
-    document.getElementById("theme-select-mobile"),
-  ].filter((el): el is HTMLSelectElement => el instanceof HTMLSelectElement);
+  const themeSelects = Array.from(
+    document.querySelectorAll<HTMLSelectElement>(".theme-select"),
+  );
 
   const applyTheme = (theme: Theme) => {
     document.documentElement.setAttribute("data-theme", theme);
@@ -113,7 +111,6 @@ const t = useTranslation(Astro.currentLocale ?? "en");
 </script>
 
 <style>
-  /* Header Container */
   .header {
     position: sticky;
     top: 0;
@@ -126,12 +123,8 @@ const t = useTranslation(Astro.currentLocale ?? "en");
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
       min-height: 45px;
-
-      a:hover {
-        scale: 1.05;
-        color: var(--color-link-hover);
-      }
 
       .logo {
         font-size: var(--font-size-h4);
@@ -141,7 +134,7 @@ const t = useTranslation(Astro.currentLocale ?? "en");
         height: 45px;
         display: flex;
         align-items: center;
-        padding: 0;
+        justify-content: center;
       }
 
       .burger {
@@ -151,132 +144,166 @@ const t = useTranslation(Astro.currentLocale ?? "en");
         color: var(--color-text);
         cursor: pointer;
         padding: 0;
-        margin: 0;
         width: 45px;
         height: 45px;
-        align-items: center;
         display: flex;
+        align-items: center;
         justify-content: center;
       }
 
-      .desktop-menu {
-        display: none;
-        gap: var(--spacing-sm);
-        align-items: center;
-
-        a {
-          color: var(--color-text);
-          text-decoration: none;
-          font-size: var(--font-size-h5);
-        }
-
-        select {
-          background-color: var(--select-bg);
-          color: var(--select-text);
-          border: 1px solid var(--color-border);
-          font-family: var(--font-family);
-          font-size: var(--font-size-p);
-          padding: 0.5rem 1rem 0.5rem 1rem;
-          border-radius: var(--btn-radius);
-          box-shadow: none;
-          transition: border-color 0.2s;
-        }
-      }
-    }
-  }
-
-  /* Mobile Menu Overlay */
-  #mobile-menu {
-    position: fixed;
-    inset: 0;
-    z-index: 200;
-    background-color: var(--color-bg);
-    display: flex;
-    flex-direction: column;
-    padding: var(--spacing-lg);
-
-    &.hidden {
-      display: none;
-    }
-
-    .close {
-      position: absolute;
-      top: var(--spacing-md);
-      right: var(--spacing-md);
-      width: 45px;
-      height: 45px;
-      min-width: 45px;
-      min-height: 45px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: none;
-      border: none;
-      color: var(--color-text);
-      cursor: pointer;
-      z-index: 10;
-      font-size: 2.5rem;
-    }
-
-    .nav-mobile {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
-      height: 100%;
-      width: 100%;
-
-      .nav-links {
+      #mobile-menu {
+        position: fixed;
+        inset: 0;
+        z-index: 200;
+        background-color: var(--color-bg);
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        gap: var(--spacing-md);
-        margin-top: 10vh;
+        padding: var(--spacing-lg);
 
-        a {
-          font-size: var(--font-size-h4);
+        &.hidden {
+          display: none;
+        }
+
+        .close {
+          position: absolute;
+          top: var(--spacing-md);
+          right: var(--spacing-md);
+          width: 45px;
+          height: 45px;
+          font-size: 2.5rem;
+          background: none;
+          border: none;
           color: var(--color-text);
-          text-decoration: none;
-          font-weight: bold;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .nav-mobile {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          align-items: center;
+
+          .nav-links {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-md);
+            margin-top: 10vh;
+
+            a {
+              font-size: var(--font-size-h4);
+              color: var(--color-text);
+              text-decoration: none;
+              font-weight: bold;
+            }
+          }
+
+          .mobile-selects {
+            display: flex;
+            gap: var(--spacing-md);
+            justify-content: center;
+
+            select {
+              background: var(--select-gradient-bg);
+              color: var(--select-text);
+              border: 1px solid var(--select-border);
+              font-family: var(--font-family);
+              font-size: var(--font-size-p);
+              padding: 0.5rem 1.25rem 0.5rem 0.75rem;
+              border-radius: var(--select-radius);
+              transition: border-color 0.2s;
+              width: 15ch;
+              min-width: 15ch;
+              max-width: 15ch;
+              text-align: left;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              option {
+                background-color: var(--color-bg);
+                color: var(--select-text);
+              }
+            }
+          }
         }
       }
 
-      .mobile-selects {
+      .nav-desktop,
+      .desktop-selects {
+        display: none;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .container {
         display: flex;
-        flex-direction: row;
-        justify-content: center;
         align-items: center;
-        gap: var(--spacing-lg);
+        justify-content: space-between;
+        gap: var(--spacing-md);
 
-        select {
-          background-color: var(--select-bg);
-          color: var(--select-text);
-          border: 1px solid var(--color-border);
-          font-family: var(--font-family);
-          font-size: var(--font-size-p);
-          padding: 0.5rem 2rem 0.5rem 1rem;
-          border-radius: var(--btn-radius);
-          box-shadow: none;
-          transition: border-color 0.2s;
+        .burger,
+        .logo-mobile,
+        #mobile-menu {
+          display: none !important;
+        }
+
+        .nav-desktop {
+          display: flex;
+          align-items: center;
+          gap: var(--spacing-md);
+
+          a {
+            font-size: var(--font-size-h5);
+            color: var(--color-text);
+            text-decoration: none;
+          }
+          a:hover {
+            scale: 1.05;
+          }
+
+          .logo {
+            font-size: var(--font-size-h4);
+            font-weight: bold;
+            color: var(--color-text);
+            text-decoration: none;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+        }
+
+        .desktop-selects {
+          display: flex;
+          justify-content: flex-end;
+          align-items: center;
+          gap: var(--spacing-sm);
+
+          select {
+            background: var(--select-gradient-bg);
+            color: var(--select-text);
+            border: 1px solid var(--select-border);
+            font-family: var(--font-family);
+            font-size: var(--font-size-p);
+            padding: 0.5rem 1.25rem 0.5rem 0.75rem;
+            border-radius: var(--select-radius);
+            transition: border-color 0.2s;
+            width: 14ch;
+            min-width: 14ch;
+            max-width: 14ch;
+            text-align: left;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            option {
+              background-color: var(--color-bg);
+              color: var(--select-text);
+            }
+          }
         }
       }
-    }
-  }
-
-  /* Desktop Breakpoint */
-  @media (min-width: 768px) {
-    .header .container .burger {
-      display: none;
-    }
-
-    .header .container .desktop-menu {
-      display: flex;
-    }
-
-    #mobile-menu {
-      display: none !important;
     }
   }
 </style>
