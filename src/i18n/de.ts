@@ -3,11 +3,16 @@ const de = {
     home: "Start",
     projects: "Projekte",
     career: "Karriere",
-    contact: "Kontakt"
+    contact: "Kontakt",
+    imprint: "Impressum",
+    privacyPolicy: "Datenschutz"
   },
   theme: {
     light: "Hell",
     dark: "Dunkel"
+  },
+  footer: {
+    copyright: "Alle Rechte vorbehalten."
   }
 } as const;
 
