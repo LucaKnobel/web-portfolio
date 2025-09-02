@@ -5,7 +5,7 @@ const { title = "Portfolio" } = Astro.props;
 ---
 
 <!doctype html>
-<html lang={Astro.currentLocale}>
+<html lang={Astro.currentLocale} data-theme={Astro.props.theme || 'light'}>
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
