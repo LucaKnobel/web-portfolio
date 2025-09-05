@@ -1,0 +1,103 @@
+---
+
+import "@/styles/tokens.css";
+import "@/styles/base.css";
+import profile from "@/assets/portrait-photo.jpg";
+import { Icon } from "astro-icon/components";
+import { Image } from "astro:assets";
+
+
+/** Props optional – so bleibt die Komponente wiederverwendbar */
+interface Props {
+  name?: string;
+  role?: string;
+  githubUrl?: string;
+  linkedinUrl?: string;
+  contactHref?: string;
+}
+const {
+  name = "Luca Knobel",
+  role = "Applikationsentwicklung • Automation • Web Security",
+  githubUrl = "https://github.com/DEIN_HANDLE",
+  linkedinUrl = "https://www.linkedin.com/in/DEIN_HANDLE",
+  contactHref = "/contact",
+} = Astro.props;
+---
+
+<section class="intro" aria-labelledby="intro-title">
+  <div class="intro__container">
+    <!-- Optimiertes Bild via astro:assets -->
+    <Image
+      src={profile}
+      alt={`Portrait von ${name}`}
+      width={180}
+      height={180}
+      class="intro__avatar"
+      loading="eager"
+      decoding="async"
+    />
+
+    <h1 id="intro-title" class="intro__title">Willkommen! Ich bin {name}</h1>
+    <p class="intro__role">{role}</p>
+
+    <div class="intro__actions">
+      <a class="btn btn--ghost" href={githubUrl} target="_blank" rel="noopener noreferrer" aria-label="GitHub öffnen">
+        <Icon name="mdi:github" width="20" height="20" aria-hidden="true" />
+        <span>GitHub</span>
+      </a>
+
+      <a class="btn btn--ghost" href={linkedinUrl} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn öffnen">
+        <Icon name="mdi:linkedin" width="20" height="20" aria-hidden="true" />
+        <span>LinkedIn</span>
+      </a>
+
+      <a class="btn btn--primary" href={contactHref} aria-label="Zur Kontaktseite">
+        <span>Kontakt</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+.intro {
+  display: grid;
+  place-items: center;
+  padding: var(--space-2xl) var(--space-l);
+  text-align: center;
+}
+.intro__container { max-inline-size: 64rem; inline-size: 100%; }
+
+.intro__avatar {
+  inline-size: 180px;
+  block-size: 180px;
+  object-fit: cover;
+  border-radius: 50%;
+  box-shadow: var(--shadow-md, 0 6px 20px rgba(0,0,0,.12));
+  margin-inline: auto;
+}
+
+.intro__title {
+  margin-block: var(--space-m) var(--space-xs);
+  font-size: clamp(1.6rem, 2.5vw, 2.25rem);
+  line-height: 1.2;
+}
+.intro__role {
+  color: var(--text-muted, #667085);
+  margin-block-end: var(--space-m);
+}
+
+.intro__actions {
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: .75rem; margin-block-start: var(--space-s);
+}
+.btn {
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: .6rem 1rem; border-radius: .75rem;
+  border: 1px solid var(--border-color, #D0D5DD);
+  text-decoration: none; font-weight: 600;
+}
+.btn--ghost { background: transparent; color: var(--text, inherit); }
+.btn--ghost:hover { background: color-mix(in oklab, var(--surface, #f5f5f5) 80%, transparent); }
+.btn--primary { background: var(--primary, #0ea5e9); color: var(--on-primary, #fff); border-color: transparent; }
+.btn--primary:hover { filter: brightness(0.95); }
+</style>

@@ -1,15 +1,16 @@
 ---
-import { useTranslation } from "@/i18n";
 import "@/styles/tokens.css";
 import "@/styles/base.css";
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 import { Icon } from "astro-icon/components";
-const t = useTranslation(Astro.currentLocale ?? "en");
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 ---
 
 <header class="header">
   <div class="container">
-    <a href={`/${Astro.currentLocale}/`} class="logo logo-mobile">Luca Knobel</a
-    >
+    <a href={`/${lang}/`} class="logo logo-mobile">Luca Knobel</a>
     <!-- Burger button (only visible on mobile) -->
     <button
       class="burger"
@@ -28,50 +29,41 @@ const t = useTranslation(Astro.currentLocale ?? "en");
 
       <nav class="nav-mobile">
         <div class="nav-links">
-          <a href={`/${Astro.currentLocale}/projects`}>{t.nav.projects}</a>
-          <a href={`/${Astro.currentLocale}/career`}>{t.nav.career}</a>
-          <a href={`/${Astro.currentLocale}/contact`}>{t.nav.contact}</a>
+          <a href={`/${lang}/projects`}>{t("nav.projects")}</a>
+          <a href={`/${lang}/career`}>{t("nav.career")}</a>
+          <a href={`/${lang}/contact`}>{t("nav.contact")}</a>
         </div>
 
         <div class="mobile-selects">
           <select onchange="location.href=this.value">
-            <option value="/de/" selected={Astro.currentLocale === "de"}
-              >🌐 Deutsch</option
-            >
-            <option value="/en/" selected={Astro.currentLocale === "en"}
-              >🌐 English</option
-            >
+            <option value="/de/" selected={lang === "de"}>🌐 Deutsch</option>
+            <option value="/en/" selected={lang === "en"}>🌐 English</option>
           </select>
 
           <select class="theme-select">
-            <option value="light">☀️ {t.theme.light}</option>
-            <option value="dark">🌙 {t.theme.dark}</option>
+            <option value="light">☀️ {t("theme.light")}</option>
+            <option value="dark">🌙 {t("theme.dark")}</option>
           </select>
         </div>
       </nav>
-      
     </div>
     <!-- Desktop nav -->
-      <nav class="nav-desktop">
-        <a href={`/${Astro.currentLocale}/`} class="logo">Luca Knobel</a>
-        <a href={`/${Astro.currentLocale}/projects`}>{t.nav.projects}</a>
-        <a href={`/${Astro.currentLocale}/career`}>{t.nav.career}</a>
-        <a href={`/${Astro.currentLocale}/contact`}>{t.nav.contact}</a>
-      </nav>
-      <div class="desktop-selects">
-        <select onchange="location.href=this.value">
-          <option value="/de/" selected={Astro.currentLocale === "de"}
-            >🌐 Deutsch</option
-          >
-          <option value="/en/" selected={Astro.currentLocale === "en"}
-            >🌐 English</option
-          >
-        </select>
-        <select class="theme-select">
-          <option value="light">☀️ {t.theme.light}</option>
-          <option value="dark">🌙 {t.theme.dark}</option>
-        </select>
-      </div>
+    <nav class="nav-desktop">
+      <a href={`/${lang}/`} class="logo">Luca Knobel</a>
+      <a href={`/${lang}/projects`}>{t("nav.projects")}</a>
+      <a href={`/${lang}/career`}>{t("nav.career")}</a>
+      <a href={`/${lang}/contact`}>{t("nav.contact")}</a>
+    </nav>
+    <div class="desktop-selects">
+      <select onchange="location.href=this.value">
+        <option value="/de/" selected={lang === "de"}>🌐 Deutsch</option>
+        <option value="/en/" selected={lang === "en"}>🌐 English</option>
+      </select>
+      <select class="theme-select">
+        <option value="light">☀️ {t("theme.light")}</option>
+        <option value="dark">🌙 {t("theme.dark")}</option>
+      </select>
+    </div>
   </div>
 
   <script>
@@ -109,13 +101,14 @@ const t = useTranslation(Astro.currentLocale ?? "en");
 
     const applyTheme = (theme: Theme) => {
       document.documentElement.setAttribute("data-theme", theme);
-      document.cookie = `theme=${theme}; path=/; max-age=${60 * 60 * 24 * 365}; SameSite=Lax; Secure`; 
+      document.cookie = `theme=${theme}; path=/; max-age=${60 * 60 * 24 * 365}; SameSite=Lax; Secure`;
       themeSelects.forEach((select) => {
         select.value = theme;
       });
     };
 
-    const current = document.documentElement.getAttribute("data-theme") as Theme || "light";
+    const current =
+      (document.documentElement.getAttribute("data-theme") as Theme) || "light";
     applyTheme(current);
 
     themeSelects.forEach((select) => {
@@ -244,7 +237,7 @@ const t = useTranslation(Astro.currentLocale ?? "en");
                 min-width: 16ch;
                 max-width: 16ch;
                 text-align: center;
-                text-align-last: center ;
+                text-align-last: center;
                 text-overflow: ellipsis;
                 white-space: nowrap;
                 option {
@@ -307,7 +300,6 @@ const t = useTranslation(Astro.currentLocale ?? "en");
             justify-content: flex-end;
             align-items: center;
             gap: var(--spacing-sm);
-            
 
             select {
               background: var(--select-gradient-bg);

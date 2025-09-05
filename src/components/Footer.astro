@@ -1,21 +1,23 @@
 ---
-import { useTranslation } from "@/i18n";
 import "@/styles/tokens.css";
 import "@/styles/base.css";
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 import { Icon } from "astro-icon/components";
-const t = useTranslation(Astro.currentLocale ?? "en");
+
 const currentYear = new Date().getFullYear();
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 ---
 
 <footer class="footer">
     <div class="container">
         <div class="nav-links">
-            <a href={`/${Astro.currentLocale}/projects`}>{t.nav.projects}</a>
-            <a href={`/${Astro.currentLocale}/career`}>{t.nav.career}</a>
-            <a href={`/${Astro.currentLocale}/contact`}>{t.nav.contact}</a>
-            <a href={`/${Astro.currentLocale}/imprint`}>{t.nav.imprint}</a>
-            <a href={`/${Astro.currentLocale}/privacy-policy`}
-                >{t.nav.privacyPolicy}</a
+            <a href={`/${lang}/projects`}>{t("nav.projects")}</a>
+            <a href={`/${lang}/career`}>{t("nav.career")}</a>
+            <a href={`/${lang}/contact`}>{t("nav.contact")}</a>
+            <a href={`/${lang}/imprint`}>{t("nav.imprint")}</a>
+            <a href={`/${lang}/privacy-policy`}
+                >{t("nav.privacyPolicy")}</a
             >
         </div>
         
@@ -40,7 +42,7 @@ const currentYear = new Date().getFullYear();
             </a>
         </div>
         <div class="copyright">
-            <p>&copy; {currentYear} {t.footer.copyright}</p>
+            <p>&copy; {currentYear} {t("footer.copyright")}</p>
         </div>
     </div>
 </footer>
