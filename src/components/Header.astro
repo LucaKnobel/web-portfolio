@@ -15,19 +15,31 @@ const t = useTranslations(lang);
     <button
       class="burger"
       id="burger-btn"
-      aria-label="Open menu"
+      aria-label={t("aria.openMenu")}
       aria-controls="mobile-menu"
       aria-expanded="false"
+      data-open-label={t("aria.openMenu")}
+      data-close-label={t("aria.closeMenu")}
     >
-      <Icon name="mdi:menu" class="burger-icon" />
+      <Icon
+        name="mdi:menu"
+        class="burger-icon"
+        aria-hidden="true"
+        focusable="false"
+      />
     </button>
     <!-- Mobile nav overlay -->
     <div id="mobile-menu" class="mobile-menu hidden" hidden>
-      <button class="close-btn" id="close-menu" aria-label="Close menu">
+      <button
+        class="close-btn"
+        id="close-menu"
+        type="button"
+        aria-label={t("aria.closeMenu")}
+      >
         <Icon name="mdi:close" class="close-icon" />
       </button>
 
-      <nav class="nav-mobile">
+      <nav class="nav-mobile" aria-label={t("aria.navMain")}>
         <div class="nav-links">
           <a href={`/${lang}/projects`}>{t("nav.projects")}</a>
           <a href={`/${lang}/career`}>{t("nav.career")}</a>
@@ -35,12 +47,15 @@ const t = useTranslations(lang);
         </div>
 
         <div class="mobile-selects">
-          <select onchange="location.href=this.value">
+          <select
+            onchange="location.href=this.value"
+            aria-label={t("aria.languageSelect")}
+          >
             <option value="/de/" selected={lang === "de"}>🌐 Deutsch</option>
             <option value="/en/" selected={lang === "en"}>🌐 English</option>
           </select>
 
-          <select class="theme-select">
+          <select class="theme-select" aria-label={t("aria.themeSelect")}>
             <option value="light">☀️ {t("theme.light")}</option>
             <option value="dark">🌙 {t("theme.dark")}</option>
           </select>
@@ -48,18 +63,21 @@ const t = useTranslations(lang);
       </nav>
     </div>
     <!-- Desktop nav -->
-    <nav class="nav-desktop">
+    <nav class="nav-desktop" aria-label={t("aria.navMain")}>
       <a href={`/${lang}/`} class="logo">Luca Knobel</a>
       <a href={`/${lang}/projects`}>{t("nav.projects")}</a>
       <a href={`/${lang}/career`}>{t("nav.career")}</a>
       <a href={`/${lang}/contact`}>{t("nav.contact")}</a>
     </nav>
     <div class="desktop-selects">
-      <select onchange="location.href=this.value">
+      <select
+        onchange="location.href=this.value"
+        aria-label={t("aria.languageSelect")}
+      >
         <option value="/de/" selected={lang === "de"}>🌐 Deutsch</option>
         <option value="/en/" selected={lang === "en"}>🌐 English</option>
       </select>
-      <select class="theme-select">
+      <select class="theme-select" aria-label={t("aria.themeSelect")}>
         <option value="light">☀️ {t("theme.light")}</option>
         <option value="dark">🌙 {t("theme.dark")}</option>
       </select>
@@ -74,15 +92,23 @@ const t = useTranslations(lang);
     const openBtn = document.getElementById("burger-btn") as HTMLButtonElement;
     const closeBtn = document.getElementById("close-menu") as HTMLButtonElement;
 
+    const setExpanded = (val: boolean) => {
+      openBtn.setAttribute("aria-expanded", String(val));
+      openBtn.setAttribute(
+        "aria-label",
+        val ? openBtn.dataset.closeLabel! : openBtn.dataset.openLabel!,
+      );
+    };
+
     const open = () => {
       menu.classList.remove("hidden");
       menu.removeAttribute("hidden");
-      openBtn.setAttribute("aria-expanded", "true");
+      setExpanded(true);
     };
     const close = () => {
       menu.classList.add("hidden");
       menu.setAttribute("hidden", "");
-      openBtn.setAttribute("aria-expanded", "false");
+      setExpanded(false);
       openBtn.focus();
     };
 

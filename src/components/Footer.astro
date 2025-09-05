@@ -11,7 +11,7 @@ const t = useTranslations(lang);
 
 <footer class="footer">
     <div class="container">
-        <div class="nav-links">
+        <div class="nav-links" aria-label={t("aria.footerNav")}>
             <a href={`/${lang}/projects`}>{t("nav.projects")}</a>
             <a href={`/${lang}/career`}>{t("nav.career")}</a>
             <a href={`/${lang}/contact`}>{t("nav.contact")}</a>
@@ -23,22 +23,22 @@ const t = useTranslations(lang);
         
         <div class="socials">
             <a
-                class="social-btn"
+                class="btn footer-btn"
                 href="https://github.com/LucaKnobel"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="GitHub"
             >
-                <Icon name="mdi:github" class="social-icon" />
+                <Icon name="mdi:github" class="icon" />
             </a>
             <a
-                class="social-btn"
+                class="btn footer-btn"
                 href="https://linkedin.com/in/luca-knobel-14b4a7221"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="LinkedIn"
             >
-                <Icon name="mdi:linkedin" class="social-icon" />
+                <Icon name="mdi:linkedin" class="icon" />
             </a>
         </div>
         <div class="copyright">
@@ -88,23 +88,10 @@ const t = useTranslations(lang);
                 justify-content: center;
                 gap: var(--spacing-sm);
         
-                .social-btn {
-                    border: solid var(--color-border) 1px;
-                    border-radius: var(--btn-radius);
-                    width: 45px;
-                    height: 45px;
-                    cursor: pointer;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    background-color: transparent;
-                    color: var(--color-btn-bg);
-                }
-                .social-icon {
-                    width: 28px;
-                    height: 28px;
-                    flex-shrink: 0;
-                }
+               .footer-btn {
+                    border: none;
+                    padding: 0;
+                }      
             }
         }
 

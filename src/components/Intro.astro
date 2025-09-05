@@ -1,103 +1,153 @@
 ---
-
 import "@/styles/tokens.css";
 import "@/styles/base.css";
-import profile from "@/assets/portrait-photo.jpg";
+import portrait from "@/assets/portrait-photo.jpg";
 import { Icon } from "astro-icon/components";
 import { Image } from "astro:assets";
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 
-/** Props optional – so bleibt die Komponente wiederverwendbar */
 interface Props {
-  name?: string;
-  role?: string;
-  githubUrl?: string;
-  linkedinUrl?: string;
-  contactHref?: string;
+    name?: string;
+    role?: string;
+    portraitSrc?: ImageMetadata;
+    githubUrl?: string;
+    linkedinUrl?: string;
+    contactHref?: string;
 }
 const {
-  name = "Luca Knobel",
-  role = "Applikationsentwicklung • Automation • Web Security",
-  githubUrl = "https://github.com/DEIN_HANDLE",
-  linkedinUrl = "https://www.linkedin.com/in/DEIN_HANDLE",
-  contactHref = "/contact",
+    name = "Luca Knobel",
+    role = "",
+    portraitSrc = portrait,
+    githubUrl = "https://github.com/LucaKnobel",
+    linkedinUrl = "https://linkedin.com/in/luca-knobel-14b4a7221",
+    contactHref = `/${lang}/contact`,
 } = Astro.props;
 ---
 
-<section class="intro" aria-labelledby="intro-title">
-  <div class="intro__container">
-    <!-- Optimiertes Bild via astro:assets -->
-    <Image
-      src={profile}
-      alt={`Portrait von ${name}`}
-      width={180}
-      height={180}
-      class="intro__avatar"
-      loading="eager"
-      decoding="async"
-    />
+<section aria-labelledby="intro-title">
+    <div class="intro-container">
+        <Image
+            src={portraitSrc}
+            alt={t("intro.portraitAlt") + " " + name}
+            class="intro-portrait"
+            loading="eager"
+            decoding="async"
+        />
 
-    <h1 id="intro-title" class="intro__title">Willkommen! Ich bin {name}</h1>
-    <p class="intro__role">{role}</p>
+        <h1 class="intro-title">
+            {t("intro.welcome")}<br />
+            {t("intro.intro")}
+            {name}
+        </h1>
+        <p class="intro-role">{role}</p>
 
-    <div class="intro__actions">
-      <a class="btn btn--ghost" href={githubUrl} target="_blank" rel="noopener noreferrer" aria-label="GitHub öffnen">
-        <Icon name="mdi:github" width="20" height="20" aria-hidden="true" />
-        <span>GitHub</span>
-      </a>
+        <div class="intro-actions">
+            <a
+                class="btn intro-btn"
+                href={githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub"
+            >
+                <Icon name="mdi:github" aria-hidden="true" class="icon" />
+                <span>GitHub</span>
+            </a>
 
-      <a class="btn btn--ghost" href={linkedinUrl} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn öffnen">
-        <Icon name="mdi:linkedin" width="20" height="20" aria-hidden="true" />
-        <span>LinkedIn</span>
-      </a>
+            <a
+                class="btn intro-btn"
+                href={linkedinUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn"
+            >
+                <Icon name="mdi:linkedin" aria-hidden="true" class="icon" />
+                <span>LinkedIn</span>
+            </a>
 
-      <a class="btn btn--primary" href={contactHref} aria-label="Zur Kontaktseite">
-        <span>Kontakt</span>
-      </a>
+            <a class="btn intro-btn" href={contactHref}>
+                <span>{t("intro.contact")}</span>
+            </a>
+        </div>
     </div>
-  </div>
 </section>
 
 <style>
-.intro {
-  display: grid;
-  place-items: center;
-  padding: var(--space-2xl) var(--space-l);
-  text-align: center;
-}
-.intro__container { max-inline-size: 64rem; inline-size: 100%; }
+    section {
+        padding: var(--spacing-xl) var(--spacing-sm);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: var(--spacing-lg) 0 var(--spacing-xxl) 0;
 
-.intro__avatar {
-  inline-size: 180px;
-  block-size: 180px;
-  object-fit: cover;
-  border-radius: 50%;
-  box-shadow: var(--shadow-md, 0 6px 20px rgba(0,0,0,.12));
-  margin-inline: auto;
-}
+        .intro-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-sm);
 
-.intro__title {
-  margin-block: var(--space-m) var(--space-xs);
-  font-size: clamp(1.6rem, 2.5vw, 2.25rem);
-  line-height: 1.2;
-}
-.intro__role {
-  color: var(--text-muted, #667085);
-  margin-block-end: var(--space-m);
-}
+            .intro-portrait {
+                width: 70vw;
+                height: 70vw;
+                max-width: 350px;
+                max-height: 350px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: none;
+            }
 
-.intro__actions {
-  display: flex; flex-wrap: wrap; justify-content: center;
-  gap: .75rem; margin-block-start: var(--space-s);
-}
-.btn {
-  display: inline-flex; align-items: center; gap: .5rem;
-  padding: .6rem 1rem; border-radius: .75rem;
-  border: 1px solid var(--border-color, #D0D5DD);
-  text-decoration: none; font-weight: 600;
-}
-.btn--ghost { background: transparent; color: var(--text, inherit); }
-.btn--ghost:hover { background: color-mix(in oklab, var(--surface, #f5f5f5) 80%, transparent); }
-.btn--primary { background: var(--primary, #0ea5e9); color: var(--on-primary, #fff); border-color: transparent; }
-.btn--primary:hover { filter: brightness(0.95); }
+            .intro-title {
+                font-size: var(--font-size-h3);
+                font-weight: bold;
+                margin-bottom: var(--spacing-xs);
+                text-align: center;
+                margin: 0;
+            }
+
+            .intro-role {
+                font-size: var(--font-size-h4);
+                color: var(--color-text-muted);
+                margin-bottom: var(--spacing-md);
+                text-align: center;
+                margin: 0;
+            }
+
+            .intro-actions {
+                display: flex;
+                flex-direction: column;
+                gap: var(--spacing-sm);
+                align-items: stretch;
+                justify-content: center;
+                .intro-btn {
+                    min-width: 140px;
+                    height: 40px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+            }
+        }
+    }
+
+    @media (min-width: 1024px) {
+        section {
+            margin: 0 0 var(--spacing-xxl) 0;
+            .intro-container {
+                .intro-portrait {
+                    width: 20vw;
+                    height: 20vw;
+                    max-width: 500px;
+                    max-height: 500px;
+                }
+                .intro-actions {
+                    flex-direction: row;
+                    a:hover {
+                        scale: 1.05;
+                    }
+                }
+            }
+        }
+    }
 </style>
