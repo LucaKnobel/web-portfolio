@@ -2,10 +2,11 @@
 import Footer from "@/components/Footer.astro";
 import Header from "@/components/Header.astro";
 const { title = "Portfolio" } = Astro.props;
+const theme = Astro.cookies.get("theme")?.value ?? "light";
 ---
 
 <!doctype html>
-<html lang={Astro.currentLocale} data-theme={Astro.props.theme || 'light'}>
+<html lang={Astro.currentLocale} data-theme={theme}>
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />

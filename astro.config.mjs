@@ -2,6 +2,7 @@ import { defineConfig } from "astro/config";
 import icon from "astro-icon";
 
 export default defineConfig({
+  output: "server",
   i18n: {
     locales: ["de", "en"],
     defaultLocale: "de",
@@ -14,5 +15,4 @@ export default defineConfig({
       iconDir: "src/assets/icons",
     })
   ]
-
 });
