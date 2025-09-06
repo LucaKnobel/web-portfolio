@@ -3,9 +3,9 @@
   "compilerOptions": {
    
     "outDir": "./dist",
-    "baseUrl": "./src",
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["*"]
+      "@/*": ["src/*"]
     },
 
     "noUncheckedIndexedAccess": true,
