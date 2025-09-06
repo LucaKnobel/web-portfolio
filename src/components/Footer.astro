@@ -1,0 +1,112 @@
+---
+import "@/styles/tokens.css";
+import "@/styles/base.css";
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+import { Icon } from "astro-icon/components";
+
+const currentYear = new Date().getFullYear();
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<footer class="footer">
+    <div class="container">
+        <div class="nav-links" aria-label={t("aria.footerNav")}>
+            <a href={`/${lang}/projects`}>{t("nav.projects")}</a>
+            <a href={`/${lang}/career`}>{t("nav.career")}</a>
+            <a href={`/${lang}/contact`}>{t("nav.contact")}</a>
+            <a href={`/${lang}/imprint`}>{t("nav.imprint")}</a>
+            <a href={`/${lang}/privacy-policy`}
+                >{t("nav.privacyPolicy")}</a
+            >
+        </div>
+        
+        <div class="socials">
+            <a
+                class="btn footer-btn"
+                href="https://github.com/LucaKnobel"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub"
+            >
+                <Icon name="mdi:github" class="icon" />
+            </a>
+            <a
+                class="btn footer-btn"
+                href="https://linkedin.com/in/luca-knobel-14b4a7221"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn"
+            >
+                <Icon name="mdi:linkedin" class="icon" />
+            </a>
+        </div>
+        <div class="copyright">
+            <p>&copy; {currentYear} {t("footer.copyright")}</p>
+        </div>
+    </div>
+</footer>
+
+<style>
+    .footer {
+        margin-top: auto;
+        left: 0;
+        width: 100%;
+        background: var(--color-secondary);
+        text-align: center;
+        padding: var(--spacing-md);
+        border: solid var(--color-border) 1px;
+        
+
+        .container {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            justify-content: center;
+            gap: var(--spacing-sm);
+
+            .nav-links {
+                display: flex;
+                align-items: center;
+                flex-direction: column;
+                justify-content: center;
+                gap: var(--spacing-sm);
+                text-decoration: underline 1px;
+                color: var(--color-links);
+            }
+            .copyright p {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                margin: 0;
+            }
+            .socials {
+                display: flex;
+                align-items: center;
+                flex-direction: row;
+                justify-content: center;
+                gap: var(--spacing-sm);
+        
+               .footer-btn {
+                    border: none;
+                    padding: 0;
+                }      
+            }
+        }
+
+    }
+    @media (min-width: 1024px) {
+            .footer {
+                padding: var(--spacing-xs);
+                .container {
+                    .nav-links {
+                        flex-direction: row;
+                        a:hover {
+                            scale: 1.05;
+                        }
+                    }
+                }
+            }
+        }
+</style>

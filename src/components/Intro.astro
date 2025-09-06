@@ -1,0 +1,153 @@
+---
+import "@/styles/tokens.css";
+import "@/styles/base.css";
+import portrait from "@/assets/portrait-photo.jpg";
+import { Icon } from "astro-icon/components";
+import { Image } from "astro:assets";
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+interface Props {
+    name?: string;
+    role?: string;
+    portraitSrc?: ImageMetadata;
+    githubUrl?: string;
+    linkedinUrl?: string;
+    contactHref?: string;
+}
+const {
+    name = "Luca Knobel",
+    role = "",
+    portraitSrc = portrait,
+    githubUrl = "https://github.com/LucaKnobel",
+    linkedinUrl = "https://linkedin.com/in/luca-knobel-14b4a7221",
+    contactHref = `/${lang}/contact`,
+} = Astro.props;
+---
+
+<section aria-labelledby="intro-title">
+    <div class="intro-container">
+        <Image
+            src={portraitSrc}
+            alt={t("intro.portraitAlt") + " " + name}
+            class="intro-portrait"
+            loading="eager"
+            decoding="async"
+        />
+
+        <h1 class="intro-title">
+            {t("intro.welcome")}<br />
+            {t("intro.intro")}
+            {name}
+        </h1>
+        <p class="intro-role">{role}</p>
+
+        <div class="intro-actions">
+            <a
+                class="btn intro-btn"
+                href={githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub"
+            >
+                <Icon name="mdi:github" aria-hidden="true" class="icon" />
+                <span>GitHub</span>
+            </a>
+
+            <a
+                class="btn intro-btn"
+                href={linkedinUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn"
+            >
+                <Icon name="mdi:linkedin" aria-hidden="true" class="icon" />
+                <span>LinkedIn</span>
+            </a>
+
+            <a class="btn intro-btn" href={contactHref}>
+                <span>{t("intro.contact")}</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<style>
+    section {
+        padding: var(--spacing-xl) var(--spacing-sm);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: var(--spacing-lg) 0 var(--spacing-xxl) 0;
+
+        .intro-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-sm);
+
+            .intro-portrait {
+                width: 70vw;
+                height: 70vw;
+                max-width: 350px;
+                max-height: 350px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: none;
+            }
+
+            .intro-title {
+                font-size: var(--font-size-h3);
+                font-weight: bold;
+                margin-bottom: var(--spacing-xs);
+                text-align: center;
+                margin: 0;
+            }
+
+            .intro-role {
+                font-size: var(--font-size-h4);
+                color: var(--color-text-muted);
+                margin-bottom: var(--spacing-md);
+                text-align: center;
+                margin: 0;
+            }
+
+            .intro-actions {
+                display: flex;
+                flex-direction: column;
+                gap: var(--spacing-sm);
+                align-items: stretch;
+                justify-content: center;
+                .intro-btn {
+                    min-width: 140px;
+                    height: 40px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+            }
+        }
+    }
+
+    @media (min-width: 1024px) {
+        section {
+            margin: 0 0 var(--spacing-xxl) 0;
+            .intro-container {
+                .intro-portrait {
+                    width: 20vw;
+                    height: 20vw;
+                    max-width: 500px;
+                    max-height: 500px;
+                }
+                .intro-actions {
+                    flex-direction: row;
+                    a:hover {
+                        scale: 1.05;
+                    }
+                }
+            }
+        }
+    }
+</style>
