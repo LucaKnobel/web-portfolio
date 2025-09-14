@@ -32,6 +32,9 @@ export const ui = {
     "career.responsibilities": "Tätigkeiten",
     "career.keySkills": "Kernkompetenzen",
     "career.finalGrade": "Abschlussnote",
+    "404.pageTitle": "Seite nicht gefunden",
+    "404.pageText": "Die angeforderte Seite konnte nicht gefunden werden.",
+    "404.backHome": "Zur Startseite",
   },
   en: {
     "aria.openMenu": "Open menu",
@@ -59,6 +62,9 @@ export const ui = {
     "career.responsibilities": "Responsibilities",
     "career.keySkills": "Key Skills",
     "career.finalGrade": "Final Grade",
+    "404.pageTitle": "Page Not Found",
+    "404.pageText": "The requested page could not be found.",
+    "404.backHome": "Back to Home",
   },
 } as const;
 

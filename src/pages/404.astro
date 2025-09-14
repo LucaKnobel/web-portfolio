@@ -1,0 +1,42 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+import "@/styles/base.css";
+import "@/styles/tokens.css";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<BaseLayout title=`${t("404.pageTitle")}`>
+    <section class="not-found">
+        <h4>{t("404.pageTitle")}</h4>
+        <p>{t("404.pageText")}</p>
+        <a href="/" class="back-home">{t("404.backHome")}</a>
+    </section>
+</BaseLayout>
+
+<style>
+    .not-found {
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: var(--spacing-xl);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--spacing-md);
+        text-align: center;
+        border-radius: 16px;
+        padding: var(--spacing-xl);
+        border: solid var(--color-border) 1px;
+        max-width: 800px;
+        
+        h4,
+        p,
+        a {
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+    }
+</style>
