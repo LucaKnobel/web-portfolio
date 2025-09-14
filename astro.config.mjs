@@ -1,6 +1,8 @@
 import { defineConfig } from "astro/config";
 import icon from "astro-icon";
 
+import react from "@astrojs/react";
+
 export default defineConfig({
   output: "server",
   i18n: {
@@ -10,9 +12,7 @@ export default defineConfig({
       prefixDefaultLocale: true
     }
   },
-   integrations: [
-    icon({
-      iconDir: "src/assets/icons",
-    })
-  ]
+   integrations: [icon({
+     iconDir: "src/assets/icons",
+   }), react()]
 });
