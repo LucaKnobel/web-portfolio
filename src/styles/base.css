@@ -184,6 +184,31 @@ a {
   }
 }
 
+.error-page {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: var(--spacing-xl);
+  margin-bottom: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  gap: var(--spacing-md);
+  text-align: center;
+  border-radius: 16px;
+  padding: var(--spacing-xl);
+  background-color: var(--color-secondary);
+  max-width: 800px;
+  
+
+  h4,
+  p,
+  a {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+  }
+}
+
 @media (min-width: 1024px) {
   .card-base {
     max-width: 700px;

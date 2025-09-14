@@ -35,6 +35,10 @@ export const ui = {
     "404.pageTitle": "Seite nicht gefunden",
     "404.pageText": "Die angeforderte Seite konnte nicht gefunden werden.",
     "404.backHome": "Zur Startseite",
+    "500.pageTitle": "Interner Serverfehler",
+    "500.pageText": "Es ist ein interner Serverfehler aufgetreten.",
+    "500.backHome": "Zur Startseite",
+    
   },
   en: {
     "aria.openMenu": "Open menu",
@@ -65,6 +69,9 @@ export const ui = {
     "404.pageTitle": "Page Not Found",
     "404.pageText": "The requested page could not be found.",
     "404.backHome": "Back to Home",
+    "500.pageTitle": "Internal Server Error",
+    "500.pageText": "An internal server error has occurred.",
+    "500.backHome": "Back to Home",
   },
 } as const;
 
