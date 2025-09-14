@@ -3,10 +3,11 @@
   "compilerOptions": {
    
     "outDir": "./dist",
-    "baseUrl": "./src",
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["*"]
+      "@/*": ["src/*"]
     },
+    "strictNullChecks": true,
 
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,

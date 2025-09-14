@@ -25,6 +25,13 @@ export const ui = {
     "intro.welcome": "Willkommen!",
     "intro.intro": "Ich bin",
     "intro.portraitAlt": "Portrait von",
+    "career.pageTitle": "Karriere",
+    "career.professionalCareer": "Beruflicher Werdegang",
+    "career.education": "Ausbildung",
+    "career.detailsSummary": "Details anzeigen",
+    "career.responsibilities": "Tätigkeiten",
+    "career.keySkills": "Kernkompetenzen",
+    "career.finalGrade": "Abschlussnote",
   },
   en: {
     "aria.openMenu": "Open menu",
@@ -45,6 +52,13 @@ export const ui = {
     "intro.welcome": "Welcome!",
     "intro.intro": "I'm",
     "intro.portraitAlt": "Portrait of",
+    "career.pageTitle": "Career",
+    "career.professionalCareer": "Professional Career",
+    "career.education": "Education",
+    "career.detailsSummary": "Show details",
+    "career.responsibilities": "Responsibilities",
+    "career.keySkills": "Key Skills",
+    "career.finalGrade": "Final Grade",
   },
 } as const;
 

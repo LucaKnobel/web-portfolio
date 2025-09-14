@@ -1,0 +1,75 @@
+[
+    {
+        "organizationName": "Bimag Steuerungstechnik AG",
+        "organizationWebsite": "https://bimag.com/",
+        "title": "Electrical Designer EPLAN Electric P8",
+        "employmentRate": "80%",
+        "period": {
+            "start": "08/2023",
+            "end": "Present"
+        },
+        "responsibilities": [
+            "Worked in industrial and building automation projects",
+            "Engineering with EPLAN Electric P8",
+            "Production work preparation",
+            "Material procurement and inspections",
+            "Customer coordination"
+        ],
+        "keySkills": [
+            "EPLAN Electric P8",
+            "Automation",
+            "PLC (Siemens)",
+            "Project management",
+            "Electrical schematic design"
+        ]
+    },
+    {
+        "organizationName": "Bimag Steuerungstechnik AG",
+        "organizationWebsite": "https://bimag.com/",
+        "title": "Automation Technician",
+        "employmentRate": "100%",
+        "period": {
+            "start": "11/2021",
+            "end": "08/2023"
+        },
+        "responsibilities": [
+            "Worked in industrial and building automation projects",
+            "Testing and quality assurance of control cabinets",
+            "Mechanical assembly and wiring of control cabinets",
+            "Troubleshooting and on-site modifications",
+            "Delivery and installation of control cabinets"
+        ],
+        "keySkills": [
+            "Automation",
+            "PLC (Siemens)",
+            "Problem solving",
+            "Wiring",
+            "Mechanics"
+        ]
+    },
+    {
+        "organizationName": "Hediger Group (Debag Industrieautomations AG)",
+        "organizationWebsite": "https://www.hediger.ch/",
+        "title": "Apprenticeship as Automation Technician (EFZ)",
+        "employmentRate": "100%",
+        "period": {
+            "start": "08/2017",
+            "end": "08/2021"
+        },
+        "responsibilities": [
+            "Worked in industrial automation, building automation, and control panel construction",
+            "Mechanical assembly, wiring, and testing of control cabinets",
+            "Troubleshooting and on-site modifications",
+            "Programming of basic controllers",
+            "Delivery, installation, and commissioning of control cabinets",
+            "Material procurement and quality control"
+        ],
+        "keySkills": [
+            "Automation",
+            "PLC (Siemens, Wago, Saia)",
+            "EPLAN Electric P8",
+            "Wiring",
+            "Mechanics"
+        ]
+    }
+]
