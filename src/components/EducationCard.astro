@@ -1,0 +1,43 @@
+---
+import type { EducationEntry } from "@/types/entries";
+import "@/styles/base.css";
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+
+const {
+    organizationName,
+    organizationWebsite,
+    title,
+    studyMode,
+    period,
+    keySkills,
+    finalGrade,
+} = Astro.props as EducationEntry;
+---
+
+<article class="card-base">
+    <header>
+        <h4>{title}</h4>
+        <a href={organizationWebsite} target="_blank" rel="noopener"
+            >{organizationName}</a
+        >
+        <div class="meta">
+            <span>{studyMode}</span>
+            <span>{period.start} – {period.end}</span>
+            {finalGrade && <span>{t("career.finalGrade")}: {finalGrade}</span>}
+        </div>
+    </header>
+    <details>
+        <summary>{t("career.detailsSummary")}</summary>
+        <section class="details-content">
+            <strong>{t("career.keySkills")}:</strong>
+            <ul>
+                {keySkills.map((skill) => <li>{skill}</li>)}
+            </ul>
+        </section>
+    </details>
+</article>
+

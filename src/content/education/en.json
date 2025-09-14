@@ -18,6 +18,24 @@
         "finalGrade": ""
     },
     {
+        "organizationName": "IFA - The Higher Technical School of Digital Economy",
+        "organizationWebsite": "https://ipso.ch/schulen/ifa",
+        "title": "Higher Business Diploma (HWD/VSK)",
+        "studyMode": "Part-time",
+        "period": {
+            "start": "10/2023",
+            "end": "10/2024"
+        },
+        "keySkills": [
+            "Business administration and accounting",
+            "Project management",
+            "Process and change management",
+            "Marketing and communication",
+            "Human resource management"
+        ],
+        "finalGrade": 5.1
+    },
+    {
         "organizationName": "EPAI-GIBS",
         "organizationWebsite": "https://www.fr.ch/de/gibs",
         "title": "Vocational School for Automation Technicians (EFZ)",

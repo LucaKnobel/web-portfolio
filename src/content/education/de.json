@@ -1,7 +1,7 @@
 [
     {
         "organizationName": "IFA - Die Höhere Fachschule der Digitalen Wirtschaft",
-        "organizationWebsite": "https://www.ipso.ch/ifa/ifa",
+        "organizationWebsite": "https://ipso.ch/schulen/ifa",
         "title": "Dipl. Informatiker/-in HF, Applikationsentwicklung mit Schwerpunkt Application-Security",
         "studyMode": "Teilzeit",
         "period": {
@@ -16,6 +16,26 @@
             "Kommunikation und analytisches Denken"
         ],
         "finalGrade": ""
+    },
+    {
+        "organizationName": "IFA - Die Höhere Fachschule der Digitalen Wirtschaft",
+        "organizationWebsite": "https://ipso.ch/schulen/ifa",
+        "title": "Höheres Wirtschaftsdiplom (HWD)",
+        "studyMode": "Teilzeit",
+        "period":
+        {
+            "start": "10/2023",
+            "end": "10/2024"
+        },
+        "keySkills":
+            [
+                "Betriebswirtschaft und Rechnungswesen",
+                "Projektmanagement",
+                "Prozess- und Changemanagement",
+                "Marketing und Kommunikation",
+                "Personalmanagement"
+            ],
+        "finalGrade": 5.1
     },
     {
         "organizationName": "EPAI-GIBS",
