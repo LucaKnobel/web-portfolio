@@ -1,0 +1,38 @@
+[
+    {
+        "organizationName": "IFA - Die Höhere Fachschule der Digitalen Wirtschaft",
+        "organizationWebsite": "https://www.ipso.ch/ifa/ifa",
+        "title": "Dipl. Informatiker/-in HF, Applikationsentwicklung mit Schwerpunkt Application-Security",
+        "studyMode": "Teilzeit",
+        "period": {
+            "start": "10/2023",
+            "end": "10/2026"
+        },
+        "keySkills": [
+            "Softwareentwicklung mit Fokus auf OOP, Web und Sicherheit",
+            "IT-Systeme, Scripting, Netzwerke und Automatisierung",
+            "Projekt- und IT-Management",
+            "Wirtschaftliches Grundlagenwissen",
+            "Kommunikation und analytisches Denken"
+        ],
+        "finalGrade": ""
+    },
+    {
+        "organizationName": "EPAI-GIBS",
+        "organizationWebsite": "https://www.fr.ch/de/gibs",
+        "title": "Berufsschule Automatiker EFZ",
+        "studyMode": "Während Lehre",
+        "period": {
+            "start": "08/2017",
+            "end": "08/2021"
+        },
+        "keySkills": [
+            "Elektrotechnik",
+            "Automation",
+            "Informatik",
+            "Mathematik",
+            "Englisch"
+        ],
+        "finalGrade": 5.2
+    }
+]

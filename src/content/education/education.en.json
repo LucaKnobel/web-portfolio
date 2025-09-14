@@ -1,0 +1,38 @@
+[
+    {
+        "organizationName": "IFA - The Higher Technical School of Digital Economy",
+        "organizationWebsite": "https://ipso.ch/schulen/ifa",
+        "title": "Advanced Federal Diploma of Higher Education in Information Technology – Application Development, specializing in Application Security",
+        "studyMode": "Part-time",
+        "period": {
+            "start": "10/2023",
+            "end": "10/2026"
+        },
+        "keySkills": [
+            "Software development with focus on OOP, web, and security",
+            "IT systems, scripting, networks, and automation",
+            "Project and IT management",
+            "Basic business knowledge",
+            "Communication and analytical thinking"
+        ],
+        "finalGrade": ""
+    },
+    {
+        "organizationName": "EPAI-GIBS",
+        "organizationWebsite": "https://www.fr.ch/de/gibs",
+        "title": "Vocational School for Automation Technicians (EFZ)",
+        "studyMode": "During apprenticeship",
+        "period": {
+            "start": "08/2017",
+            "end": "08/2021"
+        },
+        "keySkills": [
+            "Electrical engineering",
+            "Automation",
+            "Computer science",
+            "Mathematics",
+            "English"
+        ],
+        "finalGrade": 5.2
+    }
+]
