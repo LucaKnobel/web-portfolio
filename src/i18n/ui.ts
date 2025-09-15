@@ -38,6 +38,7 @@ export const ui = {
     "500.pageTitle": "Interner Serverfehler",
     "500.pageText": "Es ist ein interner Serverfehler aufgetreten.",
     "500.backHome": "Zur Startseite",
+    "projects.pageTitle": "Projekte",
     
   },
   en: {
@@ -72,6 +73,7 @@ export const ui = {
     "500.pageTitle": "Internal Server Error",
     "500.pageText": "An internal server error has occurred.",
     "500.backHome": "Back to Home",
+    "projects.pageTitle": "Projects",
   },
 } as const;
 

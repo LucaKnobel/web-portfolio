@@ -1,8 +1,7 @@
 ---
 import { getLangFromUrl } from "@/i18n/utils";
 import Footer from "@/components/Footer.astro";
-/* import Header from "@/components/Header.astro"; */
-import Header from "@/components/Header.jsx";
+import Header from "@/components/Header.tsx";
 import { ClientRouter } from "astro:transitions";
 
 const { title = "Portfolio" } = Astro.props;
@@ -21,7 +20,7 @@ const theme = Astro.cookies.get("theme")?.value ?? "light";
         <ClientRouter />
     </head>
     <body>
-        <Header client:only url={Astro.url} />
+        <Header client:only="react" url={Astro.url} />
         <main>
             <slot />
         </main>

@@ -44,11 +44,10 @@ export default function Header({ url }: HeaderProps) {
   return (
     <header className={styles.header}>
       <div className={styles.container}>
-        {/* Logo immer links */}
         <a href={`/${lang}/`} className={styles.logo}>
           Luca Knobel
         </a>
-        {/* Burger nur mobile */}
+        {/* Burger only mobile */}
         <button
           className={styles.burger}
           aria-label={t("aria.openMenu")}
@@ -69,13 +68,12 @@ export default function Header({ url }: HeaderProps) {
             <path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z"/>
           </svg>
         </button>
-        {/* Desktop-Navigation: Links direkt neben Logo */}
+        {/* Desktop navigation */}
         <nav className={styles["nav-desktop"]} aria-label={t("aria.navMain")}>
           <a href={`/${lang}/projects`}>{t("nav.projects")}</a>
           <a href={`/${lang}/career`}>{t("nav.career")}</a>
           <a href={`/${lang}/contact`}>{t("nav.contact")}</a>
         </nav>
-        {/* Desktop-Selects ganz rechts */}
         <div className={styles["desktop-selects"]}>
           <select
             onChange={(e) => (window.location.href = e.target.value)}
@@ -97,7 +95,7 @@ export default function Header({ url }: HeaderProps) {
         </div>
       </div>
 
-      {/* Overlay und Mobile-Menü */}
+      {/* Overlay and Mobile Menu */}
       {menuOpen && (
         <>
           <div

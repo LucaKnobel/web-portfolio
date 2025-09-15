@@ -26,7 +26,20 @@ const educationSchema = z.object({
   finalGrade: z.union([z.string(), z.number()]),
 });
 
+const projectsSchema = z.object({
+  title: z.string(),
+  description: z.string(),
+  date: z.string(),
+  lang: z.string(),
+  tags: z.array(z.string()),
+  cover: z.string().optional(),
+  url: z.string().url(),
+  slug: z.string()
+});
+
+
 export const collections = {
   career: defineCollection({ type: "data", schema: z.array(careerSchema) }),
   education: defineCollection({ type: "data", schema: z.array(educationSchema) }),
+  projects: defineCollection({ type: "content", schema: projectsSchema }),
 };
