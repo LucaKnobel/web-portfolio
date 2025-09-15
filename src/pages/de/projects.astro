@@ -11,6 +11,11 @@ const projects = await getCollection(
     "projects",
     ({ data }) => data.lang === lang,
 );
+
+projects.forEach(element => {
+    console.log(element.data);
+});
+
 ---
 
 <BaseLayout title={`Luca Knobel | ${t("projects.pageTitle")}`}>
@@ -24,7 +29,7 @@ const projects = await getCollection(
                     date={data.date}
                     tags={data.tags}
                     coverSrc={data.cover}
-                    href={`/${lang}/projects/${data.slug}/`}
+                    
                 />
             ))
         }

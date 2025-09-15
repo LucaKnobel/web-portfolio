@@ -1,178 +1,165 @@
 ---
-title: "Semantische Bash-Wissensverwaltungssoftware"
-description: "Eine Wissensplattform, die komplexe Bash-Konzepte strukturiert darstellt und über Suchfunktionen sowie Visualisierungen zugänglich macht."
+title: "Semantic Bash Knowledge Management Software"
+description: "A knowledge platform that structures complex Bash concepts and makes them accessible via search functions and visualizations."
 date: "07/2025"
 lang: "en"
 tags: ["Python", "UML", "Knowledge Graphs", "Pytest", "CLI"]
-cover: "../../../assets/projects/bashnet/cover.png"
+cover: "../images/bashnet/cover.png"
 url: "https://github.com/LucaKnobel/bashnet-public"
-slug: "bashnet"
 ---
 
-# Semantische Bash-Wissensverwaltungssoftware
+# Semantic Bash Knowledge Management Software
 
-## Projekt in Kürze
+## Project at a Glance
 
-Dieses Projekt zeigt die Entwicklung eines prototypischen Wissenssystems auf Basis semantischer Netzwerke. Ziel war es, eine strukturierte und durchsuchbare Datenbasis zu schaffen, die Konzepte miteinander verknüpft und so einen nachhaltigen Umgang mit Wissen ermöglicht. Der Ansatz orientiert sich an anerkannten Standards für Wissensmanagement und Qualitätssicherung.  
+This project presents the development of a prototype knowledge system based on semantic networks. The goal was to create a structured and searchable database that links concepts and enables sustainable knowledge handling. The approach is aligned with recognized standards for knowledge management and quality assurance.
 
-Der Prototyp implementiert eine rekursiv durchsuchbare Datenstruktur, die zunächst baumartig aufgebaut und anschließend zu einem Netzwerkmodell erweitert wurde. Beziehungen zwischen den Knoten werden typisiert gespeichert, sodass vielfältige Abfragen möglich sind.  
+The prototype implements a recursively searchable data structure, initially built as a tree and then extended into a network model. Relationships between nodes are stored with typed relations, enabling versatile queries.
 
-Das Projekt verbindet technische Umsetzung mit praktischem Nutzen: Es bietet ein lernförderliches Werkzeug zur Aufbereitung von Kommandozeilenbefehlen und Scripting-Konzepten, unterstützt in der Prüfungsvorbereitung sowie im beruflichen Alltag und fördert den kompetenten Umgang mit datengetriebenen Methoden.  
+The project combines technical implementation with practical value: it provides a learning-oriented tool for organizing command-line commands and scripting concepts, supports exam preparation as well as day-to-day work, and promotes competency with data-driven methods.
 
-Als Erweiterungen wurden eine grafische Visualisierung und zwei unterschiedliche Suchmodi (einfache und vertiefte Suche) konzipiert, um die Einsatzmöglichkeiten des Systems zu demonstrieren.  
+As extensions, a graphical visualization and two different search modes (simple and deep) were designed to demonstrate the system’s capabilities.
 
+## Background and Context
 
-## Ausgangslage und Kontext
+The project is based on an assignment from the Software Engineering area in my HF studies.  
+Its focus is the development of a knowledge base built on a semantic network.
 
-Die Grundlage für das Projekt bildet eine Aufgabenstellung aus dem Bereich Software Engineering in meinem HF-Studium.  
-Im Zentrum steht die Entwicklung einer Wissensdatenbank auf Basis eines semantischen Netzes.  
+The challenge highlights the growing importance of structured knowledge storage in organizations and references requirements from relevant standards (e.g., ISO-9001) for systematic documentation and use of knowledge.
 
-Die Herausforderung hebt die zunehmende Bedeutung strukturierter Wissensspeicherung in Unternehmen hervor und verweist auf Anforderungen einschlägiger Normen (z. B. ISO-9001) zur systematischen Dokumentation und Nutzung von Wissen.  
+The goal was to develop a functional prototype within a limited time frame that implements core mechanisms of semantic knowledge linking. First, a recursively searchable data structure—implemented as a tree—was built and later extended to a network model. Relationships between concepts were to be typed and stored within the nodes.
 
-Ziel war es, innerhalb eines begrenzten Zeitrahmens einen funktionalen Prototypen zu entwickeln, der grundlegende Mechanismen semantischer Wissensvernetzung technisch umsetzt. Dazu sollte zunächst eine rekursiv durchsuchbare Datenstruktur – in Form eines Baums – aufgebaut und später auf ein Netzwerkmodell erweitert werden. Die Beziehungen zwischen den Konzepten sollten typisiert und in den Knoten gespeichert werden.  
-
-Als optionale Erweiterungen wurden eine graphische Darstellung sowie zwei Suchmodi (einfache und vertiefte Suche) vorgesehen.
-
+Optional extensions included a graphical representation and two search modes (simple and deep).
 
 ## Motivation
 
-Die Motivation für das Projekt ergibt sich aus der Relevanz für die Bereiche Linux, IT-Betrieb und Monitoring, in dem fundierte Kenntnisse in der Kommandozeilenbedienung, im Scripting und in der strukturierten Wissensverarbeitung erforderlich sind.  
+The motivation stems from relevance to Linux, IT operations, and monitoring—areas that require strong command-line, scripting, and structured knowledge management skills.
 
-Ein zentrales Ziel war die Konzeption eines lernförderlichen Werkzeugs, das systematisch aufgebaute Informationen zu Kommandozeilenbefehlen und verwandten Konzepten bereitstellt. Dadurch soll es sowohl in der Prüfungsvorbereitung als auch im beruflichen Alltag als Unterstützung dienen.  
+A central objective was to design a learning-support tool that provides systematically structured information on command-line commands and related concepts. It should assist both in exam preparation and in professional practice.
 
-Darüber hinaus bot die Aufgabe die Gelegenheit, sich vertiefter mit semantischen Strukturen, datengetriebenen Ansätzen und rekursiven Informationszugängen auseinanderzusetzen.
+The assignment also offered an opportunity to dive deeper into semantic structures, data-driven approaches, and recursive information access.
 
-## Analyse und Konzeption
+## Analysis and Design
 
-### Use Case Analyse
-Die funktionalen Anforderungen der Applikation wurden in Form eines Use Case Diagramms modelliert. Die zentrale Interaktion erfolgt über ein Kommandozeileninterface (CLI), über welches die
-Benutzerin bzw. der Benutzer semantisch gespeichertes Wissen gezielt durchsuchen, importieren
-und exportieren kann.
+### Use Case Analysis
+The application’s functional requirements were modeled as a use case diagram. Central interaction occurs via a command-line interface (CLI) through which users can search, import, and export semantically stored knowledge.
 
-![Use Case Diagramm](../../../assets/projects/bashnet/use-case-diagram.png)
+![Use Case Diagram](../images/bashnet/use-case-diagram.png)
 
-Im Folgenden werden die fünf zentralen Anwendungsfälle der CLI-basierten Lernapplikation beschrieben. Sie decken die wesentlichen Interaktionen zwischen Benutzer und System ab und bilden die
-Grundlage für die Funktionalität der Anwendung:
-- UC-01 – Search Term (simple): Führt eine direkte, exakte Suche nach einem Begriff im
-semantischen Netz durch.
-- UC-02 – Search Term (deep): Erweitert die Suche durch Traversierung semantisch verknüpfter
-Knoten.
-- UC-03 – Import Data: Lädt strukturierte Wissensdaten aus JSON-Dateien in das semantische
-Netz.
-- UC-04 – Visualize Net: Stellt das semantische Netzwerk grafisch dar, um Zusammenhänge
-sichtbar zu machen.
-- UC-05 – Show Help: Zeigt alle verfügbaren CLI-Befehle samt Parametern als Übersicht für
-den Benutzer an.
-Nachfolgend wird jeder Use Case detailiert tabellarisch beschrieben.
+The five core use cases of the CLI-based learning application are described below. They cover the essential interactions between user and system and form the basis for the application’s functionality:
 
-| **Use Case Nr.**           | UC-01                                                                                                                                                                                                                                                                                                     |
-| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Name**                   | Search Term (simple)                                                                                                                                                                                                                                                                                      |
-| **Akteur**                 | CLI-Benutzer (User)                                                                                                                                                                                                                                                                                       |
-| **Vorausbedingungen**      | - Das semantische Netz wurde zuvor erfolgreich importiert.<br>- Die Datei `knowledge_net.json` ist im erwarteten Verzeichnis vorhanden.<br>- Der gesuchte Begriff befindet sich im Netzwerk (für Positivtests).                                                                                           |
-| **Beschreibung**           | Der Benutzer möchte einen konkreten Begriff (z. B. einen Bash-Befehl) im semantischen Netz suchen. Das System soll exakt diesen Begriffsknoten finden und die dazugehörigen Informationen ausgeben. Dies umfasst Label, Typ, Beschreibung, Kategorie, Tags, Beispiele und Links.                          |
-| **Ablauf (Hauptszenario)** | 1. Der Benutzer gibt den Befehl `search <term> --simple` ein.<br>2. Das System prüft, ob ein Knoten mit dem exakten Label existiert.<br>3. Ist der Knoten vorhanden, wird er mit allen zugehörigen Informationen ausgegeben.                                                                              |
-| **Alternativabläufe**      | **A1: Begriff nicht gefunden**<br>a1.1 Das System gibt eine strukturierte Fehlermeldung aus.                                                                                                                                                                                                              |
-| **Akzeptanzkriterien**     | - Der Begriff wird exakt im Netzwerk gefunden.<br>- Label, Typ, Beschreibung, Kategorie, Tags, Beispiele und Links werden ausgegeben.<br>- Bei unbekannten Begriffen erfolgt eine klare Fehlermeldung.                                                                                                    |
-| **Testmethode**            | Für die in diesem Use Case beschriebene Funktionalität werden sinnvolle Unit-Tests mit `pytest` erstellt, um die zugrunde liegende Logik automatisiert zu prüfen. Die Ausgabe auf der Kommandozeile wird ergänzend manuell überprüft, um Formatierung, Inhalt und Verständlichkeit visuell zu validieren. |
+- UC-01 – Search Term (simple): Performs a direct, exact search for a term in the semantic network.  
+- UC-02 – Search Term (deep): Extends the search by traversing semantically linked nodes.  
+- UC-03 – Import Data: Loads structured knowledge data from JSON files into the network.  
+- UC-04 – Visualize Net: Displays the semantic network graphically to reveal relationships.  
+- UC-05 – Show Help: Lists all available CLI commands including parameters for the user.
 
-| **Use Case Nr.**           | UC-02                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Name**                   | Search Term (deep)                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| **Akteur**                 | CLI-Benutzer (User)                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| **Vorausbedingungen**      | - Das semantische Netz wurde erfolgreich importiert.<br>- Die Datei `knowledge_net.json` ist vollständig geladen.                                                                                                                                                                                                                                                                                                                                                               |
-| **Beschreibung**           | Der Benutzer führt eine vertiefte Suche durch, bei der neben dem gesuchten Begriff auch semantisch verknüpfte Knoten über typisierte Relationen berücksichtigt werden. Abhängig vom Knotentyp (z. B. `command`, `option`, `concept`, `scripting`) wird der Kontext unterschiedlich aufgebaut. Die Ergebnisse werden strukturiert mit dem Zielknoten und den zugehörigen Kontextdaten ausgegeben.                                                                                |
-| **Ablauf (Hauptszenario)** | 1. Der Benutzer gibt den Befehl `search <term>` ein (ohne `--simple`).<br>2. Das System sucht den exakten Knoten per UC-01.<br>3. Bei Erfolg wird der Knotentyp geprüft und kontextabhängig verarbeitet:<br>• `command` → zugehörige `options`<br>• `concept` → verknüpfte `commands`, `options`, weitere Konzepte<br>• `scripting` → direkt related Knoten<br>• `option` → referenzierende `commands`<br>4. Das System gibt den Hauptknoten und alle Kontextinformationen aus. |
-| **Alternativabläufe**      | **A1: Begriff nicht direkt gefunden**<br>a1.1 Das System findet keinen Knoten mit exakt Match.<br>a1.2 Ein Fallback-Suchmechanismus wird aktiviert.<br>a1.3 Relevante Knoten werden sortiert zurückgegeben.<br><br>**A2: Begriff nicht vorhanden**<br>a2.1 Das System gibt eine strukturierte Fehlermeldung aus.                                                                                                                                                                |
-| **Akzeptanzkriterien**     | - Der Begriffsknoten wird korrekt identifiziert.<br>- Der Kontext ist abhängig vom Knotentyp vollständig und korrekt.<br>- Die Relationen sind typisiert und nachvollziehbar.<br>- Bei Nichterfolg liefert der Fallback relevante Alternativen mit Gewichtung.                                                                                                                                                                                                                  |
-| **Testmethode**            | Für diesen Use Case werden gezielte Unit-Tests mit `pytest` erstellt. Die Tests prüfen, ob die Tiefensuche für verschiedene Knotentypen korrekt funktioniert und der Kontext jeweils vollständig gebildet wird. Die CLI-Ausgabe wird zusätzlich manuell überprüft, um die Darstellung der Kontextinformationen auf Vollständigkeit, Struktur und Verständlichkeit sicherzustellen.                                                                                              |
+Each use case is described in detail in the tables below.
 
+| **Use Case No.**          | UC-01 |
+| ------------------------- | ----- |
+| **Name**                  | Search Term (simple) |
+| **Actor**                 | CLI user |
+| **Preconditions**         | - The semantic network was successfully imported.<br>- The file `knowledge_net.json` exists in the expected directory.<br>- The searched term is present in the network (for positive tests). |
+| **Description**           | The user searches for a specific term (e.g., a Bash command) in the semantic network. The system should find exactly this node and output all associated information, including label, type, description, category, tags, examples, and links. |
+| **Main Flow**             | 1. The user enters `search <term> --simple`.<br>2. The system checks whether a node with the exact label exists.<br>3. If found, the node is printed with all associated information. |
+| **Alternatives**          | **A1: Term not found**<br>a1.1 The system outputs a structured error message. |
+| **Acceptance Criteria**   | - The term is found exactly in the network.<br>- Label, type, description, category, tags, examples, and links are output.<br>- For unknown terms, a clear error message is shown. |
+| **Test Method**           | Meaningful unit tests with `pytest` verify the underlying logic. CLI output is additionally reviewed manually to validate formatting, content, and clarity. |
 
-| **Use Case Nr.**           | UC-03                                                                                                                                                                                                                                                                                                                                                               |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Name**                   | Import Data                                                                                                                                                                                                                                                                                                                                                         |
-| **Akteur**                 | CLI-Benutzer (User)                                                                                                                                                                                                                                                                                                                                                 |
-| **Vorausbedingungen**      | - Strukturierte JSON-Dateien befinden sich im Verzeichnis `data/`.<br>- Die Dateien enthalten gültige Einträge mit eindeutiger ID, Label und Typ.                                                                                                                                                                                                                   |
-| **Beschreibung**           | Der Benutzer möchte modulare JSON-Dateien (z. B. `commands.json`, `options.json`) in das semantische Netz importieren. Dabei werden zunächst alle Knoten (Befehle, Optionen, Konzepte etc.) geladen und anschließend auf Basis von `related`- und `options`-Verweisen typisierte Relationen erzeugt. Das Ergebnis wird zentral in `knowledge_net.json` gespeichert. |
-| **Ablauf (Hauptszenario)** | 1. Der Benutzer gibt den Befehl `import` ein.<br>2. Das System lädt die Dateien (`commands.json`, `concepts.json`, `options.json`, `scripting.json`).<br>3. Die Knoten werden angelegt.<br>4. Relationen werden hinzugefügt.<br>5. Das Netzwerk wird in `knowledge_net.json` gespeichert.                                                                           |
-| **Alternativabläufe**      | **A1: Ungültige Datei oder fehlerhafte Einträge**<br>a1.1 Das System gibt eine Warnung aus und bricht ab.                                                                                                                                                                                                                                                           |
-| **Akzeptanzkriterien**     | - Alle gültigen Knoten werden importiert und gespeichert.<br>- Definierte Relationen (`options`, `related`) werden nur angelegt, wenn die Zielknoten existieren.<br>- Die Datei `knowledge_net.json` enthält ein vollständiges Netzwerk.                                                                                                                            |
-| **Testmethode**            | Für diesen Use Case werden Unit-Tests mit `pytest` entwickelt. Dabei wird geprüft, ob Knoten korrekt angelegt und Relationen zuverlässig erzeugt werden. Zusätzlich wird kontrolliert, ob die Exportdatei `knowledge_net.json` vollständig und fehlerfrei erzeugt wird. Eine visuelle Kontrolle ergänzt die Tests.                                                  |
+| **Use Case No.**          | UC-02 |
+| ------------------------- | ----- |
+| **Name**                  | Search Term (deep) |
+| **Actor**                 | CLI user |
+| **Preconditions**         | - The semantic network was successfully imported.<br>- The file `knowledge_net.json` is fully loaded. |
+| **Description**           | The user performs a deep search that, besides the searched term, also considers semantically linked nodes via typed relations. Depending on the node type (e.g., `command`, `option`, `concept`, `scripting`), the context is assembled differently. Results are output in a structured way with the target node and related context data. |
+| **Main Flow**             | 1. The user enters `search <term>` (without `--simple`).<br>2. The system tries an exact match as in UC-01.<br>3. If found, the node type is checked and processed contextually:<br>• `command` → related `options`<br>• `concept` → linked `commands`, `options`, further concepts<br>• `scripting` → directly related elements<br>• `option` → all `commands` using this option<br>4. The system prints the main node and all context information. |
+| **Alternatives**          | **A1: Term not directly found**<br>a1.1 No exact match is found.<br>a1.2 A fallback mechanism is activated.<br>a1.3 Relevant nodes are returned in a ranked order.<br><br>**A2: Term does not exist**<br>a2.1 The system outputs a structured error. |
+| **Acceptance Criteria**   | - The target node is correctly identified.<br>- Context is complete and correct depending on node type.<br>- Relations are typed and traceable.<br>- On failure, the fallback returns relevant alternatives with weighting. |
+| **Test Method**           | Targeted unit tests with `pytest` verify that deep search works correctly across node types and produces complete context. CLI output is checked manually for completeness, structure, and clarity. |
 
-| **Use Case Nr.**           | UC-04                                                                                                                                                                                                                                                                                                                          |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Name**                   | Visualize Net                                                                                                                                                                                                                                                                                                                  |
-| **Akteur**                 | CLI-Benutzer (User)                                                                                                                                                                                                                                                                                                            |
-| **Vorausbedingungen**      | - Die Datei `knowledge_net.json` ist vollständig vorhanden.<br>- Das Netzwerk wurde erfolgreich geladen.<br>- Die Umgebung erlaubt eine Browseröffnung oder manuelle Anzeige.                                                                                                                                                  |
-| **Beschreibung**           | Der Benutzer möchte das aktuelle semantische Netz grafisch darstellen. Das System erzeugt eine HTML-Visualisierung und öffnet diese im Standardbrowser (sofern möglich). Andernfalls wird eine Meldung zum manuellen Öffnen ausgegeben. Die Darstellung differenziert Knotentypen farblich und erlaubt interaktive Navigation. |
-| **Ablauf (Hauptszenario)** | 1. Der Benutzer gibt den Befehl `visualize` ein.<br>2. Das System lädt die Datei `knowledge_net.json`.<br>3. Der Graph wird als HTML-Datei gespeichert.<br>4. Falls möglich, wird diese direkt im Browser geöffnet; andernfalls erfolgt eine Meldung zum manuellen Öffnen.                                                     |
-| **Alternativabläufe**      | **A1: Fehler beim Laden der Datei**<br>a1.1 Das System gibt eine strukturierte Fehlermeldung aus.<br><br>**A2: Visualisierung im Docker-Modus**<br>a2.1 Das System erkennt den Docker-Modus.<br>a2.2 Die HTML-Datei wird nicht automatisch geöffnet.<br>a2.3 Ein Hinweis zur manuellen Öffnung wird ausgegeben.                |
-| **Akzeptanzkriterien**     | - Der HTML-Graph enthält alle Knoten und Relationen.<br>- Knotentypen sind farblich korrekt kodiert.<br>- Die Datei öffnet fehlerfrei im Browser.<br>- Fehlerzustände werden verständlich behandelt.                                                                                                                           |
-| **Testmethode**            | Dieser Use Case wird visuell überprüft. Die HTML-Datei wird im Browser geöffnet und auf Vollständigkeit, Farbgebung, Interaktivität und Lesbarkeit geprüft. Eine automatisierte Prüfung ist nicht vorgesehen.                                                                                                                  |
+| **Use Case No.**          | UC-03 |
+| ------------------------- | ----- |
+| **Name**                  | Import Data |
+| **Actor**                 | CLI user |
+| **Preconditions**         | - Structured JSON files exist in `data/`.<br>- Files contain valid entries with unique ID, label, and type. |
+| **Description**           | The user imports modular JSON files (e.g., `commands.json`, `options.json`) into the semantic network. First, all nodes (commands, options, concepts, etc.) are loaded; then typed relations are created based on `related` and `options` references. The result is stored centrally in `knowledge_net.json`. |
+| **Main Flow**             | 1. The user enters `import`.<br>2. The system loads the files (`commands.json`, `concepts.json`, `options.json`, `scripting.json`).<br>3. Nodes are created.<br>4. Relations are added.<br>5. The network is saved to `knowledge_net.json`. |
+| **Alternatives**          | **A1: Invalid file or faulty entries**<br>a1.1 The system warns and aborts. |
+| **Acceptance Criteria**   | - All valid nodes are imported and saved.<br>- Defined relations (`options`, `related`) are created only if target nodes exist.<br>- `knowledge_net.json` contains a complete network. |
+| **Test Method**           | Unit tests with `pytest` ensure nodes and relations are created correctly and `knowledge_net.json` is complete and valid. Manual checks complement the tests. |
 
-| **Use Case Nr.**           | UC-05                                                                                                                                                                                                                                                                             |
-| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Name**                   | Show Help                                                                                                                                                                                                                                                                         |
-| **Akteur**                 | CLI-Benutzer (User)                                                                                                                                                                                                                                                               |
-| **Vorausbedingungen**      | - Die Anwendung ist korrekt installiert.<br>- Die CLI wurde über einen gültigen Einstiegspunkt gestartet.                                                                                                                                                                         |
-| **Beschreibung**           | Der Benutzer ruft die integrierte Hilfe der Anwendung auf, um sich einen Überblick über Befehle und Optionen zu verschaffen. Die Hilfeausgabe erfolgt in der Kommandozeile und enthält Kurzbeschreibungen zu allen unterstützten Funktionen (Import, Suche, Visualisierung etc.). |
-| **Ablauf (Hauptszenario)** | 1. Der Benutzer startet die Anwendung oder gibt `help` ein.<br>2. Das System erkennt die Hilfeanforderung.<br>3. Es wird eine Übersicht aller verfügbaren CLI-Befehle ausgegeben.                                                                                                 |
-| **Alternativabläufe**      | **A1: Ungültiger Befehl eingegeben**<br>a1.1 Der Benutzer gibt einen unbekannten oder falsch geschriebenen Befehl ein.<br>a1.2 Das System reagiert mit einem Hinweis auf `help`.                                                                                                  |
-| **Akzeptanzkriterien**     | - Die Hilfeausgabe erscheint sofort und vollständig.<br>- Alle Hauptbefehle sind mit Kurzbeschreibung gelistet.<br>- Bei fehlerhaften Eingaben wird entweder die Hilfe oder ein Hinweis ausgegeben.                                                                               |
-| **Testmethode**            | Die Funktion wird manuell getestet, indem `help` und fehlerhafte Eingaben geprüft werden. Die Vollständigkeit und Verständlichkeit der Ausgabe werden visuell bewertet. Automatisierte Tests sind optional möglich, aber nicht zwingend erforderlich.                             |
+| **Use Case No.**          | UC-04 |
+| ------------------------- | ----- |
+| **Name**                  | Visualize Net |
+| **Actor**                 | CLI user |
+| **Preconditions**         | - `knowledge_net.json` is complete.<br>- The network was loaded successfully.<br>- The environment allows opening a browser or manual viewing. |
+| **Description**           | The user wants to visualize the current semantic network. The system generates an HTML visualization and opens it in the default browser if possible; otherwise, it shows instructions for manual opening. Node types are color-coded and the view is interactive. |
+| **Main Flow**             | 1. The user enters `visualize`.<br>2. The system loads `knowledge_net.json`.<br>3. The graph is saved as an HTML file.<br>4. If possible, it is opened directly; otherwise, the user is instructed to open it manually. |
+| **Alternatives**          | **A1: Error loading file**<br>a1.1 The system outputs a structured error.<br><br>**A2: Visualization in Docker**<br>a2.1 The system detects Docker mode.<br>a2.2 The HTML file is not auto-opened.<br>a2.3 A hint for manual opening is shown. |
+| **Acceptance Criteria**   | - The HTML graph contains all nodes and relations.<br>- Node types are correctly color-coded.<br>- The file opens without errors in a browser.<br>- Errors are communicated clearly. |
+| **Test Method**           | Manual visual inspection in the browser (completeness, colors, interactivity, readability). No automated test planned. |
 
-### Aktivitätsdiagramm: Deep Search
-![Aktivitätsdiagramm für den Deep Search Prozess](../../../assets/projects/bashnet/activity-diagram.png)
+| **Use Case No.**          | UC-05 |
+| ------------------------- | ----- |
+| **Name**                  | Show Help |
+| **Actor**                 | CLI user |
+| **Preconditions**         | - The application is installed correctly.<br>- The CLI is launched via a valid entry point. |
+| **Description**           | The user opens the integrated help to get an overview of commands and options. Help output appears in the terminal and includes short descriptions for all supported features (import, search, visualize, etc.). |
+| **Main Flow**             | 1. The user launches the app or enters `help`.<br>2. The system recognizes the help request.<br>3. An overview of all CLI commands is displayed. |
+| **Alternatives**          | **A1: Invalid command**<br>a1.1 The user enters an unknown or misspelled command.<br>a1.2 The system suggests using `help`. |
+| **Acceptance Criteria**   | - Help appears immediately and completely.<br>- All main commands are listed with short descriptions.<br>- For invalid inputs, help or a hint is shown. |
+| **Test Method**           | Manual testing by invoking `help` and invalid inputs; evaluate completeness and clarity. Automated tests are optional. |
 
+### Activity Diagram: Deep Search
+![Activity diagram for the Deep Search process](../images/bashnet/activity-diagram.png)
 
-Die vertiefte Suche (Deep Search) stellt einen erweiterten Suchmechanismus innerhalb der CLI-Anwendung dar, welcher über eine reine Begriffserkennung hinausgeht und semantische Zusammenhänge im Wissensnetz berücksichtigt. Die Abbildung zeigt den vereinfachten Ablauf dieser Funktionalität in Form eines Aktivitätsdiagramms mit Swimlanes.
+Deep search is an extended mechanism in the CLI that goes beyond plain term matching and considers semantic relationships in the knowledge network. The figure shows the simplified flow of this functionality as an activity diagram with swimlanes.
 
-Die Suche gliedert sich in mehrere Phasen:
+The search proceeds in phases:
 
-1. Der Benutzer startet die Suche über das CLI, indem ein Suchbegriff **ohne** das Argument `--simple` eingegeben wird.
-2. Das System führt eine erste Prüfung durch, ob der Begriff existiert, indem es eine **einfache Suche** aufruft.
-3. Wird der Begriff nicht exakt gefunden, greift ein **Fallback-Mechanismus**, der auf Basis einer Relevanzbewertung ähnliche Begriffe vorschlägt.
-4. Ist ein passender Knoten gefunden, wird dessen **Typ bestimmt** (z. B. `command`, `concept`, `option`, `scripting`).
-5. Abhängig vom Typ werden nun **kontextbezogene Knoten** ermittelt:
-   - **command** → verknüpfte `options`  
-   - **concept** → zugehörige `commands`, `options` und weitere Konzepte  
-   - **scripting** → direkt verwandte Elemente  
-   - **option** → alle `commands`, die diese Option verwenden
-6. Die gefundenen Informationen (Zielknoten + Kontext) werden formatiert und in der **Kommandozeile** ausgegeben.
+1. The user starts the search by entering a term **without** the `--simple` flag.  
+2. The system performs an initial check via a **simple search**.  
+3. If no exact match is found, a **fallback** proposes similar terms based on relevance scoring.  
+4. If a match is found, the node’s **type** is determined (e.g., `command`, `concept`, `option`, `scripting`).  
+5. Depending on the type, **context nodes** are retrieved:  
+   - **command** → linked `options`  
+   - **concept** → related `commands`, `options`, further concepts  
+   - **scripting** → directly related elements  
+   - **option** → all `commands` using the option  
+6. The target node and its context are formatted and printed to the **terminal**.
 
-Die Swimlanes im Diagramm verdeutlichen die Aufgabenteilung zwischen **Benutzer**, **Applikationslogik** und dem **zugrunde liegenden Wissensnetz (Knowledge Graph)**. Der gesamte Prozess erfolgt ohne weitere Benutzerinteraktion nach Eingabe des Befehls und liefert strukturierte Ausgaben zur Wissensverarbeitung.
+The swimlanes illustrate responsibility across **user**, **application logic**, and the **underlying knowledge graph**. After the command is entered, the process runs without further interaction and returns structured output for continued knowledge work.
 
+## Technical Implementation
 
-## Technische Umsetzung
-### Architektur und Struktur
-Die Applikation ist in der Programmiersprache **Python (Version 3.12+)** entwickelt und folgt einem modularen, objektorientierten Architekturansatz. Der Aufbau orientiert sich an den **SOLID-Prinzipien**, um eine wartbare und erweiterbare Struktur zu gewährleisten.
+### Architecture and Structure
+The application is written in **Python (version 3.12+)** using a modular, object-oriented architecture. It follows the **SOLID principles** for maintainability and extensibility.
 
-- **CLI-Logik** – Verwaltung der Benutzerinteraktion über das Kommandozeileninterface.  
-- **Semantisches Netz** – Modellierung des Wissens mittels gerichteter Graphen mit typisierten Knoten und Relationen.  
-- **Daten-IO** – Strukturierter Import und Export der Wissensbasis über JSON-Dateien.  
-- **Visualisierung** – Erzeugung einer HTML-basierten Netzansicht mit *PyVis*.  
+- **CLI logic** – Manages user interaction via the command line.  
+- **Semantic network** – Models knowledge using directed graphs with typed nodes and relations.  
+- **Data I/O** – Structured import and export of the knowledge base via JSON files.  
+- **Visualization** – Generates an HTML-based network view using *PyVis*.  
 
-Das folgende Klassendiagramm zeigt die wichtigsten Klassen, deren Beziehungen sowie zentrale Methoden und Attribute.
+The following class diagram shows the main classes, their relationships, and key methods and attributes.
 
+![Class Diagram](../images/bashnet/class-diagram.png)
 
-![Klassendiagramm](../../../assets/projects/bashnet/class-diagram.png)
+## Functional Implementation
 
+The key features are encapsulated in separate classes and follow the **single-responsibility principle**. The table summarizes the core responsibilities:
 
-## Funktionale Implementierung
+| Class / Component | Description |
+|------------------|-------------|
+| **BashnetCLI** | Entry point of the application. Coordinates user interaction via the terminal and invokes the appropriate data processing methods. |
+| **SemanticNet** | Manages the semantic network data structure. Based on a directed graph; provides methods to insert, link, query, and export nodes and relations. |
+| **Node & Edge** | Define the network’s structural elements. `Node` holds metadata for commands, options, or concepts. `Edge` represents typed relations such as `options` or `related`. |
+| **JsonIO** | Responsible for JSON import and export. Parses structured input files, creates nodes and edges, and saves the network as `knowledge_net.json`. |
+| **Search logic (simple & deep)** | Provides two modes: a flat, direct search and a deeper, context-oriented analysis including traversal of relevant relations. |
+| **Visualization** | The `export_html()` method generates a dynamic, interactive HTML network diagram using *PyVis*. |
 
-Die wichtigsten Funktionalitäten wurden in separaten Klassen gekapselt und orientieren sich am **Single-Responsibility-Prinzip**. Die nachfolgende Tabelle beschreibt die zentrale Aufgabenverteilung:
-
-| Klasse / Komponente | Beschreibung |
-|---------------------|--------------|
-| **BashnetCLI** | Einstiegspunkt der Anwendung. Koordiniert die Interaktion mit dem Benutzer über die Kommandozeile und ruft die geeigneten Methoden zur Datenverarbeitung auf. |
-| **SemanticNet** | Verwaltet die Datenstruktur des semantischen Netzwerks. Sie basiert auf einem gerichteten Graphen und bietet Methoden zum Einfügen, Verknüpfen, Abfragen und Exportieren von Knoten und Relationen. |
-| **Node & Edge** | Definieren die Strukturelemente des Netzwerks. `Node` enthält Metadaten zu Befehlen, Optionen oder Konzepten. `Edge` stellt typisierte Relationen wie `options` oder `related` dar. |
-| **JsonIO** | Verantwortlich für den JSON-Import und -Export. Die Klasse analysiert strukturierte Eingabedateien, erzeugt Knoten und Kanten und speichert das Netzwerk als `knowledge_net.json`. |
-| **Suchlogik (simple & deep search)** | Stellt zwei Modi zur Verfügung: eine flache, direkte Suche und eine tiefere, kontextorientierte Analyse inklusive Traversierung relevanter Relationen. |
-| **Visualisierung** | Die Methode `export_html()` erzeugt ein dynamisches, interaktives Netzdigramm auf HTML-Basis mit *PyVis*. |
-
-Ein zentraler Einstiegspunkt für die CLI-Funktionalität befindet sich in der Datei `cli.py`.  
-Der folgende Auszug zeigt die relevante Steuerlogik für Kommandoausführung und Visualisierung:
+A central entry point for CLI functionality is located in `cli.py`.  
+The following excerpt shows the relevant control flow for command execution and visualization:
 
 ```python
 import click
@@ -183,7 +170,8 @@ from .utils import print_node_info, print_deep_search_context
 
 
 def print_help():
-    click.secho("Welcome to Bashnet CLI - Your semantic Bash learning tool!\n", fg="cyan")
+    click.secho("Welcome to Bashnet CLI - Your semantic Bash learning tool!
+", fg="cyan")
     click.echo("Available commands:")
     click.echo("    import                      => Load all JSON files and rebuild the semantic net")
     click.echo("    search <term>               => Deep search: context-aware with related information")
@@ -214,7 +202,6 @@ def handle_search(cli: BashnetCLI, term: str, simple: bool):
             print_context_fallback(context)
         else:
             click.secho(f"Term '{term}' not found.", fg="red")
-
 
 
 def main():
@@ -267,40 +254,40 @@ def main():
             break
         except Exception as e:
             click.secho(f"Error: {e}", fg="red")
-
 ```
 
-## Test und Qualitätssicherung
-### Teststrategie
-## Teststrategie und Qualitätssicherung
+## Testing and Quality Assurance
 
-Zur Sicherstellung der Funktionalität und Stabilität der Applikation wurde eine mehrstufige Teststrategie entwickelt. Diese umfasst:
+### Test Strategy
 
-- **Unit-Tests**: Überprüfung einzelner Funktionen und Klassenmethoden mit `pytest`.  
-- **Testdatenkontrolle**: Validierung typischer Einträge für alle Knotentypen (Befehl, Option, Konzept, Kontrollstruktur).  
-- **Kommandozeilenausgabe**: Visuelle Kontrolle der CLI-Ausgabe zur Sicherstellung korrekter Formatierung und Verständlichkeit.  
-- **Fehlerbehandlung**: Simulation ungültiger Begriffe und Strukturen zur Prüfung robuster Fehlermeldungen.  
+To ensure functionality and stability, a multi-stage test strategy was implemented:
 
-Die automatisierten Tests befinden sich im Verzeichnis `tests/` und werden über `pytest` ausgeführt.  
-Insgesamt wurden **12 Unit-Tests** geschrieben und erfolgreich bestanden. Ergänzend erfolgte eine **manuelle Prüfung** der CLI-Reaktionen.
+- **Unit tests**: Validate individual functions and class methods with `pytest`.  
+- **Test data checks**: Validate typical entries for all node types (command, option, concept, control structure).  
+- **CLI output**: Visual inspection of terminal output to ensure correct formatting and readability.  
+- **Error handling**: Simulate invalid terms and structures to validate robust error messages.  
 
-### Testfälle und Ergebnisse
-#### UC-01 und UC-02 – Suchfunktion (simple / deep)
-**Ziel:** Validierung der exakten Suche (UC-01) und der kontextsensitiven  Tiefensuche (UC-02).
+Automated tests are located in `tests/` and are executed with `pytest`.  
+A total of **12 unit tests** were written and passed successfully. Manual checks of the CLI behavior complemented the tests.
+
+### Test Cases and Results
+
+#### UC-01 & UC-02 – Search (simple / deep)
+**Goal:** Validate exact search (UC-01) and context-sensitive deep search (UC-02).
+
 ```python
-# Auszug aus test search.py – UC-01: Simple Search
+# Excerpt from test_search.py – UC-01: Simple Search
 def test_simple_search_command():
     cli = DummyCLI([sample_command])
     result = cli.simple_search("cd")
     assert result is not None
     assert result["id"] == "cmd_cd"
-
 ```
-**Erwartung:** Der Begriff wird exakt erkannt, alle zugehörigen Informationen werden angezeigt. Bei
-Begriffen wie "nonexistent" wird None zurückgegeben.
+
+**Expectation:** The term is recognized exactly, and all associated information is printed. For terms like `"nonexistent"`, `None` is returned.
 
 ```python
-# Auszug aus test search.py – UC-02: Deep Search
+# Excerpt from test_search.py – UC-02: Deep Search
 def test_deep_search_option():
     cli = DummyCLI([sample_command, sample_option])
     cli.net.add_edge(Edge("cmd_cd", "opt_a", "options"))
@@ -309,17 +296,15 @@ def test_deep_search_option():
     assert node["id"] == "opt_a"
     assert "commands" in context
 ```
-**Erwartung:** Das System erkennt den Knotentyp und gibt kontextrelevante Relationen zurück. Bei
-unbekannten Begriffen wird ein Fallback-Ergebnis geliefert.
 
+**Expectation:** The system identifies the node type and returns context-relevant relations. For unknown terms, a fallback result is provided.
 
 #### UC-03 – Import Data
 
-
-**Ziel:** Überprüfung des Imports von strukturierten JSON-Dateien und der Erzeugung des Netzwerks.
+**Goal:** Verify import of structured JSON files and network creation.
 
 ```python
-# Auszug aus test import.py – UC-03: Import-Funktion
+# Excerpt from test_import.py – UC-03: Import Function
 def test_import_data_creates_knowledge_net(tmp_path):
     
     ...
@@ -334,56 +319,53 @@ def test_import_data_creates_knowledge_net(tmp_path):
         source == "cmd_echo" and target == "opt_n" and relation == "related"
         for source, target, relation in cli.net.graph.edges.data("relation")
     )
-
 ```
 
-**Erwartung:** Die Datei knowledge net.json wird erstellt, alle gültigen Knoten und Relationen korrekt
-importiert und gespeichert.
+**Expectation:** The file `knowledge_net.json` is created; all valid nodes and relations are imported and saved correctly.
 
-#### Ergänzende CLI-Screenshots
+#### Additional CLI Screenshots
 
-Zur Validierung der visuellen Ausgabe wurden die wichtigsten Funktionen zusätzlich manuell getestet
-und als Screenshots dokumentiert. Diese zeigen exemplarisch, wie die Applikation auf typische
-Befehle reagiert: 
-![CLI-Ausgabe für search ls --simple (UC-01)](../../../assets/projects/bashnet/test-output-search-simple.png)
+To validate visual output, key functions were also tested manually and documented as screenshots. They show how the application responds to typical commands:
 
-*CLI-Ausgabe für search ls --simple (UC-01)*
+![CLI output for `search ls --simple` (UC-01)](../images/bashnet/test-output-search-simple.png)
 
-![CLI-Ausgabe für search ls mit Kontextinformationen (UC-02)](../../../assets/projects/bashnet/test-output-search-deep.png)
+*CLI output for `search ls --simple` (UC-01)*
 
-*CLI-Ausgabe für search ls mit Kontextinformationen (UC-02)*
+![CLI output for `search ls` with context (UC-02)](../images/bashnet/test-output-search-deep.png)
 
-![Ausschnitt des visualisierten Graphs im Browser durch den Befehl visualize (UC-04)](../../../assets/projects/bashnet/test-output-visualize.png)
+*CLI output for `search ls` with context (UC-02)*
 
-*Ausschnitt des visualisierten Graphs im Browser durch den Befehl visualize (UC-04)*
+![Excerpt of the visualized graph in the browser via `visualize` (UC-04)](../images/bashnet/test-output-visualize.png)
 
-![Ausgabe des Befehls help (UC-05)](../../../assets/projects/bashnet/test-output-help.png)
+*Excerpt of the visualized graph in the browser via `visualize` (UC-04)*
 
-*Ausgabe des Befehls help (UC-05)*
+![Output of the `help` command (UC-05)](../images/bashnet/test-output-help.png)
 
+*Output of the `help` command (UC-05)*
 
-## Resultate und Reflexion
+## Results and Reflection
 
-### Zielerreichung
-Die wesentlichen Projektziele wurden erreicht. Das semantische Netz konnte erfolgreich mit einer modularen Datenstruktur umgesetzt werden. Über die implementierten Suchmodi (einfache und vertiefte Suche) ist eine gezielte Abfrage möglich, und die Persistierung des Netzes wurde in einer JSON-Datei realisiert. Zusätzlich entstand eine interaktive Visualisierung mit *PyVis*, die das Netz anschaulich darstellt.
+### Goal Achievement
+The core project goals were met. The semantic network was successfully implemented with a modular data structure. The implemented search modes (simple and deep) enable targeted queries, and network persistence was realized via a JSON file. In addition, an interactive *PyVis* visualization provides an intuitive view of the network.
 
-### Reflexion und Learnings
-Im Projekt konnte wertvolle Erfahrung mit folgenden Themen gesammelt werden:
+### Reflection and Learnings
+Key learnings from the project:
 
-- **Graph- und Netzwerkanalyse**: Aufbau und Verwaltung gerichteter Graphen mit `networkx`.  
-- **Softwarearchitektur**: Anwendung von SOLID-Prinzipien, Kapselung von Funktionalitäten und testbare Modulstruktur.  
-- **Teststrategie**: Einsatz von `pytest`, Entwicklung von Unit-Tests und Aufbau von Dummy-Daten zur robusten Fehlerkontrolle.  
-- **CLI-Design**: Gestaltung einer nutzerfreundlichen Kommandozeilen-Anwendung mit klar strukturierten Befehlen und verständlicher Ausgabe.  
-- **Dokumentation**: Systematische Aufbereitung mit Tabellen, Listings, Screenshots und Diagrammen.  
+- **Graph and network analysis**: Building and managing directed graphs with `networkx`.  
+- **Software architecture**: Applying SOLID principles, encapsulating functionality, and designing testable modules.  
+- **Test strategy**: Using `pytest`, writing unit tests, and building dummy data for robust error handling.  
+- **CLI design**: Designing a user-friendly command-line app with clear commands and readable output.  
+- **Documentation**: Systematic write-ups with tables, listings, screenshots, and diagrams.  
 
-Diese Aspekte haben nicht nur die technische Umsetzung gefördert, sondern auch meine Kompetenz in den Bereichen **Python-Programmierung, strukturierte Wissensmodellierung und Softwarequalität** gestärkt.
+These aspects strengthened my skills in **Python development, structured knowledge modeling, and software quality**.
 
-### Weiterentwicklung
-Im weiteren Verlauf bieten sich spannende Potenziale:
-- **Skalierung**: Einsatz von Indexierung oder erweiterten Suchalgorithmen zur Performanzsteigerung.  
-- **Benutzeroberfläche**: Ergänzung einer grafischen Web-Oberfläche (z. B. mit Flask) für eine noch breitere Nutzbarkeit.  
-- **Interaktive Erweiterung**: Möglichkeit, neue Knoten direkt über die CLI oder eine WebUI hinzuzufügen.  
-- **NLP-Integration**: Einsatz von Natural Language Processing, um Suchanfragen noch natürlicher zu gestalten.  
+### Future Work
+Promising directions:
 
-**Fazit:**  
-Das Projekt hat gezeigt, wie aus einer theoretischen Aufgabenstellung ein funktionaler Prototyp mit klarer Architektur und praktischer Anwendbarkeit entstehen kann. Besonders der Umgang mit semantischen Strukturen und die konsequente Testorientierung haben meine Fähigkeiten im Bereich Softwareentwicklung messbar erweitert.
+- **Scaling**: Introduce indexing or advanced search algorithms for performance.  
+- **User interface**: Add a graphical web UI (e.g., Flask) for broader accessibility.  
+- **Interactive expansion**: Add new nodes directly via CLI or web UI.  
+- **NLP integration**: Use natural language processing to make queries more natural.  
+
+**Conclusion:**  
+The project demonstrates how a theoretical assignment can become a functional prototype with a clear architecture and practical applicability. In particular, working with semantic structures and a test-oriented approach measurably expanded my software development skills.

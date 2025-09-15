@@ -4,9 +4,8 @@ description: "Eine Wissensplattform, die komplexe Bash-Konzepte strukturiert dar
 date: "07/2025"
 lang: "de"
 tags: ["Python", "UML", "Knowledge Graphs", "Pytest", "CLI"]
-cover: "../../../assets/projects/bashnet/cover.png"
+cover: "../images/bashnet/cover.png"
 url: "https://github.com/LucaKnobel/bashnet-public"
-slug: "bashnet"
 ---
 
 # Semantische Bash-Wissensverwaltungssoftware
@@ -49,7 +48,7 @@ Die funktionalen Anforderungen der Applikation wurden in Form eines Use Case Dia
 Benutzerin bzw. der Benutzer semantisch gespeichertes Wissen gezielt durchsuchen, importieren
 und exportieren kann.
 
-![Use Case Diagramm](../../../assets/projects/bashnet/use-case-diagram.png)
+![Use Case Diagramm](../images/bashnet/use-case-diagram.png)
 
 Im Folgenden werden die fünf zentralen Anwendungsfälle der CLI-basierten Lernapplikation beschrieben. Sie decken die wesentlichen Interaktionen zwischen Benutzer und System ab und bilden die
 Grundlage für die Funktionalität der Anwendung:
@@ -122,7 +121,7 @@ Nachfolgend wird jeder Use Case detailiert tabellarisch beschrieben.
 | **Testmethode**            | Die Funktion wird manuell getestet, indem `help` und fehlerhafte Eingaben geprüft werden. Die Vollständigkeit und Verständlichkeit der Ausgabe werden visuell bewertet. Automatisierte Tests sind optional möglich, aber nicht zwingend erforderlich.                             |
 
 ### Aktivitätsdiagramm: Deep Search
-![Aktivitätsdiagramm für den Deep Search Prozess](../../../assets/projects/bashnet/activity-diagram.png)
+![Aktivitätsdiagramm für den Deep Search Prozess](../images/bashnet/activity-diagram.png)
 
 
 Die vertiefte Suche (Deep Search) stellt einen erweiterten Suchmechanismus innerhalb der CLI-Anwendung dar, welcher über eine reine Begriffserkennung hinausgeht und semantische Zusammenhänge im Wissensnetz berücksichtigt. Die Abbildung zeigt den vereinfachten Ablauf dieser Funktionalität in Form eines Aktivitätsdiagramms mit Swimlanes.
@@ -155,7 +154,7 @@ Die Applikation ist in der Programmiersprache **Python (Version 3.12+)** entwick
 Das folgende Klassendiagramm zeigt die wichtigsten Klassen, deren Beziehungen sowie zentrale Methoden und Attribute.
 
 
-![Klassendiagramm](../../../assets/projects/bashnet/class-diagram.png)
+![Klassendiagramm](../images/bashnet/class-diagram.png)
 
 
 ## Funktionale Implementierung
@@ -345,19 +344,19 @@ importiert und gespeichert.
 Zur Validierung der visuellen Ausgabe wurden die wichtigsten Funktionen zusätzlich manuell getestet
 und als Screenshots dokumentiert. Diese zeigen exemplarisch, wie die Applikation auf typische
 Befehle reagiert: 
-![CLI-Ausgabe für search ls --simple (UC-01)](../../../assets/projects/bashnet/test-output-search-simple.png)
+![CLI-Ausgabe für search ls --simple (UC-01)](../images/bashnet/test-output-search-simple.png)
 
 *CLI-Ausgabe für search ls --simple (UC-01)*
 
-![CLI-Ausgabe für search ls mit Kontextinformationen (UC-02)](../../../assets/projects/bashnet/test-output-search-deep.png)
+![CLI-Ausgabe für search ls mit Kontextinformationen (UC-02)](../images/bashnet/test-output-search-deep.png)
 
 *CLI-Ausgabe für search ls mit Kontextinformationen (UC-02)*
 
-![Ausschnitt des visualisierten Graphs im Browser durch den Befehl visualize (UC-04)](../../../assets/projects/bashnet/test-output-visualize.png)
+![Ausschnitt des visualisierten Graphs im Browser durch den Befehl visualize (UC-04)](../images/bashnet/test-output-visualize.png)
 
 *Ausschnitt des visualisierten Graphs im Browser durch den Befehl visualize (UC-04)*
 
-![Ausgabe des Befehls help (UC-05)](../../../assets/projects/bashnet/test-output-help.png)
+![Ausgabe des Befehls help (UC-05)](../images/bashnet/test-output-help.png)
 
 *Ausgabe des Befehls help (UC-05)*
 
