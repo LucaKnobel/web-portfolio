@@ -7,13 +7,15 @@ import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
-const projects = await getCollection(
-    "projects",
-    ({ data }) => data.lang === lang,
-);
+// Lade alle Projekte und filtere nach aktueller Sprache
+const allProjects = await getCollection("projects");
+const languageProjects = allProjects.filter(project => project.data.lang === lang);
 
-projects.forEach(element => {
-    console.log(element.data);
+// Sortiere nach Datum (neueste zuerst)
+const projects = languageProjects.sort((a, b) => {
+  const dateA = new Date(a.data.date);
+  const dateB = new Date(b.data.date);
+  return dateB.getTime() - dateA.getTime();
 });
 
 ---
@@ -22,14 +24,14 @@ projects.forEach(element => {
     <h1 class="project-title">{t("projects.pageTitle")}</h1>
     <div class="project-card-wrapper">
         {
-            projects.map(({ data }) => (
+            projects.map((project) => (
                 <ProjectCard
-                    title={data.title}
-                    description={data.description}
-                    date={data.date}
-                    tags={data.tags}
-                    coverSrc={data.cover}
-                    
+                    title={project.data.title}
+                    description={project.data.description}
+                    date={project.data.date}
+                    tags={project.data.tags}
+                    coverSrc={project.data.cover}
+                    href={`/${lang}/projects/${project.id}`}
                 />
             ))
         }

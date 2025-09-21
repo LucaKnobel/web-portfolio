@@ -6,10 +6,8 @@ lang: "de"
 tags: ["Python", "UML", "Knowledge Graphs", "Pytest", "CLI"]
 cover: "../images/bashnet/cover.png"
 url: "https://github.com/LucaKnobel/bashnet-public"
+slug: "bashnet"
 ---
-
-# Semantische Bash-Wissensverwaltungssoftware
-
 ## Projekt in Kürze
 
 Dieses Projekt zeigt die Entwicklung eines prototypischen Wissenssystems auf Basis semantischer Netzwerke. Ziel war es, eine strukturierte und durchsuchbare Datenbasis zu schaffen, die Konzepte miteinander verknüpft und so einen nachhaltigen Umgang mit Wissen ermöglicht. Der Ansatz orientiert sich an anerkannten Standards für Wissensmanagement und Qualitätssicherung.  
@@ -19,7 +17,6 @@ Der Prototyp implementiert eine rekursiv durchsuchbare Datenstruktur, die zunäc
 Das Projekt verbindet technische Umsetzung mit praktischem Nutzen: Es bietet ein lernförderliches Werkzeug zur Aufbereitung von Kommandozeilenbefehlen und Scripting-Konzepten, unterstützt in der Prüfungsvorbereitung sowie im beruflichen Alltag und fördert den kompetenten Umgang mit datengetriebenen Methoden.  
 
 Als Erweiterungen wurden eine grafische Visualisierung und zwei unterschiedliche Suchmodi (einfache und vertiefte Suche) konzipiert, um die Einsatzmöglichkeiten des Systems zu demonstrieren.  
-
 
 ## Ausgangslage und Kontext
 
@@ -269,8 +266,6 @@ def main():
 
 ```
 
-## Test und Qualitätssicherung
-### Teststrategie
 ## Teststrategie und Qualitätssicherung
 
 Zur Sicherstellung der Funktionalität und Stabilität der Applikation wurde eine mehrstufige Teststrategie entwickelt. Diese umfasst:

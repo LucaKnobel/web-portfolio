@@ -5,15 +5,20 @@ import "@/styles/tokens.css";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import CareerCard from "@/components/CareerCard.astro";
 import EducationCard from "@/components/EducationCard.astro";
-import { getEntry } from "astro:content";
+import { getCollection } from "astro:content";
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
-const careerEntry = await getEntry("career", lang);
-const careerEntries: CareerEntry[] = careerEntry?.data ?? [];
-const educationEntry = await getEntry("education", lang);
-const educationEntries: EducationEntry[] = educationEntry?.data ?? [];
+
+const allCareerEntries = await getCollection("career");
+const allEducationEntries = await getCollection("education");
+
+const careerFile = allCareerEntries.find(entry => entry.id === lang);
+const educationFile = allEducationEntries.find(entry => entry.id === lang);
+
+const careerEntries: CareerEntry[] = careerFile?.data || [];
+const educationEntries: EducationEntry[] = educationFile?.data || [];
 ---
 
 <BaseLayout title={`Luca Knobel | ${t("career.pageTitle")}`}>

@@ -1,0 +1,222 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+import { Image } from "astro:assets";
+
+const { slug } = Astro.params;
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+// Finde das Projekt anhand der slug
+const allProjects = await getCollection("projects");
+const project = allProjects.find(p => p.id === slug);
+
+// 404 wenn Projekt nicht existiert
+if (!project) {
+  return Astro.redirect("/404");
+}
+
+// Nur Projekte der aktuellen Sprache anzeigen
+if (project.data.lang !== lang) {
+  return Astro.redirect(`/${lang}/projects`);
+}
+
+// Für Content Layer API - verwende body oder rendered content
+const projectContent = project.body || project.rendered?.html || "";
+---
+
+<BaseLayout title={`${project.data.title} | Luca Knobel`}>
+  <article class="project-detail">
+    <header class="project-header">
+      <div class="project-meta">
+        <a href={`/${lang}/projects`} class="back-link">
+          ← {t("nav.projects") || "Back to Projects"}
+        </a>
+        <span class="project-date">{project.data.date}</span>
+      </div>
+      
+      <h1 class="project-title">{project.data.title}</h1>
+      <p class="project-description">{project.data.description}</p>
+      
+      <div class="project-tags">
+        {project.data.tags.map((tag) => (
+          <span class="project-tag">{tag}</span>
+        ))}
+      </div>
+
+      {project.data.url && (
+        <a href={project.data.url} target="_blank" rel="noopener noreferrer" class="project-link">
+          GitHub Repository →
+        </a>
+      )}
+    </header>
+
+    {project.data.cover && (
+      <div class="project-cover">
+        <Image
+          src={project.data.cover}
+          alt={project.data.title}
+          class="cover-image"
+          loading="lazy"
+          format="webp"
+          width={1200}
+          height={675}
+        />
+      </div>
+    )}
+
+    <div class="project-content">
+      <div set:html={projectContent} />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .project-detail {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: var(--spacing-md);
+  }
+
+  .project-header {
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .project-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+  }
+
+  .back-link {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-size: var(--font-size-sm);
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .project-date {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+    font-style: italic;
+  }
+
+  .project-title {
+    font-size: var(--font-size-h1);
+    margin: 0 0 var(--spacing-md) 0;
+    color: var(--color-text);
+  }
+
+  .project-description {
+    font-size: var(--font-size-lg);
+    color: var(--color-text-muted);
+    margin: 0 0 var(--spacing-md) 0;
+    line-height: var(--line-height-relaxed);
+  }
+
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-md);
+  }
+
+  .project-tag {
+    background: var(--color-primary);
+    color: var(--color-text-muted);
+    border: 2px solid var(--color-border);
+    border-radius: 999px;
+    padding: 0.25em 0.75em;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+  }
+
+  .project-link {
+    display: inline-block;
+    background: var(--color-primary);
+    color: var(--color-text);
+    padding: var(--spacing-xs) var(--spacing-md);
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.2s;
+    
+    &:hover {
+      background: var(--color-border);
+    }
+  }
+
+  .project-cover {
+    margin: var(--spacing-xl) 0;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    box-shadow: 0 4px 16px var(--color-shadow);
+  }
+
+  .cover-image {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .project-content {
+    margin-top: var(--spacing-xl);
+    
+    :global(h1, h2, h3, h4, h5, h6) {
+      margin-top: var(--spacing-lg);
+      margin-bottom: var(--spacing-md);
+    }
+    
+    :global(p) {
+      margin-bottom: var(--spacing-md);
+      line-height: var(--line-height-relaxed);
+    }
+    
+    :global(img) {
+      max-width: 100%;
+      height: auto;
+      border-radius: 0.5rem;
+      margin: var(--spacing-md) 0;
+    }
+    
+    :global(pre) {
+      background: var(--color-bg-alt);
+      padding: var(--spacing-md);
+      border-radius: 0.5rem;
+      overflow-x: auto;
+      margin: var(--spacing-md) 0;
+    }
+    
+    :global(table) {
+      width: 100%;
+      border-collapse: collapse;
+      margin: var(--spacing-md) 0;
+    }
+    
+    :global(th, td) {
+      padding: var(--spacing-xs);
+      border: 1px solid var(--color-border);
+      text-align: left;
+    }
+    
+    :global(th) {
+      background: var(--color-bg-alt);
+      font-weight: 600;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .project-detail {
+      padding: var(--spacing-lg);
+    }
+    
+    .project-title {
+      font-size: var(--font-size-h1);
+    }
+  }
+</style>

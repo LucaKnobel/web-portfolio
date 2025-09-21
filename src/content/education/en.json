@@ -1,5 +1,6 @@
 [
     {
+        "id": "ifa-high-tech-school",
         "organizationName": "IFA - The Higher Technical School of Digital Economy",
         "organizationWebsite": "https://ipso.ch/schulen/ifa",
         "title": "Advanced Federal Diploma of Higher Education in Information Technology – Application Development, specializing in Application Security",
@@ -18,6 +19,7 @@
         "finalGrade": ""
     },
     {
+        "id": "ifa-hbd",
         "organizationName": "IFA - The Higher Technical School of Digital Economy",
         "organizationWebsite": "https://ipso.ch/schulen/ifa",
         "title": "Higher Business Diploma (HWD/VSK)",
@@ -36,6 +38,7 @@
         "finalGrade": 5.1
     },
     {
+        "id": "epai-gibs-vocational-school",
         "organizationName": "EPAI-GIBS",
         "organizationWebsite": "https://www.fr.ch/de/gibs",
         "title": "Vocational School for Automation Technicians (EFZ)",

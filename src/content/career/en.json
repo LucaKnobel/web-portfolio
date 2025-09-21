@@ -1,5 +1,6 @@
 [
     {
+        "id": "bimag-electrical-designer",
         "organizationName": "Bimag Steuerungstechnik AG",
         "organizationWebsite": "https://bimag.com/",
         "title": "Electrical Designer EPLAN Electric P8",
@@ -24,6 +25,7 @@
         ]
     },
     {
+        "id": "bimag-automation-technician",
         "organizationName": "Bimag Steuerungstechnik AG",
         "organizationWebsite": "https://bimag.com/",
         "title": "Automation Technician",
@@ -48,6 +50,7 @@
         ]
     },
     {
+        "id": "hediger-apprenticeship-automation-technician",
         "organizationName": "Hediger Group (Debag Industrieautomations AG)",
         "organizationWebsite": "https://www.hediger.ch/",
         "title": "Apprenticeship as Automation Technician (EFZ)",
