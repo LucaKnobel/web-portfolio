@@ -7,11 +7,9 @@ import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
-// Lade alle Projekte und filtere nach aktueller Sprache
 const allProjects = await getCollection("projects");
 const languageProjects = allProjects.filter(project => project.data.lang === lang);
 
-// Sortiere nach Datum (neueste zuerst)
 const projects = languageProjects.sort((a, b) => {
   const dateA = new Date(a.data.date);
   const dateB = new Date(b.data.date);

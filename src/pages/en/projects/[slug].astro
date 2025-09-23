@@ -1,222 +1,453 @@
 ---
-import { getCollection } from "astro:content";
+import "@/styles/base.css";
+import { getCollection, render } from "astro:content";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
-import { Image } from "astro:assets";
 
 const { slug } = Astro.params;
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
-// Finde das Projekt anhand der slug
+
 const allProjects = await getCollection("projects");
-const project = allProjects.find(p => p.id === slug);
+const project = allProjects.find((p) => p.id === slug);
 
-// 404 wenn Projekt nicht existiert
+
 if (!project) {
-  return Astro.redirect("/404");
+    return Astro.redirect("/404");
 }
 
-// Nur Projekte der aktuellen Sprache anzeigen
+
 if (project.data.lang !== lang) {
-  return Astro.redirect(`/${lang}/projects`);
+    return Astro.redirect(`/${lang}/projects`);
 }
 
-// Für Content Layer API - verwende body oder rendered content
-const projectContent = project.body || project.rendered?.html || "";
+
+const { Content } = await render(project);
 ---
 
 <BaseLayout title={`${project.data.title} | Luca Knobel`}>
-  <article class="project-detail">
-    <header class="project-header">
-      <div class="project-meta">
-        <a href={`/${lang}/projects`} class="back-link">
-          ← {t("nav.projects") || "Back to Projects"}
-        </a>
-        <span class="project-date">{project.data.date}</span>
-      </div>
-      
-      <h1 class="project-title">{project.data.title}</h1>
-      <p class="project-description">{project.data.description}</p>
-      
-      <div class="project-tags">
-        {project.data.tags.map((tag) => (
-          <span class="project-tag">{tag}</span>
-        ))}
-      </div>
+    <article class="project-detail">
+        <header class="project-header">
+            <div class="project-meta">
+                <a href={`/${lang}/projects`} class="back-link">
+                    ← {t("nav.projects")}
+                </a>
+                <span class="project-date">{project.data.date}</span>
+            </div>
 
-      {project.data.url && (
-        <a href={project.data.url} target="_blank" rel="noopener noreferrer" class="project-link">
-          GitHub Repository →
-        </a>
-      )}
-    </header>
+            <h1 class="project-title">{project.data.title}</h1>
+            <p class="project-description">{project.data.description}</p>
 
-    {project.data.cover && (
-      <div class="project-cover">
-        <Image
-          src={project.data.cover}
-          alt={project.data.title}
-          class="cover-image"
-          loading="lazy"
-          format="webp"
-          width={1200}
-          height={675}
-        />
-      </div>
-    )}
+            {
+                project.data.url && (
+                    <a
+                        href={project.data.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="project-link"
+                    >
+                        GitHub Repository
+                    </a>
+                )
+            }
+        </header>
 
-    <div class="project-content">
-      <div set:html={projectContent} />
-    </div>
-  </article>
+        <div class="project-content">
+            <Content />
+        </div>
+    </article>
 </BaseLayout>
 
 <style>
-  .project-detail {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: var(--spacing-md);
-  }
-
-  .project-header {
-    margin-bottom: var(--spacing-xl);
-  }
-
-  .project-meta {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: var(--spacing-md);
-  }
-
-  .back-link {
-    color: var(--color-primary);
-    text-decoration: none;
-    font-size: var(--font-size-sm);
-    
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-
-  .project-date {
-    color: var(--color-text-muted);
-    font-size: var(--font-size-sm);
-    font-style: italic;
-  }
-
-  .project-title {
-    font-size: var(--font-size-h1);
-    margin: 0 0 var(--spacing-md) 0;
-    color: var(--color-text);
-  }
-
-  .project-description {
-    font-size: var(--font-size-lg);
-    color: var(--color-text-muted);
-    margin: 0 0 var(--spacing-md) 0;
-    line-height: var(--line-height-relaxed);
-  }
-
-  .project-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--spacing-xs);
-    margin-bottom: var(--spacing-md);
-  }
-
-  .project-tag {
-    background: var(--color-primary);
-    color: var(--color-text-muted);
-    border: 2px solid var(--color-border);
-    border-radius: 999px;
-    padding: 0.25em 0.75em;
-    font-size: var(--font-size-sm);
-    font-weight: 500;
-  }
-
-  .project-link {
-    display: inline-block;
-    background: var(--color-primary);
-    color: var(--color-text);
-    padding: var(--spacing-xs) var(--spacing-md);
-    border-radius: 0.5rem;
-    text-decoration: none;
-    font-weight: 600;
-    transition: background-color 0.2s;
-    
-    &:hover {
-      background: var(--color-border);
-    }
-  }
-
-  .project-cover {
-    margin: var(--spacing-xl) 0;
-    border-radius: 0.75rem;
-    overflow: hidden;
-    box-shadow: 0 4px 16px var(--color-shadow);
-  }
-
-  .cover-image {
-    width: 100%;
-    height: auto;
-    display: block;
-  }
-
-  .project-content {
-    margin-top: var(--spacing-xl);
-    
-    :global(h1, h2, h3, h4, h5, h6) {
-      margin-top: var(--spacing-lg);
-      margin-bottom: var(--spacing-md);
-    }
-    
-    :global(p) {
-      margin-bottom: var(--spacing-md);
-      line-height: var(--line-height-relaxed);
-    }
-    
-    :global(img) {
-      max-width: 100%;
-      height: auto;
-      border-radius: 0.5rem;
-      margin: var(--spacing-md) 0;
-    }
-    
-    :global(pre) {
-      background: var(--color-bg-alt);
-      padding: var(--spacing-md);
-      border-radius: 0.5rem;
-      overflow-x: auto;
-      margin: var(--spacing-md) 0;
-    }
-    
-    :global(table) {
-      width: 100%;
-      border-collapse: collapse;
-      margin: var(--spacing-md) 0;
-    }
-    
-    :global(th, td) {
-      padding: var(--spacing-xs);
-      border: 1px solid var(--color-border);
-      text-align: left;
-    }
-    
-    :global(th) {
-      background: var(--color-bg-alt);
-      font-weight: 600;
-    }
-  }
-
-  @media (min-width: 768px) {
     .project-detail {
-      padding: var(--spacing-lg);
+        max-width: 100%;
+        margin: var(--spacing-md) auto;
+        padding: var(--spacing-sm);
+        line-height: var(--line-height-base);
+       
+
+        .project-header {
+            padding: var(--spacing-sm);
+            border: solid 1px var(--color-border);
+            border-radius: 1rem;
+
+            .project-meta {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: var(--spacing-md);
+                flex-wrap: wrap;
+                gap: var(--spacing-xs);
+
+                .back-link {
+                    color: var(--color-link);
+                    text-decoration: none;
+                    font-size: var(--font-size-p);
+                    font-weight: 500;
+                    transition: color 0.2s ease;
+
+                    &:hover {
+                        color: var(--color-link-hover);
+                        text-decoration: underline;
+                    }
+                }
+
+                .project-date {
+                    color: var(--color-text-muted);
+                    font-size: var(--font-size-p);
+                    font-style: italic;
+                    white-space: nowrap;
+                }
+            }
+
+            .project-title {
+                font-size: var(--font-size-h2);
+                margin: 0 0 var(--spacing-sm) 0;
+                word-wrap: break-word;
+                hyphens: auto;
+            }
+
+            .project-description {
+                color: var(--color-text-muted);
+                margin: 0 0 var(--spacing-md) 0;
+                line-height: var(--line-height-base);
+                text-align: left;
+            }
+
+            .project-link {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                background: var(--btn-bg);
+                color: var(--btn-text);
+                padding: var(--spacing-xs) var(--spacing-sm);
+                border-radius: 0.5rem;
+                text-decoration: none;
+                font-weight: 600;
+                font-size: var(--font-size-p);
+                transition: all 0.2s ease;
+                border: none;
+                box-shadow: 0 4px 20px var(--color-shadow);
+                
+                &:hover {
+                    background: var(--btn-hover-bg);
+                }
+            }
+        }
+
+        /* Content Area */
+        .project-content {
+            margin-top: var(--spacing-md);
+            word-wrap: break-word;
+            hyphens: auto; 
+
+            /* Markdown Content Styling */
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6 {
+                
+                font-weight: 600;
+                line-height: var(--line-height-tight);
+                scroll-margin-top: var(--spacing-lg);
+                word-wrap: break-word;
+                hyphens: auto;
+
+                &:first-child {
+                    margin-top: 0;
+                }
+            }
+
+            h1 {
+                padding-bottom: 0.5rem;
+                border-bottom: 2px solid var(--color-border);
+                margin-top: var(--spacing-lg);
+                margin-bottom: var(--spacing-lg);
+              
+            }
+
+            h2 {
+                font-size: var(--font-size-h3);
+                margin-top: var(--spacing-md);
+                margin-bottom: var(--spacing-md);
+
+            }
+
+            h3 {
+                font-size: var(--font-size-h4);
+                margin-top: var(--spacing-sm);
+                margin-bottom: var(--spacing-sm);
+            }
+
+            p {
+                margin-bottom: var(--spacing-sm);
+                line-height: var(--line-height-base);
+                text-align: left;
+                word-wrap: break-word;
+                hyphens: auto;
+            }
+
+            ul,
+            ol {
+                margin: var(--spacing-sm) 0;
+                padding-left: var(--spacing-md);
+
+                & li {
+                    margin-bottom: 0.5rem;
+                    line-height: var(--line-height-base);
+                    word-wrap: break-word;
+
+                    & p {
+                        margin-bottom: 0.25rem;
+                    }
+                }
+            }
+
+            a {
+                color: var(--color-link);
+                text-decoration: underline;
+                text-decoration-color: transparent;
+                transition: text-decoration-color 0.2s ease;
+                word-wrap: break-word;
+
+                &:hover {
+                    text-decoration-color: var(--color-link);
+                }
+            }
+
+            img {
+                max-width: 100%;
+                width: 100%;
+                height: auto;
+                border-radius: 0.5rem;
+                margin: var(--spacing-sm) auto;
+                display: block;
+                box-shadow: 0 2px 8px var(--color-shadow);
+                background: var(--color-secondary);
+                object-fit: contain;
+            }
+
+            code {
+                background: var(--color-secondary);
+                color: var(--color-text);
+                padding: 0.1em 0.3em;
+                border-radius: 0.25rem;
+                font-size: 0.85em;
+                font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+                border: 1px solid var(--color-border);
+                white-space: nowrap;
+                display: inline;
+                vertical-align: baseline;
+            }
+
+            pre {
+                background: var(--color-secondary);
+                border: 1px solid var(--color-border);
+                border-radius: 0.5rem;
+                padding: var(--spacing-xs);
+                margin: var(--spacing-sm) 0;
+                overflow-x: auto;
+                font-size: 0.8rem;
+                line-height: 1.4;
+                white-space: pre;
+
+                & code {
+                    background: transparent;
+                    border: none;
+                    padding: 0;
+                    font-size: inherit;
+                    white-space: pre;
+                    display: block;
+                    word-break: normal;
+                }
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: var(--spacing-sm) 0;
+                font-size: 0.8rem;
+                background: var(--color-bg);
+                border-radius: var(--spacing-xs);
+                overflow: hidden;
+                box-shadow: 0 2px 8px var(--color-shadow);
+
+                th {
+                    background: var(--color-secondary);
+                    font-weight: 600;
+                    color: var(--color-text);
+                    padding: var(--spacing-xs);
+                    border-bottom: 1px solid var(--color-border);
+                    text-align: left;
+                    vertical-align: top;
+                    word-wrap: break-word;
+                    hyphens: auto;
+                    line-height: 1.2;
+
+                    &:first-child {
+                        width: 35%;
+                    }
+                }
+
+                td {
+                    padding: var(--spacing-xs);
+                    border-bottom: 1px solid var(--color-border);
+                    text-align: left;
+                    vertical-align: top;
+                    word-wrap: break-word;
+                    hyphens: auto;
+                    line-height: 1.3;
+                }
+            }
+
+            blockquote {
+                border-left: 3px solid var(--color-link);
+                padding: var(--spacing-xs);
+                margin: var(--spacing-sm) 0;
+                font-style: italic;
+                color: var(--color-text-muted);
+                background: var(--color-secondary);
+                border-radius: 0 0.375rem 0.375rem 0;
+                font-size: 0.9rem;
+            }
+
+            hr {
+                border: none;
+                height: 1px;
+                background: var(--color-border);
+                margin: var(--spacing-md) 0;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            max-width: 1200px;
+            padding: var(--spacing-xl);
+
+            .project-header {
+                padding: var(--spacing-lg);
+                margin-bottom: var(--spacing-lg);
+
+                .project-meta {
+                    margin-bottom: var(--spacing-md);
+
+                    .back-link {
+                        font-size: var(--font-size-h5);
+                    }
+
+                    .project-date {
+                        font-size: var(--font-size-h5);
+                    }
+                }
+
+                .project-title {
+                    font-size: var(--font-size-h1);
+                    margin-bottom: var(--spacing-md);
+                }
+
+                .project-description {
+                    font-size: var(--font-size-h5);
+                    margin-bottom: var(--spacing-md);
+                    max-width: 75%;
+                    line-height: 1.5;
+                }
+
+                .project-link {
+                    font-size: var(--font-size-h5);
+                    padding: var(--spacing-sm) var(--spacing-lg);
+                }
+            }
+
+            .project-content {
+                margin-top: var(--spacing-lg);
+                max-width: 85ch;
+
+                h1 {
+                    font-size: var(--font-size-h1);
+                    margin: var(--spacing-xl) 0 var(--spacing-md) 0;
+                }
+
+                h2 {
+                    font-size: var(--font-size-h2);
+                    margin: var(--spacing-lg) 0 var(--spacing-sm) 0;
+                }
+
+                h3 {
+                    font-size: var(--font-size-h3);
+                    margin: var(--spacing-md) 0 var(--spacing-sm) 0;
+                }
+
+                p {
+                    font-size: var(--font-size-h5);
+                    margin-bottom: var(--spacing-sm);
+                    line-height: 1.6;
+                }
+
+                ul, ol {
+                    margin: var(--spacing-sm) 0;
+                    padding-left: var(--spacing-xl);
+                    font-size: var(--font-size-h5);
+
+                    li {
+                        margin-bottom: 0.5rem;
+                        line-height: 1.6;
+                    }
+                }
+
+                img {
+                    margin: var(--spacing-lg) auto;
+                    border-radius: 1rem;
+                    max-width: 90%;
+                    box-shadow: 0 8px 32px var(--color-shadow);
+                }
+
+                pre {
+                    padding: var(--spacing-lg);
+                    margin: var(--spacing-md) 0;
+                    border-radius: 1rem;
+                    font-size: 1rem;
+                }
+
+                table {
+                    margin: var(--spacing-md) 0;
+                    border-radius: var(--spacing-sm);
+                    font-size: 1rem;
+
+                    th {
+                        padding: var(--spacing-sm);
+                        line-height: 1.3;
+                        
+                        &:first-child {
+                            width: 30%;
+                        }
+                    }
+
+                    td {
+                        padding: var(--spacing-sm);
+                        line-height: 1.4;
+                    }
+                }
+
+                blockquote {
+                    padding: var(--spacing-lg);
+                    margin: var(--spacing-md) 0;
+                    border-radius: 0 1rem 1rem 0;
+                    font-size: var(--font-size-h5);
+                }
+
+                hr {
+                    margin: var(--spacing-lg) 0;
+                    height: 3px;
+                    background: linear-gradient(
+                        90deg,
+                        transparent,
+                        var(--color-border),
+                        transparent
+                    );
+                }
+            }
+        }
     }
-    
-    .project-title {
-      font-size: var(--font-size-h1);
-    }
-  }
 </style>

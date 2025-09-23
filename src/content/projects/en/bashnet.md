@@ -8,9 +8,6 @@ cover: "../images/bashnet/cover.png"
 url: "https://github.com/LucaKnobel/bashnet-public"
 slug: "bashnet"
 ---
-
-# Semantic Bash Knowledge Management Software
-
 ## Project at a Glance
 
 This project presents the development of a prototype knowledge system based on semantic networks. The goal was to create a structured and searchable database that links concepts and enables sustainable knowledge handling. The approach is aligned with recognized standards for knowledge management and quality assurance.
@@ -23,18 +20,18 @@ As extensions, a graphical visualization and two different search modes (simple 
 
 ## Background and Context
 
-The project is based on an assignment from the Software Engineering area in my HF studies.  
+The project is based on an assignment from the Software Engineering field in my studies. 
 Its focus is the development of a knowledge base built on a semantic network.
 
 The challenge highlights the growing importance of structured knowledge storage in organizations and references requirements from relevant standards (e.g., ISO-9001) for systematic documentation and use of knowledge.
 
-The goal was to develop a functional prototype within a limited time frame that implements core mechanisms of semantic knowledge linking. First, a recursively searchable data structure—implemented as a tree—was built and later extended to a network model. Relationships between concepts were to be typed and stored within the nodes.
+The goal was to develop a functional prototype within a limited time frame that implements core mechanisms of semantic knowledge linking. First, a recursively searchable data structure implemented as a tree was built and later extended to a network model. Relationships between concepts were to be typed and stored within the nodes.
 
 Optional extensions included a graphical representation and two search modes (simple and deep).
 
 ## Motivation
 
-The motivation stems from relevance to Linux, IT operations, and monitoring—areas that require strong command-line, scripting, and structured knowledge management skills.
+The motivation stems from relevance to Linux, IT operations, and monitoring areas that require strong command-line, scripting, and structured knowledge management skills.
 
 A central objective was to design a learning-support tool that provides systematically structured information on command-line commands and related concepts. It should assist both in exam preparation and in professional practice.
 

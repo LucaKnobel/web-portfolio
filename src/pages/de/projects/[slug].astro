@@ -8,21 +8,21 @@ const { slug } = Astro.params;
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
-// Finde das Projekt anhand der slug
+
 const allProjects = await getCollection("projects");
 const project = allProjects.find((p) => p.id === slug);
 
-// 404 wenn Projekt nicht existiert
+
 if (!project) {
     return Astro.redirect("/404");
 }
 
-// Nur Projekte der aktuellen Sprache anzeigen
+
 if (project.data.lang !== lang) {
     return Astro.redirect(`/${lang}/projects`);
 }
 
-// RICHTIG: render() function für Markdown zu HTML
+
 const { Content } = await render(project);
 ---
 
@@ -161,7 +161,7 @@ const { Content } = await render(project);
                 }
             }
 
-            & h1 {
+            h1 {
                 padding-bottom: 0.5rem;
                 border-bottom: 2px solid var(--color-border);
                 margin-top: var(--spacing-lg);
@@ -169,20 +169,20 @@ const { Content } = await render(project);
               
             }
 
-            & h2 {
+            h2 {
                 font-size: var(--font-size-h3);
                 margin-top: var(--spacing-md);
                 margin-bottom: var(--spacing-md);
 
             }
 
-            & h3 {
+            h3 {
                 font-size: var(--font-size-h4);
                 margin-top: var(--spacing-sm);
                 margin-bottom: var(--spacing-sm);
             }
 
-            & p {
+            p {
                 margin-bottom: var(--spacing-sm);
                 line-height: var(--line-height-base);
                 text-align: left;
@@ -190,8 +190,8 @@ const { Content } = await render(project);
                 hyphens: auto;
             }
 
-            & ul,
-            & ol {
+            ul,
+            ol {
                 margin: var(--spacing-sm) 0;
                 padding-left: var(--spacing-md);
 
@@ -206,7 +206,7 @@ const { Content } = await render(project);
                 }
             }
 
-            & a {
+            a {
                 color: var(--color-link);
                 text-decoration: underline;
                 text-decoration-color: transparent;
@@ -218,8 +218,7 @@ const { Content } = await render(project);
                 }
             }
 
-            /* Images - Mobile optimiert */
-            & img {
+            img {
                 max-width: 100%;
                 width: 100%;
                 height: auto;
@@ -229,28 +228,22 @@ const { Content } = await render(project);
                 box-shadow: 0 2px 8px var(--color-shadow);
                 background: var(--color-secondary);
                 object-fit: contain;
-
-                &:hover {
-                    transform: scale(1.01);
-                    transition: transform 0.3s ease;
-                }
             }
 
-            /* Inline Code - KEIN Umbruch, clean bleiben */
-            & code {
+            code {
                 background: var(--color-secondary);
                 color: var(--color-text);
-                padding: 0.2em 0.4em;
+                padding: 0.1em 0.3em;
                 border-radius: 0.25rem;
                 font-size: 0.85em;
                 font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
                 border: 1px solid var(--color-border);
                 white-space: nowrap;
                 display: inline;
+                vertical-align: baseline;
             }
 
-            /* Code-Blöcke - Horizontal scrollbar für Mobile */
-            & pre {
+            pre {
                 background: var(--color-secondary);
                 border: 1px solid var(--color-border);
                 border-radius: 0.5rem;
@@ -272,65 +265,45 @@ const { Content } = await render(project);
                 }
             }
 
-            /* Tabellen - Mobile First aber richtige Tabellen */
-            & table {
+            table {
                 width: 100%;
                 border-collapse: collapse;
                 margin: var(--spacing-sm) 0;
-                font-size: 0.75rem;
+                font-size: 0.8rem;
                 background: var(--color-bg);
-                border-radius: 0.5rem;
+                border-radius: var(--spacing-xs);
                 overflow: hidden;
                 box-shadow: 0 2px 8px var(--color-shadow);
-                table-layout: auto;
 
-                & thead {
-                    display: table-header-group;
-                }
-
-                & tbody {
-                    display: table-row-group;
-                }
-
-                & tr {
-                    display: table-row;
-
-                    &:hover {
-                        background: var(--color-primary);
-                    }
-                }
-
-                & th {
-                    display: table-cell;
+                th {
                     background: var(--color-secondary);
                     font-weight: 600;
                     color: var(--color-text);
-                    padding: 0.375rem 0.5rem;
+                    padding: var(--spacing-xs);
                     border-bottom: 1px solid var(--color-border);
                     text-align: left;
                     vertical-align: top;
-                    font-size: 0.75rem;
                     word-wrap: break-word;
                     hyphens: auto;
-                    white-space: normal;
-                    width: auto;
+                    line-height: 1.2;
+
+                    &:first-child {
+                        width: 35%;
+                    }
                 }
 
-                & td {
-                    display: table-cell;
-                    padding: 0.375rem 0.5rem;
+                td {
+                    padding: var(--spacing-xs);
                     border-bottom: 1px solid var(--color-border);
                     text-align: left;
                     vertical-align: top;
                     word-wrap: break-word;
                     hyphens: auto;
-                    white-space: normal;
                     line-height: 1.3;
-                    width: auto;
                 }
             }
 
-            & blockquote {
+            blockquote {
                 border-left: 3px solid var(--color-link);
                 padding: var(--spacing-xs);
                 margin: var(--spacing-sm) 0;
@@ -341,7 +314,7 @@ const { Content } = await render(project);
                 font-size: 0.9rem;
             }
 
-            & hr {
+            hr {
                 border: none;
                 height: 1px;
                 background: var(--color-border);
@@ -349,23 +322,23 @@ const { Content } = await render(project);
             }
         }
 
-        /* Desktop Breakpoint: 1024px+ */
         @media (min-width: 1024px) {
-            max-width: 900px;
-            padding: var(--spacing-lg);
+            max-width: 1200px;
+            padding: var(--spacing-xl);
 
             .project-header {
-                margin-bottom: var(--spacing-xl);
+                padding: var(--spacing-lg);
+                margin-bottom: var(--spacing-lg);
 
                 .project-meta {
-                    margin-bottom: var(--spacing-lg);
+                    margin-bottom: var(--spacing-md);
 
                     .back-link {
-                        font-size: var(--font-size-h6);
+                        font-size: var(--font-size-h5);
                     }
 
                     .project-date {
-                        font-size: var(--font-size-h6);
+                        font-size: var(--font-size-h5);
                     }
                 }
 
@@ -375,100 +348,98 @@ const { Content } = await render(project);
                 }
 
                 .project-description {
-                    font-size: var(--font-size-h6);
-                    margin-bottom: var(--spacing-lg);
-                    max-width: 80%;
+                    font-size: var(--font-size-h5);
+                    margin-bottom: var(--spacing-md);
+                    max-width: 75%;
+                    line-height: 1.5;
                 }
 
                 .project-link {
-                    font-size: var(--font-size-h6);
-                    padding: var(--spacing-sm) var(--spacing-md);
+                    font-size: var(--font-size-h5);
+                    padding: var(--spacing-sm) var(--spacing-lg);
                 }
             }
 
             .project-content {
-                margin-top: var(--spacing-xxl);
+                margin-top: var(--spacing-lg);
+                max-width: 85ch;
 
-                & h1 {
+                h1 {
                     font-size: var(--font-size-h1);
-                    margin-bottom: var(--spacing-lg);
+                    margin: var(--spacing-xl) 0 var(--spacing-md) 0;
                 }
 
-                & h2 {
+                h2 {
                     font-size: var(--font-size-h2);
-                    margin-top: var(--spacing-xxl);
+                    margin: var(--spacing-lg) 0 var(--spacing-sm) 0;
                 }
 
-                & h3 {
+                h3 {
                     font-size: var(--font-size-h3);
+                    margin: var(--spacing-md) 0 var(--spacing-sm) 0;
                 }
 
-                & p {
-                    font-size: var(--font-size-h6);
-                    margin-bottom: var(--spacing-md);
-                    max-width: 85ch;
+                p {
+                    font-size: var(--font-size-h5);
+                    margin-bottom: var(--spacing-sm);
+                    line-height: 1.6;
                 }
 
-                & ul,
-                & ol {
-                    margin: var(--spacing-md) 0;
-                    padding-left: var(--spacing-lg);
+                ul, ol {
+                    margin: var(--spacing-sm) 0;
+                    padding-left: var(--spacing-xl);
+                    font-size: var(--font-size-h5);
 
-                    & li {
-                        margin-bottom: 0.75rem;
-                        font-size: var(--font-size-h6);
+                    li {
+                        margin-bottom: 0.5rem;
+                        line-height: 1.6;
                     }
                 }
 
-                /* Images - Desktop optimiert */
-                & img {
+                img {
                     margin: var(--spacing-lg) auto;
-                    border-radius: 0.75rem;
-                    max-width: 85%;
-
-                    &:hover {
-                        transform: scale(1.02);
-                    }
+                    border-radius: 1rem;
+                    max-width: 90%;
+                    box-shadow: 0 8px 32px var(--color-shadow);
                 }
 
-                & pre {
-                    padding: var(--spacing-md);
-                    margin: var(--spacing-lg) 0;
-                    border-radius: 0.75rem;
-                    font-size: 0.9rem;
-                }
-
-                /* Tabellen - Desktop: Bessere Tabellen-Darstellung */
-                & table {
-                    margin: var(--spacing-lg) 0;
-                    border-radius: 0.75rem;
-                    font-size: 0.9rem;
-                    display: table;
-                    white-space: normal;
-                    table-layout: auto;
-
-                    & th {
-                        padding: var(--spacing-sm);
-                        font-size: 0.9rem;
-                        width: auto;
-                    }
-
-                    & td {
-                        padding: var(--spacing-sm);
-                        width: auto;
-                    }
-                }
-
-                & blockquote {
-                    padding: var(--spacing-md);
-                    margin: var(--spacing-lg) 0;
-                    border-radius: 0 0.75rem 0.75rem 0;
+                pre {
+                    padding: var(--spacing-lg);
+                    margin: var(--spacing-md) 0;
+                    border-radius: 1rem;
                     font-size: 1rem;
                 }
 
-                & hr {
-                    margin: var(--spacing-xxl) 0;
-                    height: 2px;
+                table {
+                    margin: var(--spacing-md) 0;
+                    border-radius: var(--spacing-sm);
+                    font-size: 1rem;
+
+                    th {
+                        padding: var(--spacing-sm);
+                        line-height: 1.3;
+                        
+                        &:first-child {
+                            width: 30%;
+                        }
+                    }
+
+                    td {
+                        padding: var(--spacing-sm);
+                        line-height: 1.4;
+                    }
+                }
+
+                blockquote {
+                    padding: var(--spacing-lg);
+                    margin: var(--spacing-md) 0;
+                    border-radius: 0 1rem 1rem 0;
+                    font-size: var(--font-size-h5);
+                }
+
+                hr {
+                    margin: var(--spacing-lg) 0;
+                    height: 3px;
                     background: linear-gradient(
                         90deg,
                         transparent,

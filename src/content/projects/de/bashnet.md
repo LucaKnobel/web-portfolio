@@ -12,7 +12,7 @@ slug: "bashnet"
 
 Dieses Projekt zeigt die Entwicklung eines prototypischen Wissenssystems auf Basis semantischer Netzwerke. Ziel war es, eine strukturierte und durchsuchbare Datenbasis zu schaffen, die Konzepte miteinander verknüpft und so einen nachhaltigen Umgang mit Wissen ermöglicht. Der Ansatz orientiert sich an anerkannten Standards für Wissensmanagement und Qualitätssicherung.  
 
-Der Prototyp implementiert eine rekursiv durchsuchbare Datenstruktur, die zunächst baumartig aufgebaut und anschließend zu einem Netzwerkmodell erweitert wurde. Beziehungen zwischen den Knoten werden typisiert gespeichert, sodass vielfältige Abfragen möglich sind.  
+Der Prototyp implementiert eine rekursiv durchsuchbare Datenstruktur, die zunächst baumartig aufgebaut und anschliessend zu einem Netzwerkmodell erweitert wurde. Beziehungen zwischen den Knoten werden typisiert gespeichert, sodass vielfältige Abfragen möglich sind.  
 
 Das Projekt verbindet technische Umsetzung mit praktischem Nutzen: Es bietet ein lernförderliches Werkzeug zur Aufbereitung von Kommandozeilenbefehlen und Scripting-Konzepten, unterstützt in der Prüfungsvorbereitung sowie im beruflichen Alltag und fördert den kompetenten Umgang mit datengetriebenen Methoden.  
 
@@ -89,7 +89,7 @@ Nachfolgend wird jeder Use Case detailiert tabellarisch beschrieben.
 | **Name**                   | Import Data                                                                                                                                                                                                                                                                                                                                                         |
 | **Akteur**                 | CLI-Benutzer (User)                                                                                                                                                                                                                                                                                                                                                 |
 | **Vorausbedingungen**      | - Strukturierte JSON-Dateien befinden sich im Verzeichnis `data/`.<br>- Die Dateien enthalten gültige Einträge mit eindeutiger ID, Label und Typ.                                                                                                                                                                                                                   |
-| **Beschreibung**           | Der Benutzer möchte modulare JSON-Dateien (z. B. `commands.json`, `options.json`) in das semantische Netz importieren. Dabei werden zunächst alle Knoten (Befehle, Optionen, Konzepte etc.) geladen und anschließend auf Basis von `related`- und `options`-Verweisen typisierte Relationen erzeugt. Das Ergebnis wird zentral in `knowledge_net.json` gespeichert. |
+| **Beschreibung**           | Der Benutzer möchte modulare JSON-Dateien (z. B. `commands.json`, `options.json`) in das semantische Netz importieren. Dabei werden zunächst alle Knoten (Befehle, Optionen, Konzepte etc.) geladen und anschliessend auf Basis von `related`- und `options`-Verweisen typisierte Relationen erzeugt. Das Ergebnis wird zentral in `knowledge_net.json` gespeichert. |
 | **Ablauf (Hauptszenario)** | 1. Der Benutzer gibt den Befehl `import` ein.<br>2. Das System lädt die Dateien (`commands.json`, `concepts.json`, `options.json`, `scripting.json`).<br>3. Die Knoten werden angelegt.<br>4. Relationen werden hinzugefügt.<br>5. Das Netzwerk wird in `knowledge_net.json` gespeichert.                                                                           |
 | **Alternativabläufe**      | **A1: Ungültige Datei oder fehlerhafte Einträge**<br>a1.1 Das System gibt eine Warnung aus und bricht ab.                                                                                                                                                                                                                                                           |
 | **Akzeptanzkriterien**     | - Alle gültigen Knoten werden importiert und gespeichert.<br>- Definierte Relationen (`options`, `related`) werden nur angelegt, wenn die Zielknoten existieren.<br>- Die Datei `knowledge_net.json` enthält ein vollständiges Netzwerk.                                                                                                                            |
@@ -339,21 +339,21 @@ importiert und gespeichert.
 Zur Validierung der visuellen Ausgabe wurden die wichtigsten Funktionen zusätzlich manuell getestet
 und als Screenshots dokumentiert. Diese zeigen exemplarisch, wie die Applikation auf typische
 Befehle reagiert: 
-![CLI-Ausgabe für search ls --simple (UC-01)](../images/bashnet/test-output-search-simple.png)
+![CLI-Ausgabe für `search ls --simple` (UC-01)](../images/bashnet/test-output-search-simple.png)
 
-*CLI-Ausgabe für search ls --simple (UC-01)*
+*CLI-Ausgabe für `search ls --simple` (UC-01)*
 
-![CLI-Ausgabe für search ls mit Kontextinformationen (UC-02)](../images/bashnet/test-output-search-deep.png)
+![CLI-Ausgabe für `search ls`mit Kontextinformationen (UC-02)](../images/bashnet/test-output-search-deep.png)
 
-*CLI-Ausgabe für search ls mit Kontextinformationen (UC-02)*
+*CLI-Ausgabe für `search ls` mit Kontextinformationen (UC-02)*
 
-![Ausschnitt des visualisierten Graphs im Browser durch den Befehl visualize (UC-04)](../images/bashnet/test-output-visualize.png)
+![Ausschnitt des visualisierten Graphs im Browser durch den Befehl `visualize` (UC-04)](../images/bashnet/test-output-visualize.png)
 
-*Ausschnitt des visualisierten Graphs im Browser durch den Befehl visualize (UC-04)*
+*Ausschnitt des visualisierten Graphs im Browser durch den Befehl `visualize` (UC-04)*
 
-![Ausgabe des Befehls help (UC-05)](../images/bashnet/test-output-help.png)
+![Ausgabe des Befehls `help` (UC-05)](../images/bashnet/test-output-help.png)
 
-*Ausgabe des Befehls help (UC-05)*
+*Ausgabe des Befehls `help` (UC-05)*
 
 
 ## Resultate und Reflexion
