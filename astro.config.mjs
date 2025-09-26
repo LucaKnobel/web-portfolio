@@ -3,8 +3,14 @@ import icon from "astro-icon";
 
 import react from "@astrojs/react";
 
+import node from "@astrojs/node";
+
 export default defineConfig({
   output: "server",
+  adapter: node({
+    mode: "standalone"
+  }),
+
   i18n: {
     locales: ["de", "en"],
     defaultLocale: "de",
@@ -12,10 +18,12 @@ export default defineConfig({
       prefixDefaultLocale: true
     }
   },
+
   prefetch: {
     prefetchAll: true
   },
-   integrations: [icon({
-     iconDir: "src/assets/icons",
-   }), react()]
+
+  integrations: [icon({
+    iconDir: "src/assets/icons",
+  }), react()],
 });
