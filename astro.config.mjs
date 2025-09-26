@@ -12,6 +12,9 @@ export default defineConfig({
       prefixDefaultLocale: true
     }
   },
+  prefetch: {
+    prefetchAll: true
+  },
    integrations: [icon({
      iconDir: "src/assets/icons",
    }), react()]
