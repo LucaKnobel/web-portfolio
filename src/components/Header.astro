@@ -1,0 +1,19 @@
+---
+import Navigation from "@/components/Navigation.astro";
+
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+
+const headerLinks = [
+  { href: `/${lang}/projects`, label: t("nav.projects") },
+  { href: `/${lang}/contact`, label: t("nav.contact") },
+  { href: `/${lang}/career`, label: t("nav.career") },
+];
+
+
+---
+
+<Navigation links={headerLinks}/>

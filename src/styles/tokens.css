@@ -104,6 +104,9 @@
     --control-h-md: 40px;
     --control-h-lg: 48px;
 
+    /* touch targets - iOS/Android Guidelines */
+    --touch-target-min: 44px;
+
     /* icon sizes */
     --icon-16: 16px;
     --icon-20: 20px;

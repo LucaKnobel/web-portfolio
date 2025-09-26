@@ -6,7 +6,7 @@ interface HeaderProps {
   url: URL;
 }
 
-export default function Header({ url }: HeaderProps) {
+export default function HeaderReact({ url }: HeaderProps) {
   const lang = getLangFromUrl(url);
   const t = useTranslations(lang);
 

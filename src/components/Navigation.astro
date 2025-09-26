@@ -1,0 +1,86 @@
+---
+export interface NavLink {
+  href: string;
+  label: string;
+}
+
+interface Props {
+  links: NavLink[];
+}
+
+const { links } = Astro.props;
+---
+
+<nav class="main-nav">
+  <ul class="nav-list">
+    {
+      links.map((item) => (
+        <li class="nav-item">
+          <a href={item.href} class="nav-link">
+            {item.label}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<style>
+  .main-nav {
+    width: 100%;
+    border: 1px solid red; /* DEBUG */
+
+    .nav-list {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-1);
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-item {
+      width: 100%;
+      max-width: 200px;
+    }
+
+    .nav-link {
+      display: block;
+      width: 100%;
+      padding: var(--space-4) var(--space-5);
+      text-align: center;
+      font-weight: var(--fw-medium);
+      transition: background-color var(--dur-2) var(--ease-standard);
+      min-height: var(--touch-target-min);
+      box-sizing: border-box;
+      border: 1px solid blue; /* DEBUG */
+
+      &:hover {
+        background: var(--color-surface-2);
+      }
+    }
+  }
+
+  /* Desktop: ab 1024px nebeneinander */
+  @media (min-width: 1024px) {
+    .main-nav {
+      .nav-list {
+        flex-direction: row;
+        justify-content: center;
+        gap: var(--space-4);
+      }
+
+      .nav-item {
+        width: auto;
+        max-width: none;
+      }
+
+      .nav-link {
+        width: auto;
+        padding: var(--space-3) var(--space-5);
+        min-height: auto;
+      }
+    }
+  }
+</style>
