@@ -20,7 +20,7 @@
     "allowJs": true,
     "checkJs": false,
     "skipLibCheck": true,
-    "jsx": "react-jsx",
+    "jsx": "preserve",
     "jsxImportSource": "react"
   },
   "include": [

@@ -5,6 +5,8 @@ import react from "@astrojs/react";
 
 import node from "@astrojs/node";
 
+import vue from "@astrojs/vue";
+
 export default defineConfig({
   output: "server",
   adapter: node({
@@ -25,5 +27,5 @@ export default defineConfig({
 
   integrations: [icon({
     iconDir: "src/assets/icons",
-  }), react()],
+  }), react(), vue()],
 });
