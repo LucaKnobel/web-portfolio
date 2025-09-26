@@ -1,5 +1,6 @@
 [
     {
+        "id": "bimag-elektroschemazeichner",
         "organizationName": "Bimag Steuerungstechnik AG",
         "organizationWebsite": "https://bimag.com/",
         "title": "Elektroschemazeichner Eplan P8",
@@ -24,6 +25,7 @@
         ]
     },
     {
+        "id": "bimag-automatiker",
         "organizationName": "Bimag Steuerungstechnik AG",
         "organizationWebsite": "https://bimag.com/",
         "title": "Automatiker",
@@ -48,6 +50,7 @@
         ]
     },
     {
+        "id": "hediger-automatiker-lehre",
         "organizationName": "Hediger Gruppe (Debag Industrieautomations AG)",
         "organizationWebsite": "https://www.hediger.ch/",
         "title": "Lehre Automatiker EFZ",

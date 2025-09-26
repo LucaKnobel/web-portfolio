@@ -1,0 +1,18 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+import "@/styles/base.css";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<BaseLayout title=`${t("500.pageTitle")}`>
+    <section class="error-page">
+        <h4>{t("500.pageTitle")}</h4>
+        <p>{t("500.pageText")}</p>
+        <a href="/">{t("500.backHome")}</a>
+    </section>
+</BaseLayout>
+
+

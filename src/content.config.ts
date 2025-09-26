@@ -1,6 +1,8 @@
 import { defineCollection, z } from "astro:content";
+import { glob } from "astro/loaders";
 
 const careerSchema = z.object({
+  id: z.string(),
   organizationName: z.string(),
   organizationWebsite: z.string().url(),
   title: z.string(),
@@ -14,6 +16,7 @@ const careerSchema = z.object({
 });
 
 const educationSchema = z.object({
+  id: z.string(),
   organizationName: z.string(),
   organizationWebsite: z.string().url(),
   title: z.string(),
@@ -26,7 +29,31 @@ const educationSchema = z.object({
   finalGrade: z.union([z.string(), z.number()]),
 });
 
-export const collections = {
-  career: defineCollection({ type: "data", schema: z.array(careerSchema) }),
-  education: defineCollection({ type: "data", schema: z.array(educationSchema) }),
+const career = defineCollection({
+  loader: glob({ pattern: "*.json", base: "./src/content/career" }),
+  schema: z.array(careerSchema),
+});
+
+const education = defineCollection({
+  loader: glob({ pattern: "*.json", base: "./src/content/education" }),
+  schema: z.array(educationSchema),
+});
+
+const projects = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/projects" }),
+  schema: ({ image }) => z.object({
+    title: z.string(),
+    description: z.string(),
+    date: z.string(),
+    lang: z.string(),
+    tags: z.array(z.string()),
+    cover: image(), 
+    url: z.string().url(),
+  }),
+});
+
+export const collections = { 
+  career,
+  education,
+  projects,
 };

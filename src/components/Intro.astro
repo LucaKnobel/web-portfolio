@@ -9,7 +9,7 @@ import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
-interface Props {
+interface IntroProps {
     name?: string;
     role?: string;
     portraitSrc?: ImageMetadata;
@@ -24,7 +24,7 @@ const {
     githubUrl = "https://github.com/LucaKnobel",
     linkedinUrl = "https://linkedin.com/in/luca-knobel-14b4a7221",
     contactHref = `/${lang}/contact`,
-} = Astro.props;
+} = Astro.props as IntroProps;
 ---
 
 <section aria-labelledby="intro-title">
