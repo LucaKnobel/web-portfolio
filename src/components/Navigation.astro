@@ -28,13 +28,12 @@ const { links } = Astro.props;
 <style>
   .main-nav {
     width: 100%;
-    border: 1px solid red; /* DEBUG */
 
     .nav-list {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: var(--space-1);
+      gap: var(--stack-sm);
       list-style: none;
       margin: 0;
       padding: 0;
@@ -47,28 +46,29 @@ const { links } = Astro.props;
 
     .nav-link {
       display: block;
+      text-decoration: none;
       width: 100%;
-      padding: var(--space-4) var(--space-5);
+      padding: var(--stack-md) var(--stack-lg);
       text-align: center;
       font-weight: var(--fw-medium);
+      border-radius: var(--button-radius);
       transition: background-color var(--dur-2) var(--ease-standard);
       min-height: var(--touch-target-min);
       box-sizing: border-box;
-      border: 1px solid blue; /* DEBUG */
 
       &:hover {
         background: var(--color-surface-2);
+        scale: 1.025;
       }
     }
   }
 
-  /* Desktop: ab 1024px nebeneinander */
   @media (min-width: 1024px) {
     .main-nav {
       .nav-list {
         flex-direction: row;
         justify-content: center;
-        gap: var(--space-4);
+        gap: var(--cluster-gap);
       }
 
       .nav-item {
@@ -78,7 +78,7 @@ const { links } = Astro.props;
 
       .nav-link {
         width: auto;
-        padding: var(--space-3) var(--space-5);
+        padding: var(--stack-sm) var(--stack-lg);
         min-height: auto;
       }
     }
