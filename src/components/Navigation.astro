@@ -45,6 +45,7 @@ const { links } = Astro.props;
     }
 
     .nav-link {
+      color: var(--color-text);
       display: block;
       text-decoration: none;
       width: 100%;
@@ -58,7 +59,7 @@ const { links } = Astro.props;
 
       &:hover {
         background: var(--color-surface-2);
-        scale: 1.025;
+        scale: var(--scale-focus);
       }
     }
   }

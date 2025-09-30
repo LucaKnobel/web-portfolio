@@ -163,6 +163,12 @@
     --elev-2: 0 2px 6px -1px var(--shadow-color);
     --elev-3: 0 4px 12px -2px var(--shadow-color);
 
+    /* SCALE & TRANSFORMS */
+    --scale-hover: 1.025;
+    --scale-active: 0.98;
+    --scale-focus: 1.02;
+    --scale-disabled: 0.95;
+
     /* A11Y & TOUCH */
     --control-h-lg: 48px;
     --control-h-md: 40px;
@@ -190,6 +196,7 @@
     --layer-overlay: 400;
     --layer-tooltip: 600;
 }
+
 /* RESPONSIVE REMAPS - only semantic aliases scale */
 @media (min-width: 768px) {
     :root {
@@ -214,7 +221,7 @@
     :root {
         --card-gap: var(--space-6);
         --card-pad: var(--space-10);
-        --cluster-gap: var(--space-6);
+        --cluster-gap: var(--space-5);
         --display-xl: 3.5rem;
         --grid-gap: var(--space-10);
         --gutter: var(--space-8);

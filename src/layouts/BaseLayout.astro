@@ -5,7 +5,7 @@ import "@/styles/primitives.css";
 import { getLangFromUrl } from "@/i18n/utils";
 import Footer from "@/components/Footer.astro";
 import Header from "@/components/Header.astro";
-import HeaderReact from "@/components/HeaderReact.tsx"; 
+/* import HeaderReact from "@/components/HeaderReact.tsx";  */
 import { ClientRouter } from "astro:transitions";
 
 const { title = "Portfolio" } = Astro.props;
@@ -25,7 +25,7 @@ const theme = Astro.cookies.get("theme")?.value ?? "light";
     </head>
     <body>
         <Header />
-        <HeaderReact client:only="react" url={Astro.url} />
+        <!-- <HeaderReact client:only="react" url={Astro.url} /> -->
         
 
         <main>

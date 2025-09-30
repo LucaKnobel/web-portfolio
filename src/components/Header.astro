@@ -1,19 +1,151 @@
 ---
 import Navigation from "@/components/Navigation.astro";
+import ThemeToggle from "@/components/ThemeToggle.vue";
+import LanguageSelect from "@/components/LanguageSelect.vue";
+import MobileMenu from "@/components/MobileMenu.vue";
 
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
-
+// Main navigation links
 const headerLinks = [
   { href: `/${lang}/projects`, label: t("nav.projects") },
-  { href: `/${lang}/contact`, label: t("nav.contact") },
   { href: `/${lang}/career`, label: t("nav.career") },
+  { href: `/${lang}/contact`, label: t("nav.contact") },
 ];
 
-
+// Language options for language selector
+const languageOptions = [
+  { code: 'de', label: 'Deutsch' },
+  { code: 'en', label: 'English' }
+];
 ---
 
-<Navigation links={headerLinks}/>
+<header class="site-header">
+  <div class="header-container">
+    
+    <!-- Brand/Logo section -->
+    <div class="header-brand">
+      <a href={`/${lang}`} class="brand-link">
+        <span class="brand-text">Luca Knobel</span>
+      </a>
+    </div>
+
+    <!-- Desktop navigation - visible on larger screens -->
+    <div class="header-nav desktop-nav">
+      <Navigation links={headerLinks} />
+    </div>
+
+    <!-- Header controls - theme, language, mobile menu -->
+    <div class="header-controls">
+      
+      <!-- Theme toggle - always visible -->
+      <ThemeToggle client:load />
+      
+      <!-- Language selector - always visible -->
+      <!-- <LanguageSelect 
+        client:load 
+        currentLang={lang}
+        options={languageOptions}
+        url={Astro.url}
+      /> -->
+      
+      <!-- Mobile menu toggle - visible on small screens -->
+      <!-- <div class="mobile-menu-toggle">
+        <MobileMenu 
+          client:load 
+          links={headerLinks}
+          currentLang={lang}
+          languageOptions={languageOptions}
+          url={Astro.url}
+        />
+      </div> -->
+      
+    </div>
+    
+  </div>
+</header>
+
+<style>
+  .site-header {
+    background: var(--color-surface-1);
+    border-bottom: var(--border-hairline) solid var(--color-border-hairline);
+    position: sticky;
+    top: 0;
+    z-index: var(--layer-header);
+    backdrop-filter: blur(8px);
+    padding-block: var(--stack-sm);
+  }
+
+  .header-container {
+    max-width: var(--content-max);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--cluster-gap);
+  }
+
+  /* Brand/Logo section */
+  .header-brand {
+    flex-shrink: 0;
+  }
+
+  .brand-link {
+    color: var(--color-text);
+    text-decoration: none;
+    font-weight: var(--fw-semibold);
+    font-size: var(--heading-xs);
+    transition: color var(--dur-2) var(--ease-standard);
+
+    &:hover {
+      color: var(--color-primary);
+    }
+  }
+
+  .brand-text {
+    /* Brand text styling */
+  }
+
+  /* Desktop navigation - hidden on mobile */
+  .desktop-nav {
+    display: none;
+    flex: 1;
+    justify-content: center;
+  }
+
+  /* Header controls section */
+  .header-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--stack-sm);
+    flex-shrink: 0;
+  }
+
+  /* Mobile menu - only visible on small screens */
+  .mobile-menu-toggle {
+    display: block;
+  }
+
+  /* Desktop layout */
+  @media (min-width: 1024px) {
+    .site-header {
+      padding-block: var(--stack-md);
+    }
+
+    .desktop-nav {
+      display: flex;
+    }
+
+    .mobile-menu-toggle {
+      display: none;
+    }
+
+    .header-controls {
+      gap: var(--stack-md);
+    }
+  }
+</style>
