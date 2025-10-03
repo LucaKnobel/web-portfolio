@@ -1,5 +1,5 @@
 <template>
-    <div class="language-select">
+    <div class="language-select" ref="languageSelectRef">
         <button 
             class="language-toggle" 
             @click="toggleDropdown" 
@@ -28,19 +28,26 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from "vue"
+import { ref, computed } from "vue"
 import { Icon } from "@iconify/vue"
 import { languages as languageConfig } from "@/i18n/ui"
 import { useClientTranslations } from "@/i18n/utils"
+import { useDropdown, useClickOutside } from "@/composables/useDropdown"
 
-/* Language interface */
 interface Language {
     code: string
     label: string
 }
+
 const { lang, t } = useClientTranslations();
 const currentLang = ref<string>(lang);
-const isOpen = ref<boolean>(false);
+
+/* Use modern dropdown composable instead of manual state */
+const { isOpen, toggle: toggleDropdown, close } = useDropdown();
+
+/* Click-outside with template ref */
+const languageSelectRef = ref<HTMLElement | null>(null)
+useClickOutside(languageSelectRef, close)
 
 /* Transform language config into dropdown options */
 const availableLanguages = computed<Language[]>(() => {
@@ -49,14 +56,10 @@ const availableLanguages = computed<Language[]>(() => {
         label
     }))
 });
-    
-const toggleDropdown = (): void => {
-    isOpen.value = !isOpen.value
-}
 
 const switchLanguage = (newLang: string): void => {
     if (newLang === currentLang.value) {
-        isOpen.value = false;
+        close();
         return;
     }
     
@@ -68,23 +71,6 @@ const switchLanguage = (newLang: string): void => {
     const newUrl = `/${newLang}${pathWithoutLang}`;
     window.location.href = newUrl;
 }
-
-// Close dropdown when clicking outside
-const handleClickOutside = (event: Event): void => {
-    const target = event.target as HTMLElement
-    if (!target.closest(".language-select")) {
-        isOpen.value = false;
-    }
-}
-
-
-onMounted((): void => {
-    document.addEventListener("click", handleClickOutside);
-});
-
-onUnmounted((): void => {
-    document.removeEventListener("click", handleClickOutside);
-});
 </script>
 
 <style scoped>
@@ -112,7 +98,7 @@ onUnmounted((): void => {
     &:hover {
         background: var(--color-surface-3);
         transform: scale(var(--scale-hover));
-        border-color: var(--color-border-focus);
+        border-color: var(--color-primary);
 
         .language-icon {
             color: var(--color-primary);
@@ -151,49 +137,51 @@ onUnmounted((): void => {
     background: var(--color-surface-2);
     border: var(--border-hairline) solid var(--color-border);
     border-radius: var(--button-radius);
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--elev-3);
     overflow: hidden;
-    z-index: 100;
+    z-index: var(--layer-tooltip);
+    max-height: 50vh;
+    overflow-y: auto;
+}
 
-    .language-option {
-        width: 100%;
-        background: transparent;
-        border: none;
-        color: var(--color-text);
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: var(--stack-sm);
-        transition: all var(--dur-2) var(--ease-standard);
-        
-        &:hover {
-            background: var(--color-surface-3);
-            
-            .label {
-                color: var(--color-primary);
-            }
-        }
-        
-        &.active {
-            background: var(--color-primary-subtle);
-            color: var(--color-primary);
-            
-            .label {
-                color: var(--color-primary);
-            }
-        }
-        
-        &:focus-visible {
-            outline: 2px solid var(--color-primary);
-            outline-offset: -2px;
-        }
+.language-option {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: var(--color-text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--stack-sm);
+    transition: all var(--dur-2) var(--ease-standard);
+    
+    &:hover {
+        background: var(--color-surface-3);
         
         .label {
-            font-size: var(--text-sm);
-            font-weight: 500;
-            transition: color var(--dur-2) var(--ease-standard);
+            color: var(--color-primary);
         }
+    }
+    
+    &.active {
+        background: var(--color-surface-3);
+        color: var(--color-primary);
+        
+        .label {
+            color: var(--color-primary);
+        }
+    }
+    
+    &:focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: -2px;
+    }
+    
+    .label {
+        font-size: var(--text-small);
+        font-weight: var(--fw-medium);
+        transition: color var(--dur-2) var(--ease-standard);
     }
 }
 
@@ -204,7 +192,7 @@ onUnmounted((): void => {
 }
 
 .dropdown-leave-active {
-    transition: all var(--dur-3) var(--ease-standard);
+    transition: all var(--dur-2) var(--ease-standard);
     transform-origin: top;
 }
 

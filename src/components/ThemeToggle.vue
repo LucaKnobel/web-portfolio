@@ -76,7 +76,7 @@ onMounted((): void => {
     &:hover {
         background: var(--color-surface-3);
         transform: scale(var(--scale-hover));
-        border-color: var(--color-border-focus);
+        border-color: var(--color-primary);
 
         .icon-container {
             .theme-icon {
@@ -130,7 +130,7 @@ onMounted((): void => {
 
             &-enter-active,
             &-leave-active {
-                transition: all var(--dur-3) var(--ease-standard);
+                transition: all var(--dur-2) var(--ease-standard);
             }
 
             &-enter-from {

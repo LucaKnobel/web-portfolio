@@ -16,11 +16,6 @@ const headerLinks = [
   { href: `/${lang}/contact`, label: t("nav.contact") },
 ];
 
-// Language options for language selector
-const languageOptions = [
-  { code: 'de', label: 'Deutsch' },
-  { code: 'en', label: 'English' }
-];
 ---
 
 <header class="site-header">
@@ -41,27 +36,22 @@ const languageOptions = [
     <!-- Header controls - theme, language, mobile menu -->
     <div class="header-controls">
 
-         <!-- Language selector - always visible -->
-      <LanguageSelect 
-        client:load 
+      <!-- Desktop controls - only visible on larger screens -->
+      <div class="desktop-controls">
+        <!-- Language selector - desktop only -->
+        <LanguageSelect client:load />
         
-      />
-      
-      <!-- Theme toggle - always visible -->
-      <ThemeToggle client:load />
-      
-     
+        <!-- Theme toggle - desktop only -->
+        <ThemeToggle client:load />
+      </div>
       
       <!-- Mobile menu toggle - visible on small screens -->
-      <!-- <div class="mobile-menu-toggle">
+      <div class="mobile-menu-toggle">
         <MobileMenu 
           client:load 
           links={headerLinks}
-          currentLang={lang}
-          languageOptions={languageOptions}
-          url={Astro.url}
         />
-      </div> -->
+      </div>
       
     </div>
     
@@ -77,6 +67,8 @@ const languageOptions = [
     z-index: var(--layer-header);
     backdrop-filter: blur(8px);
     padding-block: var(--stack-sm);
+    /* Debug fallback */
+    min-height: 60px;
   }
 
   .header-container {
@@ -125,6 +117,13 @@ const languageOptions = [
     flex-shrink: 0;
   }
 
+  /* Desktop controls - hidden on mobile */
+  .desktop-controls {
+    display: none;
+    align-items: center;
+    gap: var(--stack-sm);
+  }
+
   /* Mobile menu - only visible on small screens */
   .mobile-menu-toggle {
     display: block;
@@ -138,6 +137,11 @@ const languageOptions = [
 
     .desktop-nav {
       display: flex;
+    }
+
+    .desktop-controls {
+      display: flex;
+      gap: var(--stack-md);
     }
 
     .mobile-menu-toggle {
