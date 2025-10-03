@@ -6,7 +6,7 @@ lang: "de"
 tags: ["Python", "UML", "Knowledge Graphs", "Pytest", "CLI"]
 cover: "../images/bashnet/cover.png"
 url: "https://github.com/LucaKnobel/bashnet-public"
-slug: "bashnet"
+
 ---
 ## Projekt in Kürze
 

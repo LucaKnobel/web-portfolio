@@ -1,8 +1,13 @@
 ---
-import BaseLayout from "@/layouts/BaseLayout.astro";
-import Intro from "@/components/Intro.astro";
----
-<BaseLayout title="Luca Knobel | Portfolio">
-    <Intro></Intro>
+// Root redirect to default locale with prefixDefaultLocale: true
+export const prerender = false;
 
-</BaseLayout>
+export async function GET() {
+  return new Response(null, {
+    status: 302,
+    headers: {
+      Location: "/de/"
+    }
+  });
+}
+---

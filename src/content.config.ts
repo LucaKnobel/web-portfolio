@@ -40,7 +40,14 @@ const education = defineCollection({
 });
 
 const projects = defineCollection({
-  loader: glob({ pattern: "**/*.md", base: "./src/content/projects" }),
+  loader: glob({ 
+    pattern: "**/*.md", 
+    base: "./src/content/projects",
+    generateId: ({ entry }) => {
+      // Bewahre die Verzeichnisstruktur in der ID: "de/bashnet" und "en/bashnet"
+      return entry.replace(/\.md$/, '');
+    }
+  }),
   schema: ({ image }) => z.object({
     title: z.string(),
     description: z.string(),

@@ -4,6 +4,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import ProjectCard from "@/components/ProjectCard.astro";
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 
+// Diese Page funktioniert für beide Routen: /de/projects und /en/projects
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
@@ -16,6 +17,11 @@ const projects = languageProjects.sort((a, b) => {
   return dateB.getTime() - dateA.getTime();
 });
 
+// Debug für deutsche Projects
+if (lang === 'de') {
+  console.log('Deutsche Projekte gefunden:', projects.length);
+  console.log('Alle Projekte:', allProjects.map(p => ({ id: p.id, lang: p.data.lang })));
+}
 ---
 
 <BaseLayout title={`Luca Knobel | ${t("projects.pageTitle")}`}>
@@ -29,31 +35,28 @@ const projects = languageProjects.sort((a, b) => {
                     date={project.data.date}
                     tags={project.data.tags}
                     coverSrc={project.data.cover}
-                    href={`/${lang}/projects/${project.id}`}
+                    href={`/${lang}/projects/${project.id.replace(`${lang}/`, '')}`}
                 />
             ))
         }
     </div>
-
-    <style>
-        .project-title {
-            text-align: center;
-            margin: var(--spacing-lg) 0 var(--spacing-xl) 0;
-        }
-        .project-card-wrapper {
-            display: flex;
-            flex-direction: column;
-            gap: var(--spacing-md);
-        }
-        @media (min-width: 1024px) {
-            .project-card-wrapper {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-                gap: var(--spacing-lg);
-                justify-items: center;
-                align-items: stretch;
-                padding: var(--spacing-lg);
-            }
-        }
-    </style>
 </BaseLayout>
+
+<style>
+    .project-title {
+        text-align: center;
+        margin: var(--spacing-lg) 0 var(--spacing-xl) 0;
+    }
+    .project-card-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+    @media (min-width: 1024px) {
+        .project-card-wrapper {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: var(--spacing-lg);
+        }
+    }
+</style>
