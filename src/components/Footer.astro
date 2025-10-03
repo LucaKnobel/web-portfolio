@@ -2,8 +2,8 @@
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 import Navigation from "./Navigation.astro";
 import ActionButton from "./ActionButton.astro";
+import Copyright from "./Copyright.astro";
 
-const currentYear = new Date().getFullYear();
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
@@ -24,9 +24,7 @@ const footerLinks = [
             <ActionButton  href="https://github.com/LucaKnobel" icon="mdi:github" ariaLabel="GitHub" size="md" variant="gradient" />
             <ActionButton href="https://linkedin.com/in/luca-knobel-14b4a7221" icon="mdi:linkedin" ariaLabel="LinkedIn" size="md" variant="gradient" />
         </div>
-        <div class="copyright">
-            <p>&copy; {currentYear} {t("footer.copyright")}</p>
-        </div>
+        <Copyright />
     </div>
 </footer>
 

@@ -1,0 +1,41 @@
+---
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+export interface Props {
+    /** Name/entity for copyright (optional - uses translation if not provided) */
+    name?: string;
+}
+
+const { name } = Astro.props;
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+/* Use provided name or fallback to translation */
+const displayName = name || t("footer.copyright");
+---
+
+<div class="copyright">
+    <p class="copyright-text">
+        &copy; {new Date().getFullYear()}
+        {displayName}
+    </p>
+</div>
+
+<style>
+    .copyright {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .copyright-text {
+        margin: 0;
+        font-size: var(--text-small);
+        color: var(--color-muted);
+        text-align: center;
+        padding: var(--stack-xs) 0;
+        transition: color var(--dur-2) var(--ease-standard);
+    }
+</style>
