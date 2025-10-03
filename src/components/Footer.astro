@@ -1,7 +1,7 @@
 ---
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
-import { Icon } from "astro-icon/components";
 import Navigation from "./Navigation.astro";
+import ActionButton from "./ActionButton.astro";
 
 const currentYear = new Date().getFullYear();
 const lang = getLangFromUrl(Astro.url);
@@ -21,24 +21,8 @@ const footerLinks = [
         <Navigation links={footerLinks} />
 
         <div class="socials">
-            <a
-                class="btn footer-btn"
-                href="https://github.com/LucaKnobel"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="GitHub"
-            >
-                <Icon name="mdi:github" class="icon" />
-            </a>
-            <a
-                class="btn footer-btn"
-                href="https://linkedin.com/in/luca-knobel-14b4a7221"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="LinkedIn"
-            >
-                <Icon name="mdi:linkedin" class="icon" />
-            </a>
+            <ActionButton  href="https://github.com/LucaKnobel" icon="mdi:github" ariaLabel="GitHub" size="md" variant="gradient" />
+            <ActionButton href="https://linkedin.com/in/luca-knobel-14b4a7221" icon="mdi:linkedin" ariaLabel="LinkedIn" size="md" variant="gradient" />
         </div>
         <div class="copyright">
             <p>&copy; {currentYear} {t("footer.copyright")}</p>

@@ -259,8 +259,8 @@ onUnmounted((): void => {
     }
 
     .close-icon {
-        width: var(--icon-md);
-        height: var(--icon-md);
+        width: var(--icon-sm);
+        height: var(--icon-sm);
     }
 }
 

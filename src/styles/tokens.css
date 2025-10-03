@@ -182,9 +182,9 @@
     --disabled-border: var(--neutral-100);
     --disabled-fg: var(--neutral-600);
     --disabled-opacity: 0.45;
-    --icon-lg: 24px;
-    --icon-md: 20px;
-    --icon-sm: 16px;
+    --icon-lg: 28px;
+    --icon-md: 24px;
+    --icon-sm: 20px;
     --touch-target-min: 44px;
 
     /* GRADIENTS */
