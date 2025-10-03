@@ -40,17 +40,17 @@ const languageOptions = [
 
     <!-- Header controls - theme, language, mobile menu -->
     <div class="header-controls">
+
+         <!-- Language selector - always visible -->
+      <LanguageSelect 
+        client:load 
+        
+      />
       
       <!-- Theme toggle - always visible -->
       <ThemeToggle client:load />
       
-      <!-- Language selector - always visible -->
-      <!-- <LanguageSelect 
-        client:load 
-        currentLang={lang}
-        options={languageOptions}
-        url={Astro.url}
-      /> -->
+     
       
       <!-- Mobile menu toggle - visible on small screens -->
       <!-- <div class="mobile-menu-toggle">
