@@ -1,10 +1,6 @@
 import { defineConfig } from "astro/config";
 import icon from "astro-icon";
-
-import react from "@astrojs/react";
-
 import node from "@astrojs/node";
-
 import vue from "@astrojs/vue";
 
 export default defineConfig({
@@ -27,5 +23,5 @@ export default defineConfig({
 
   integrations: [icon({
     iconDir: "src/assets/icons",
-  }), react(), vue()],
+  }), vue()],
 });

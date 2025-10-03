@@ -71,6 +71,11 @@
     --overlay-bg: rgba(26, 33, 41, 0.6);
     --shadow-color: rgba(26, 33, 41, 0.08);
 
+    /* Glassmorphism */
+    --glass-bg: rgba(255, 255, 255, 0.5);
+    --glass-border: rgba(255, 255, 255, 0.15);
+    --glass-blur: blur(20px);
+
     /* Selection & focus */
     --focus-ring-color: var(--primary-500);
     --focus-ring-offset: 1px;
@@ -267,6 +272,11 @@
     /* Overlays & shadows */
     --overlay-bg: rgba(10, 12, 16, 0.8);
     --shadow-color: rgba(248, 249, 250, 0.06);
+
+    /* Glassmorphism - dark theme variants */
+    --glass-bg: rgba(10, 12, 16, 0.6);
+    --glass-border: rgba(248, 249, 250, 0.05);
+    --glass-blur: blur(20px);
 
     /* Selection & focus */
     --focus-ring-color: var(--primary-400);

@@ -80,9 +80,10 @@ const switchLanguage = (newLang: string): void => {
 }
 
 .language-toggle {
-    background: var(--color-surface-2);
-    border: var(--border-hairline) solid var(--color-border);
+    background: var(--grad-surface-soft);
+    border: var(--border-hairline) solid var(--color-border-hairline);
     border-radius: var(--button-radius);
+    box-shadow: var(--elev-1);
     color: var(--color-text);
     cursor: pointer;
     display: flex;
@@ -90,7 +91,7 @@ const switchLanguage = (newLang: string): void => {
     justify-content: center;
     min-height: var(--touch-target-min);
     min-width: var(--touch-target-min);
-    padding: var(--stack-xs);
+    padding: 0;
     transition: all var(--dur-2) var(--ease-standard);
     position: relative;
     overflow: hidden;
@@ -135,7 +136,7 @@ const switchLanguage = (newLang: string): void => {
     transform: translateX(-50%);
     min-width: 120px;
     background: var(--color-surface-2);
-    border: var(--border-hairline) solid var(--color-border);
+    border: var(--border-hairline) solid var(--color-border-hairline);
     border-radius: var(--button-radius);
     box-shadow: var(--elev-3);
     overflow: hidden;

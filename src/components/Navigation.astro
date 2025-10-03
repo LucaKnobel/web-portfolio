@@ -53,13 +53,14 @@ const { links } = Astro.props;
       text-align: center;
       font-weight: var(--fw-medium);
       border-radius: var(--button-radius);
-      transition: background-color var(--dur-2) var(--ease-standard);
+      transition: all var(--dur-2) var(--ease-standard);
       min-height: var(--touch-target-min);
       box-sizing: border-box;
 
       &:hover {
         background: var(--color-surface-2);
-        scale: var(--scale-focus);
+        color: var(--color-primary);
+        transform: scale(var(--scale-focus));
       }
     }
   }

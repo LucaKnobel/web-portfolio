@@ -143,8 +143,8 @@ onUnmounted((): void => {
 
 /* Mobile Menu Toggle Button */
 .mobile-menu-toggle {
-    background: var(--color-surface-2);
-    border: var(--border-hairline) solid var(--color-border);
+    background: none;
+    border: transparent;
     border-radius: var(--button-radius);
     color: var(--color-text);
     cursor: pointer;
@@ -153,7 +153,7 @@ onUnmounted((): void => {
     justify-content: center;
     min-height: var(--touch-target-min);
     min-width: var(--touch-target-min);
-    padding: var(--stack-xs);
+    padding: 0;
     position: relative;
     overflow: hidden;
 
@@ -182,8 +182,8 @@ onUnmounted((): void => {
     }
 
     .burger-icon {
-        width: var(--icon-md);
-        height: var(--icon-md);
+        width: var(--icon-lg);
+        height: var(--icon-lg);
         color: var(--color-text);
     }
 }
@@ -195,7 +195,7 @@ onUnmounted((): void => {
     left: 0;
     right: 0;
     bottom: 0;
-    background: var(--color-surface-1);
+    background: var(--grad-surface-soft);
     z-index: var(--layer-modal);
     display: flex;
     flex-direction: column;
@@ -228,12 +228,13 @@ onUnmounted((): void => {
 }
 
 .modal-close {
-    background: var(--color-surface-2);
-    border: var(--border-hairline) solid var(--color-border);
+    background: var(--grad-surface-soft);
+    border: var(--border-hairline) solid var(--color-border-hairline);
     border-radius: var(--button-radius);
+    box-shadow: var(--elev-1);
     color: var(--color-text);
     cursor: pointer;
-    padding: var(--stack-xs);
+    padding: 0;
     display: flex;
     align-items: center;
     justify-content: center;
