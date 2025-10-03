@@ -19,10 +19,21 @@ const footerLinks = [
 <footer class="footer">
     <div class="container">
         <Navigation links={footerLinks} />
-
         <div class="socials">
-            <ActionButton  href="https://github.com/LucaKnobel" icon="mdi:github" ariaLabel="GitHub" size="md" variant="gradient" />
-            <ActionButton href="https://linkedin.com/in/luca-knobel-14b4a7221" icon="mdi:linkedin" ariaLabel="LinkedIn" size="md" variant="gradient" />
+            <ActionButton
+                href="https://github.com/LucaKnobel"
+                icon="mdi:github"
+                ariaLabel="GitHub"
+                size="md"
+                variant="gradient"
+            />
+            <ActionButton
+                href="https://linkedin.com/in/luca-knobel-14b4a7221"
+                icon="mdi:linkedin"
+                ariaLabel="LinkedIn"
+                size="md"
+                variant="gradient"
+            />
         </div>
         <Copyright />
     </div>
@@ -31,59 +42,52 @@ const footerLinks = [
 <style>
     .footer {
         margin-top: auto;
-        left: 0;
         width: 100%;
-        background: var(--color-secondary);
+        padding: var(--stack-lg) var(--gutter);
+        background: var(--color-surface-1);
+        border-top: var(--border-hairline) solid var(--color-border-hairline);
         text-align: center;
-        padding: var(--spacing-md);
-        border: solid var(--color-border) 1px;
 
         .container {
             display: flex;
-            align-items: center;
             flex-direction: column;
+            align-items: center;
             justify-content: center;
-            gap: var(--spacing-sm);
+            gap: var(--stack-md);
+            max-width: var(--content-max);
+            margin-inline: auto;
 
-            .nav-links {
-                display: flex;
-                align-items: center;
-                flex-direction: column;
-                justify-content: center;
-                gap: var(--spacing-sm);
-                text-decoration: underline 1px;
-                color: var(--color-links);
-            }
-            .copyright p {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                width: 100%;
-                margin: 0;
-            }
             .socials {
                 display: flex;
                 align-items: center;
-                flex-direction: row;
                 justify-content: center;
-                gap: var(--spacing-sm);
+                gap: var(--stack-sm);
+                flex-wrap: wrap;
+            }
+        }
+    }
 
-                .footer-btn {
-                    border: none;
-                    padding: 0;
+    @media (min-width: 768px) {
+        .footer {
+            .container {
+                gap: var(--stack-sm);
+
+                .socials {
+                    gap: var(--stack-sm);
                 }
             }
         }
     }
+
     @media (min-width: 1024px) {
         .footer {
-            padding: var(--spacing-xs);
+            padding: var(--stack-md) var(--gutter);
+
             .container {
-                .nav-links {
-                    flex-direction: row;
-                    a:hover {
-                        scale: 1.05;
-                    }
+                gap: var(--stack-xs);
+
+                .socials {
+                    gap: var(--stack-xs);
                 }
             }
         }
