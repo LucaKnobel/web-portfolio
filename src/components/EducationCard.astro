@@ -1,9 +1,21 @@
 ---
-import type { EducationEntry } from "@/types/entries";
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+
+interface EducationEntry {
+    organizationName: string;
+    organizationWebsite: string;
+    title: string;
+    studyMode: string;
+    period: {
+        start: string;
+        end: string;
+    };
+    keySkills: string[];
+    finalGrade?: string | number;
+} 
 
 
 const {

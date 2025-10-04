@@ -1,0 +1,18 @@
+---
+import EducationCard from "@/components/EducationCard.astro";
+import { getCollection } from "astro:content";
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+const lang = Astro.props.lang || getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const allEducationEntries = await getCollection("education");
+const educationFile = allEducationEntries.find((entry) => entry.id === lang);
+const entries = educationFile?.data || [];
+const title = Astro.props.title || t("career.education");
+---
+
+<section>
+    <h3>{title}</h3>
+    {entries.map((entry) => <EducationCard {...entry} />)}
+</section>

@@ -1,0 +1,18 @@
+---
+import CareerCard from "@/components/CareerCard.astro";
+import { getCollection } from "astro:content";
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+const lang = Astro.props.lang || getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const allCareerEntries = await getCollection("career");
+const careerFile = allCareerEntries.find((entry) => entry.id === lang);
+const entries = careerFile?.data || [];
+const title = Astro.props.title || t("career.professionalCareer");
+---
+
+<section>
+    <h3>{title}</h3>
+    {entries.map((entry) => <CareerCard {...entry} />)}
+</section>
