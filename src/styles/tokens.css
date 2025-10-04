@@ -146,10 +146,13 @@
     --measure: 65ch;
     --section-x: var(--space-4);
     --section-y: var(--space-12);
-    --stack-lg: var(--space-6);
-    --stack-md: var(--space-4);
-    --stack-sm: var(--space-3);
     --stack-xs: var(--space-2);
+    --stack-sm: var(--space-3);
+    --stack-md: var(--space-6);
+    --stack-lg: var(--space-8);
+    --stack-xl: var(--space-12);
+    --stack-xxl: var(--space-16);
+    --stack-xxxl: calc(var(--space-16) + var(--space-12));
 
     /* SHAPE & BORDERS */
     --border-hairline: 1px;
@@ -203,7 +206,7 @@
 }
 
 /* RESPONSIVE REMAPS - only semantic aliases scale */
-@media (min-width: 768px) {
+@media (min-width: var(--breakpoint-md)) {
     :root {
         --card-gap: var(--space-5);
         --card-pad: var(--space-8);
@@ -217,12 +220,17 @@
         --heading-xs: 1.375rem;
         --section-x: var(--space-6);
         --section-y: var(--space-16);
+        --stack-xs: var(--space-3);
+        --stack-sm: var(--space-4);
+        --stack-md: var(--space-6);
         --stack-lg: var(--space-8);
-        --stack-md: var(--space-5);
+        --stack-xl: var(--space-10);
+        --stack-xxl: var(--space-12);
+        --stack-xxxl: var(--space-16);
     }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: var(--breakpoint-lg)) {
     :root {
         --card-gap: var(--space-6);
         --card-pad: var(--space-10);
@@ -236,7 +244,13 @@
         --heading-xs: 1.5rem;
         --section-x: var(--space-8);
         --section-y: calc(var(--space-16) + var(--space-4));
+        --stack-xs: var(--space-4);
+        --stack-sm: var(--space-6);
+        --stack-md: var(--space-8);
         --stack-lg: var(--space-10);
+        --stack-xl: var(--space-12);
+        --stack-xxl: var(--space-16);
+        --stack-xxxl: calc(var(--space-16) + var(--space-8));
     }
 }
 

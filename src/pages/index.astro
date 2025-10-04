@@ -1,13 +1,2 @@
----
-// Root redirect to default locale with prefixDefaultLocale: true
-export const prerender = false;
-
-export async function GET() {
-  return new Response(null, {
-    status: 302,
-    headers: {
-      Location: "/de/"
-    }
-  });
-}
----
+<!--   Empty index.astro required for Astro's i18n routing with prefixDefaultLocale: true
+  Astro automatically redirects / => /de/  -->

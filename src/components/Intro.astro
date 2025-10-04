@@ -1,13 +1,13 @@
 ---
 import portrait from "@/assets/portrait-photo.jpg";
-import { Icon } from "astro-icon/components";
+import ActionButton from "@/components/ActionButton.astro";
 import { Image } from "astro:assets";
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
-interface IntroProps {
+interface Props {
     name?: string;
     role?: string;
     portraitSrc?: ImageMetadata;
@@ -22,7 +22,7 @@ const {
     githubUrl = "https://github.com/LucaKnobel",
     linkedinUrl = "https://linkedin.com/in/luca-knobel-14b4a7221",
     contactHref = `/${lang}/contact`,
-} = Astro.props as IntroProps;
+} = Astro.props;
 ---
 
 <section aria-labelledby="intro-title">
@@ -43,110 +43,110 @@ const {
         <p class="intro-role">{role}</p>
 
         <div class="intro-actions">
-            <a
-                class="btn intro-btn"
+            <ActionButton
+                href={contactHref}
+                text={t("intro.contact")}
+                size="md"
+                variant="primary"
+                width="150px"
+                height="44px"
+            />
+            <ActionButton
                 href={githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="GitHub"
-            >
-                <Icon name="mdi:github" aria-hidden="true" class="icon" />
-                <span>GitHub</span>
-            </a>
+                icon="mdi:github"
+                ariaLabel="GitHub"
+                size="md"
+                variant="gradient"
+                text="GitHub"
+                width="150px"
+                height="44px"
+            />
 
-            <a
-                class="btn intro-btn"
+            <ActionButton
                 href={linkedinUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="LinkedIn"
-            >
-                <Icon name="mdi:linkedin" aria-hidden="true" class="icon" />
-                <span>LinkedIn</span>
-            </a>
-
-            <a class="btn intro-btn" href={contactHref}>
-                <span>{t("intro.contact")}</span>
-            </a>
-            <button>Test</button>
+                icon="mdi:linkedin"
+                ariaLabel="LinkedIn"
+                size="md"
+                variant="gradient"
+                text="LinkedIn"
+                width="150px"
+                height="44px"
+            />
         </div>
     </div>
 </section>
 
 <style>
     section {
-        padding: var(--spacing-xl) var(--spacing-sm);
+        padding: var(--section-y) var(--section-x);
         display: flex;
         justify-content: center;
         align-items: center;
-        margin: var(--spacing-lg) 0 var(--spacing-xxl) 0;
-
-        .intro-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: var(--spacing-sm);
-
-            .intro-portrait {
-                width: 70vw;
-                height: 70vw;
-                max-width: 350px;
-                max-height: 350px;
-                border-radius: 50%;
-                object-fit: cover;
-                border: none;
-            }
-
-            .intro-title {
-                font-size: var(--font-size-h3);
-                font-weight: bold;
-                margin-bottom: var(--spacing-xs);
-                text-align: center;
-                margin: 0;
-            }
-
-            .intro-role {
-                font-size: var(--font-size-h4);
-                color: var(--color-text-muted);
-                margin-bottom: var(--spacing-md);
-                text-align: center;
-                margin: 0;
-            }
-
-            .intro-actions {
-                display: flex;
-                flex-direction: column;
-                gap: var(--spacing-sm);
-                align-items: stretch;
-                justify-content: center;
-                .intro-btn {
-                    min-width: 140px;
-                    height: 40px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                }
-            }
-        }
+        margin: var(--stack-sm) 0 var(--stack-xxxl) 0;
     }
 
-    @media (min-width: 1024px) {
+    .intro-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--stack-lg);
+        max-width: 700px;
+        width: 100%;
+    }
+
+    .intro-portrait {
+        width: 80vw;
+        height: 80vw;
+        max-width: 450px;
+        max-height: 450px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: none;
+        box-shadow: var(--elev-2);
+    }
+
+    .intro-title {
+        font-size: var(--heading-lg);
+        font-weight: var(--fw-semibold);
+        margin: 0;
+        text-align: center;
+        line-height: 1.15;
+        color: var(--color-text);
+    }
+
+    .intro-role {
+        font-size: var(--heading-sm);
+        color: var(--color-muted);
+        margin: 0;
+        text-align: center;
+    }
+
+    .intro-actions {
+        display: flex;
+        flex-direction: column;
+        gap: var(--stack-sm);
+        align-items: center;
+        justify-content: center;
+    }
+
+    @media (min-width: var(--breakpoint-lg)) {
         section {
-            margin: 0 0 var(--spacing-xxl) 0;
-            .intro-container {
-                .intro-portrait {
-                    width: 20vw;
-                    height: 20vw;
-                    max-width: 500px;
-                    max-height: 500px;
-                }
-                .intro-actions {
-                    flex-direction: row;
-                    a:hover {
-                        scale: 1.05;
-                    }
-                }
-            }
+            margin: 0 0 var(--stack-xxxl) 0;
+        }
+        .intro-container {
+            max-width: 900px;
+            gap: var(--stack-xl);
+        }
+
+        .intro-title {
+            font-size: var(--display-xl);
+        }
+        .intro-role {
+            font-size: var(--heading-md);
+        }
+        .intro-actions {
+            flex-direction: row;
+            gap: var(--stack-lg);
         }
     }
 </style>
