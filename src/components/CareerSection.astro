@@ -3,16 +3,57 @@ import CareerCard from "@/components/CareerCard.astro";
 import { getCollection } from "astro:content";
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 
-const lang = Astro.props.lang || getLangFromUrl(Astro.url);
+const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
-const allCareerEntries = await getCollection("career");
-const careerFile = allCareerEntries.find((entry) => entry.id === lang);
-const entries = careerFile?.data || [];
-const title = Astro.props.title || t("career.professionalCareer");
+const type = Astro.props.type || "professional"; /* "professional" or "education" */
+const title = Astro.props.title || (type === "education" ? t("career.education") : t("career.professionalCareer"));
+
+let entries = [];
+if (type === "education") {
+    const allEducationEntries = await getCollection("education");
+    const educationFile = allEducationEntries.find((entry) => entry.id === lang);
+    entries = educationFile?.data || [];
+} else {
+    const allCareerEntries = await getCollection("career");
+    const careerFile = allCareerEntries.find((entry) => entry.id === lang);
+    entries = careerFile?.data || [];
+}
 ---
 
 <section>
-    <h3>{title}</h3>
+    <h1 class="section-title">{title}</h1>
     {entries.map((entry) => <CareerCard {...entry} />)}
 </section>
+
+<style>
+section {
+    max-width: var(--content-max);
+    margin-inline: var(--section-x);
+    padding-block: var(--section-y);
+    display: flex;
+    flex-direction: column;
+    gap: var(--section-x);
+}
+
+.section-title {
+    text-align: center;
+    font-size: var(--heading-md);
+    font-weight: var(--fw-semibold);
+    margin-bottom: var(--section-x);
+    color: var(--color-text);
+}
+
+@media (min-width: 1024px) {
+    section {
+        max-width: var(--content-max);
+        margin-inline: auto;
+        padding-block: var(--section-y);
+        gap: var(--section-x);
+    }
+    .section-title {
+        font-size: var(--heading-lg);
+        margin-bottom: var(--section-x);
+    }
+}
+</style>

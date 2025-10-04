@@ -10,15 +10,13 @@ export interface Props {
     icon?: string;
     /** Visual variant of the button */
     variant?: "primary" | "secondary" | "ghost" | "link" | "gradient";
-    /** Size of the button */
-    size?: "sm" | "md" | "lg";
     /** Additional CSS classes */
     class?: string;
     /** Aria label for accessibility (auto-generated if not provided) */
     ariaLabel?: string;
-    /** Custom width (e.g. '220px', '100%') */
+    /** Custom width (e.g. '220px', '100%') [required außer bei variant-link] */
     width?: string;
-    /** Custom height (e.g. '40px', '3rem') */
+    /** Custom height (e.g. '40px', '3rem') [required außer bei variant-link] */
     height?: string;
 }
 
@@ -27,7 +25,6 @@ const {
     text,
     icon,
     variant = "secondary",
-    size = "md",
     class: customClass = "",
     ariaLabel,
     width,
@@ -49,7 +46,6 @@ const isIconOnly = hasIcon && !hasText;
 const classes = [
     "action-button",
     `variant-${variant}`,
-    `size-${size}`,
     isIconOnly ? "icon-only" : "",
     customClass,
 ]
@@ -64,8 +60,7 @@ const classes = [
     target={isExternal ? "_blank" : undefined}
     rel={isExternal ? "noopener noreferrer" : undefined}
     style={{
-        ...(width ? { '--action-btn-width': width } : {}),
-        ...(height ? { '--action-btn-height': height } : {}),
+        ...(variant !== "link" ? { '--action-btn-width': width, '--action-btn-height': height } : {}),
     }}
 >
     {hasIcon && <Icon name={icon} class="button-icon" />}
@@ -74,79 +69,21 @@ const classes = [
 
 <style>
     .action-button {
-        /* Layout */
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        gap: var(--stack-xs);
-
-        /* Sizing & Spacing */
-        padding: var(--stack-xs) var(--stack-sm);
-        min-height: var(--touch-target-min);
+        gap: var(--space-1);
         box-sizing: border-box;
-        width: var(--action-btn-width, auto);
-        height: var(--action-btn-height, auto);
-
-        /* Visual */
+        width: var(--action-btn-width);
+        height: var(--action-btn-height);
         border: var(--border-hairline) solid var(--color-border-hairline);
         border-radius: var(--button-radius);
         background: transparent;
-
-        /* Typography */
         color: var(--color-text);
         font-weight: var(--fw-medium);
         text-decoration: none;
-
-        /* Interaction */
         cursor: pointer;
         transition: all var(--dur-2) var(--ease-standard);
-    }
-
-    .size-sm {
-        padding: var(--stack-xs);
-        font-size: var(--text-small);
-        min-height: var(--control-h-sm);
-    }
-
-    .size-md {
-        padding: var(--stack-xs) var(--stack-sm);
-        font-size: var(--text-body);
-        min-height: var(--control-h-md);
-    }
-
-    .size-lg {
-        padding: var(--stack-sm) var(--stack-md);
-        font-size: var(--heading-xs);
-        min-height: var(--control-h-lg);
-    }
-
-    .size-sm .button-icon {
-        width: var(--icon-sm);
-        height: var(--icon-sm);
-    }
-
-    .size-md .button-icon {
-        width: var(--icon-md);
-        height: var(--icon-md);
-    }
-    .size-lg .button-icon {
-        width: var(--icon-lg);
-        height: var(--icon-lg);
-    }
-
-    .icon-only {
-        padding: var(--stack-xs);
-        min-width: var(--touch-target-min);
-    }
-
-    .icon-only.size-sm {
-        min-width: var(--control-h-sm);
-    }
-    .icon-only.size-md {
-        min-width: var(--control-h-md);
-    }
-    .icon-only.size-lg {
-        min-width: var(--control-h-lg);
     }
 
     /* Primary */
@@ -317,6 +254,9 @@ const classes = [
     .button-icon {
         flex-shrink: 0;
         transition: all var(--dur-2) var(--ease-standard);
+        /* Icon-Größe proportional zur Button-Höhe, aber mit min/max für Lesbarkeit */
+        width: calc(clamp(var(--icon-sm), 0.6 * var(--action-btn-height, 40px), var(--icon-lg)));
+        height: calc(clamp(var(--icon-sm), 0.6 * var(--action-btn-height, 40px), var(--icon-lg)));
     }
 
     .button-text {

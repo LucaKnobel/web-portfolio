@@ -103,8 +103,8 @@ onMounted((): void => {
 
     .icon-container {
         position: relative;
-        width: var(--icon-sm);
-        height: var(--icon-sm);
+        width: var(--icon-xs);
+        height: var(--icon-xs);
 
         .theme-icon {
             position: absolute;

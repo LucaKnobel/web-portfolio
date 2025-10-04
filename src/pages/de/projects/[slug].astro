@@ -217,7 +217,7 @@ const { Content } = await render(project);
         color: var(--color-text-muted);
     }
 
-    @media (min-width: 768px) {
+    @media (min-width: var(--breakpoint-md)) {
         .project-detail {
             padding: var(--gutter) var(--gutter);
         }

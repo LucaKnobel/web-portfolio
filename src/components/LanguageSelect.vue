@@ -122,8 +122,8 @@ const switchLanguage = (newLang: string): void => {
     }
 
     .language-icon {
-        width: var(--icon-sm);
-        height: var(--icon-sm);
+        width: var(--icon-xs);
+        height: var(--icon-xs);
         color: var(--color-text);
         transition: color var(--dur-2) var(--ease-standard);
     }

@@ -33,28 +33,35 @@ const { links } = Astro.props;
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
       gap: var(--stack-sm);
       list-style: none;
       margin: 0;
       padding: 0;
+      height: 100%;
     }
 
     .nav-item {
       width: 100%;
       max-width: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .nav-link {
       color: var(--color-text);
-      display: block;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       text-decoration: none;
       width: 100%;
-      padding: var(--stack-md) var(--stack-lg);
+      min-height: var(--touch-target-min);
+      padding: 0 var(--stack-xs);
       text-align: center;
       font-weight: var(--fw-medium);
       border-radius: var(--button-radius);
       transition: all var(--dur-2) var(--ease-standard);
-      min-height: var(--touch-target-min);
       box-sizing: border-box;
 
       &:hover {
@@ -70,7 +77,7 @@ const { links } = Astro.props;
       .nav-list {
         flex-direction: row;
         justify-content: center;
-        gap: var(--stack-md);
+        gap: var(--stack-xs);
       }
 
       .nav-item {
@@ -80,7 +87,7 @@ const { links } = Astro.props;
 
       .nav-link {
         width: auto;
-        padding: var(--stack-sm) var(--stack-md);
+        padding: var(--stack-xs) var(--stack-xs);
         min-height: auto;
       }
     }

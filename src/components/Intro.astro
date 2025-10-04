@@ -46,7 +46,6 @@ const {
             <ActionButton
                 href={contactHref}
                 text={t("intro.contact")}
-                size="md"
                 variant="primary"
                 width="150px"
                 height="44px"
@@ -55,7 +54,6 @@ const {
                 href={githubUrl}
                 icon="mdi:github"
                 ariaLabel="GitHub"
-                size="md"
                 variant="gradient"
                 text="GitHub"
                 width="150px"
@@ -66,7 +64,6 @@ const {
                 href={linkedinUrl}
                 icon="mdi:linkedin"
                 ariaLabel="LinkedIn"
-                size="md"
                 variant="gradient"
                 text="LinkedIn"
                 width="150px"
@@ -129,7 +126,7 @@ const {
         justify-content: center;
     }
 
-    @media (min-width: var(--breakpoint-lg)) {
+    @media (min-width: 1024px) {
         section {
             margin: 0 0 var(--stack-xxxl) 0;
         }
