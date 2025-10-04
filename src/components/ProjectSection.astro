@@ -1,0 +1,81 @@
+---
+import ProjectCard from "@/components/ProjectCard.astro";
+import { getCollection } from "astro:content";
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const allProjects = await getCollection("projects");
+const languageProjects = allProjects.filter(project => project.data.lang === lang);
+
+const projects = languageProjects.sort((a, b) => {
+  const dateA = new Date(a.data.date);
+  const dateB = new Date(b.data.date);
+  return dateB.getTime() - dateA.getTime();
+});
+---
+
+<section class="project-list-section">
+    <h1 class="project-title">{t("projects.pageTitle")}</h1>
+    <div class="project-card-wrapper">
+        {
+            projects.map((project) => (
+                <ProjectCard
+                    title={project.data.title}
+                    description={project.data.description}
+                    date={project.data.date}
+                    tags={project.data.tags}
+                    coverSrc={project.data.cover}
+                    href={`/${lang}/projects/${project.id.replace(`${lang}/`, '')}`}
+                />
+            ))
+        }
+    </div>
+</section>
+
+<style>
+.project-list-section {
+    width: 100%;
+    max-width: var(--content-max);
+    margin-inline: auto;
+    padding: var(--section-y) var(--section-x);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--stack-lg);
+
+    .project-title {
+        font-size: var(--heading-md);
+        font-weight: var(--fw-semibold);
+        margin: 0 0 var(--stack-xl) 0;
+        color: var(--color-text);
+        text-wrap: balance;
+        text-align: center;
+        width: 100%;
+    }
+
+    .project-card-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: var(--card-gap);
+        width: 100%;
+    }
+}
+
+
+@media (min-width: 1024px) {
+    .project-list-section {
+        padding: var(--section-y) var(--section-x);
+        .project-title {
+            font-size: var(--heading-lg);
+        }
+        .project-card-wrapper {
+            grid-template-columns: repeat(auto-fit, minmax(400px, 500px));
+            justify-content: center;
+            gap: var(--card-gap);
+            grid-auto-rows: 1fr;
+        }
+    }
+}
+</style>

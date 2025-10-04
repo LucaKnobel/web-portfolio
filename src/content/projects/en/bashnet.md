@@ -1,7 +1,7 @@
 ---
 title: "Semantic Bash Knowledge Management Software"
 description: "A knowledge platform that structures complex Bash concepts and makes them accessible via search functions and visualizations."
-date: "07/2025"
+date: "2025-07"
 lang: "en"
 tags: ["Python", "UML", "Knowledge Graphs", "Pytest", "CLI"]
 cover: "../images/bashnet/cover.png"

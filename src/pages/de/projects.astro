@@ -1,62 +1,13 @@
 ---
-import { getCollection } from "astro:content";
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import ProjectCard from "@/components/ProjectCard.astro";
+import ProjectSection from "@/components/ProjectSection.astro";
+
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 
-// Diese Page funktioniert für beide Routen: /de/projects und /en/projects
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
-
-const allProjects = await getCollection("projects");
-const languageProjects = allProjects.filter(project => project.data.lang === lang);
-
-const projects = languageProjects.sort((a, b) => {
-  const dateA = new Date(a.data.date);
-  const dateB = new Date(b.data.date);
-  return dateB.getTime() - dateA.getTime();
-});
-
-// Debug für deutsche Projects
-if (lang === 'de') {
-  console.log('Deutsche Projekte gefunden:', projects.length);
-  console.log('Alle Projekte:', allProjects.map(p => ({ id: p.id, lang: p.data.lang })));
-}
 ---
 
 <BaseLayout title={`Luca Knobel | ${t("projects.pageTitle")}`}>
-    <h1 class="project-title">{t("projects.pageTitle")}</h1>
-    <div class="project-card-wrapper">
-        {
-            projects.map((project) => (
-                <ProjectCard
-                    title={project.data.title}
-                    description={project.data.description}
-                    date={project.data.date}
-                    tags={project.data.tags}
-                    coverSrc={project.data.cover}
-                    href={`/${lang}/projects/${project.id.replace(`${lang}/`, '')}`}
-                />
-            ))
-        }
-    </div>
+    <ProjectSection />
 </BaseLayout>
-
-<style>
-    .project-title {
-        text-align: center;
-        margin: var(--spacing-lg) 0 var(--spacing-xl) 0;
-    }
-    .project-card-wrapper {
-        display: flex;
-        flex-direction: column;
-        gap: var(--spacing-md);
-    }
-    @media (min-width: 1024px) {
-        .project-card-wrapper {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: var(--spacing-lg);
-        }
-    }
-</style>

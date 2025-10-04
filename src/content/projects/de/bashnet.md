@@ -1,7 +1,7 @@
 ---
 title: "Semantische Bash-Wissensverwaltungssoftware"
 description: "Eine Wissensplattform, die komplexe Bash-Konzepte strukturiert darstellt und über Suchfunktionen sowie Visualisierungen zugänglich macht."
-date: "07/2025"
+date: "2025-07"
 lang: "de"
 tags: ["Python", "UML", "Knowledge Graphs", "Pytest", "CLI"]
 cover: "../images/bashnet/cover.png"

@@ -1,7 +1,7 @@
 ---
 title: "Testsoftware"
 description: "Teschbeschirebung"
-date: "08/2025"
+date: "2023-02"
 lang: "en"
 tags: ["C#", "HTML", "CSS", "JS", "Astro"]
 cover: "../images/bashnet/cover.png"
