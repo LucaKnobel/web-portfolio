@@ -144,9 +144,9 @@ const { project, lang, t, Content } = Astro.props as ProjectDetailProps;
             overflow: hidden;
             box-shadow: var(--elev-1);
 
-            img,
-                    outline: none;
-                    outline-offset: 0;
+            img {
+                outline: none;
+                outline-offset: 0;
                 width: 100%;
                 height: auto;
                 display: block;
@@ -357,6 +357,7 @@ const { project, lang, t, Content } = Astro.props as ProjectDetailProps;
                 }
             }
         }
+    }
 
     @media (min-width: 1024px) {
         .project-detail {

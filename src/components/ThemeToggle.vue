@@ -126,30 +126,24 @@ onMounted((): void => {
             background: transparent;
         }
 
-        /* Transition Component Styles */
-        .icon-fade {
-
-            &-enter-active,
-            &-leave-active {
-                transition: all var(--dur-2) var(--ease-standard);
-            }
-
-            &-enter-from {
-                opacity: 0;
-                transform: rotate(180deg) scale(0.5);
-            }
-
-            &-leave-to {
-                opacity: 0;
-                transform: rotate(-180deg) scale(0.5);
-            }
-
-            &-enter-to,
-            &-leave-from {
-                opacity: 1;
-                transform: rotate(0deg) scale(1);
-            }
-        }
+/* Transition Component Styles - moved out for valid CSS nesting */
+.icon-fade-enter-active,
+.icon-fade-leave-active {
+    transition: all var(--dur-2) var(--ease-standard);
+}
+.icon-fade-enter-from {
+    opacity: 0;
+    transform: rotate(180deg) scale(0.5);
+}
+.icon-fade-leave-to {
+    opacity: 0;
+    transform: rotate(-180deg) scale(0.5);
+}
+.icon-fade-enter-to,
+.icon-fade-leave-from {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+}
     }
 }
 </style>

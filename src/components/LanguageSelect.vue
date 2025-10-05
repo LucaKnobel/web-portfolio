@@ -1,25 +1,15 @@
 <template>
     <div class="language-select" ref="languageSelectRef">
-        <button 
-            class="language-toggle" 
-            @click="toggleDropdown" 
-            :aria-label="t('aria.languageSelect')"
-            :aria-expanded="isOpen"
-            type="button"
-        >
+        <button class="language-toggle" @click="toggleDropdown" :aria-label="t('aria.languageSelect')"
+            :aria-expanded="isOpen" type="button">
             <Icon icon="mdi:translate" class="language-icon" />
         </button>
-        
+
         <Transition name="dropdown">
             <div v-if="isOpen" class="dropdown">
-                <button 
-                    v-for="language in availableLanguages" 
-                    :key="language.code"
-                    class="language-option"
-                    :class="{ 'active': language.code === currentLang }"
-                    @click="switchLanguage(language.code)"
-                    type="button"
-                >
+                <button v-for="language in availableLanguages" :key="language.code" class="language-option"
+                    :class="{ 'active': language.code === currentLang }" @click="switchLanguage(language.code)"
+                    type="button">
                     <span class="label">{{ language.label }}</span>
                 </button>
             </div>
@@ -62,7 +52,7 @@ const switchLanguage = (newLang: string): void => {
         close();
         return;
     }
-    
+
     /* Get current path without language prefix and preserve route structure */
     const currentPath = window.location.pathname;
     const pathWithoutLang = currentPath.replace(/^\/[a-z]{2}/, "") || "/";
@@ -129,6 +119,7 @@ const switchLanguage = (newLang: string): void => {
     }
 }
 
+
 .dropdown {
     position: absolute;
     top: calc(100% + var(--stack-xs));
@@ -145,6 +136,32 @@ const switchLanguage = (newLang: string): void => {
     overflow-y: auto;
 }
 
+.dropdown-enter-active {
+    transition: all var(--dur-2) var(--ease-standard);
+    transform-origin: top;
+}
+
+.dropdown-leave-active {
+    transition: all var(--dur-2) var(--ease-standard);
+    transform-origin: top;
+}
+
+.dropdown-enter-from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-8px) scale(0.96);
+}
+
+.dropdown-leave-to {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-8px) scale(0.96);
+}
+
+.dropdown-enter-to,
+.dropdown-leave-from {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+}
+
 .language-option {
     width: 100%;
     background: transparent;
@@ -156,29 +173,29 @@ const switchLanguage = (newLang: string): void => {
     justify-content: center;
     padding: var(--stack-sm);
     transition: all var(--dur-2) var(--ease-standard);
-    
+
     &:hover {
         background: var(--color-surface-3);
-        
+
         .label {
             color: var(--color-primary);
         }
     }
-    
+
     &.active {
         background: var(--color-surface-3);
         color: var(--color-primary);
-        
+
         .label {
             color: var(--color-primary);
         }
     }
-    
+
     &:focus-visible {
         outline: 2px solid var(--color-primary);
         outline-offset: -2px;
     }
-    
+
     .label {
         font-size: var(--text-small);
         font-weight: var(--fw-medium);
