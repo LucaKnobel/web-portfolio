@@ -1,0 +1,54 @@
+---
+import ActionButton from "@/components/ActionButton.astro";
+
+export interface Error404Props {
+    /** Translation function for UI strings */
+    t: Function;
+}
+const { t } = Astro.props as Error404Props;
+---
+<section class="error-page">
+    <h4>{t("404.pageTitle")}</h4>
+    <p>{t("404.pageText")}</p>
+    <ActionButton href="/" text={t('404.backHome')} width="150px" height="44px" variant="primary" />
+</section>
+
+<style>
+    .error-page {
+        max-width: 420px;
+        margin: 10vh auto 0 auto;
+        padding: var(--stack-lg) var(--gutter);
+        background: var(--color-surface-1);
+        border-radius: var(--card-radius);
+        box-shadow: var(--elev-2);
+        text-align: center;
+        color: var(--color-text);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--stack-md);
+    }
+    .error-page h4 {
+        font-size: var(--heading-lg);
+        font-weight: var(--fw-semibold);
+        margin: 0 0 var(--stack-sm) 0;
+        color: var(--color-primary);
+        letter-spacing: 0.01em;
+    }
+    .error-page p {
+        font-size: var(--text-body);
+        color: var(--color-muted);
+        margin: 0 0 var(--stack-md) 0;
+        line-height: var(--lh);
+    }
+  
+    @media (max-width: 1024px) {
+        .error-page {
+            max-width: 98vw;
+            padding: var(--stack-md) var(--gutter);
+        }
+        .error-page h4 {
+            font-size: var(--heading-md);
+        }
+    }
+</style>

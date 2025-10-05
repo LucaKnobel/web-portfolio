@@ -12,3 +12,21 @@ export function useTranslations(lang: keyof typeof ui) {
     }
 }
 
+/* Client-side helper that mirrors the Astro pattern */
+export function useClientTranslations() {
+    if (typeof window === "undefined") {
+        /* SSR fallback */
+        return {
+            lang: defaultLang,
+            t: useTranslations(defaultLang)
+        };
+    }
+
+    /* Client-side: equivalent to getLangFromUrl(Astro.url) */
+    const url = new URL(window.location.href);
+    const lang = getLangFromUrl(url);
+    const t = useTranslations(lang);
+    
+    return { lang, t };
+}
+

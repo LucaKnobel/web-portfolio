@@ -1,14 +1,14 @@
 ---
 title: "Semantic Bash Knowledge Management Software"
 description: "A knowledge platform that structures complex Bash concepts and makes them accessible via search functions and visualizations."
-date: "07/2025"
+date: "2025-07"
 lang: "en"
 tags: ["Python", "UML", "Knowledge Graphs", "Pytest", "CLI"]
 cover: "../images/bashnet/cover.png"
 url: "https://github.com/LucaKnobel/bashnet-public"
-slug: "bashnet"
+
 ---
-## Project at a Glance
+# Project at a Glance
 
 This project presents the development of a prototype knowledge system based on semantic networks. The goal was to create a structured and searchable database that links concepts and enables sustainable knowledge handling. The approach is aligned with recognized standards for knowledge management and quality assurance.
 
@@ -18,7 +18,7 @@ The project combines technical implementation with practical value: it provides 
 
 As extensions, a graphical visualization and two different search modes (simple and deep) were designed to demonstrate the system’s capabilities.
 
-## Background and Context
+# Background and Context
 
 The project is based on an assignment from the Software Engineering field in my studies. 
 Its focus is the development of a knowledge base built on a semantic network.
@@ -37,9 +37,9 @@ A central objective was to design a learning-support tool that provides systemat
 
 The assignment also offered an opportunity to dive deeper into semantic structures, data-driven approaches, and recursive information access.
 
-## Analysis and Design
+# Analysis and Design
 
-### Use Case Analysis
+## Use Case Analysis
 The application’s functional requirements were modeled as a use case diagram. Central interaction occurs via a command-line interface (CLI) through which users can search, import, and export semantically stored knowledge.
 
 ![Use Case Diagram](../images/bashnet/use-case-diagram.png)
@@ -109,7 +109,7 @@ Each use case is described in detail in the tables below.
 | **Acceptance Criteria**   | - Help appears immediately and completely.<br>- All main commands are listed with short descriptions.<br>- For invalid inputs, help or a hint is shown. |
 | **Test Method**           | Manual testing by invoking `help` and invalid inputs; evaluate completeness and clarity. Automated tests are optional. |
 
-### Activity Diagram: Deep Search
+## Activity Diagram: Deep Search
 ![Activity diagram for the Deep Search process](../images/bashnet/activity-diagram.png)
 
 Deep search is an extended mechanism in the CLI that goes beyond plain term matching and considers semantic relationships in the knowledge network. The figure shows the simplified flow of this functionality as an activity diagram with swimlanes.
@@ -129,9 +129,9 @@ The search proceeds in phases:
 
 The swimlanes illustrate responsibility across **user**, **application logic**, and the **underlying knowledge graph**. After the command is entered, the process runs without further interaction and returns structured output for continued knowledge work.
 
-## Technical Implementation
+# Technical Implementation
 
-### Architecture and Structure
+## Architecture and Structure
 The application is written in **Python (version 3.12+)** using a modular, object-oriented architecture. It follows the **SOLID principles** for maintainability and extensibility.
 
 - **CLI logic** – Manages user interaction via the command line.  
@@ -254,9 +254,7 @@ def main():
             click.secho(f"Error: {e}", fg="red")
 ```
 
-## Testing and Quality Assurance
-
-### Test Strategy
+# Testing and Quality Assurance
 
 To ensure functionality and stability, a multi-stage test strategy was implemented:
 
@@ -268,9 +266,9 @@ To ensure functionality and stability, a multi-stage test strategy was implement
 Automated tests are located in `tests/` and are executed with `pytest`.  
 A total of **12 unit tests** were written and passed successfully. Manual checks of the CLI behavior complemented the tests.
 
-### Test Cases and Results
+## Test Cases and Results
 
-#### UC-01 & UC-02 – Search (simple / deep)
+### UC-01 & UC-02 – Search (simple / deep)
 **Goal:** Validate exact search (UC-01) and context-sensitive deep search (UC-02).
 
 ```python
@@ -297,7 +295,7 @@ def test_deep_search_option():
 
 **Expectation:** The system identifies the node type and returns context-relevant relations. For unknown terms, a fallback result is provided.
 
-#### UC-03 – Import Data
+### UC-03 – Import Data
 
 **Goal:** Verify import of structured JSON files and network creation.
 
@@ -321,7 +319,7 @@ def test_import_data_creates_knowledge_net(tmp_path):
 
 **Expectation:** The file `knowledge_net.json` is created; all valid nodes and relations are imported and saved correctly.
 
-#### Additional CLI Screenshots
+### Additional CLI Screenshots
 
 To validate visual output, key functions were also tested manually and documented as screenshots. They show how the application responds to typical commands:
 
@@ -341,12 +339,12 @@ To validate visual output, key functions were also tested manually and documente
 
 *Output of the `help` command (UC-05)*
 
-## Results and Reflection
+# Results and Reflection
 
-### Goal Achievement
+## Goal Achievement
 The core project goals were met. The semantic network was successfully implemented with a modular data structure. The implemented search modes (simple and deep) enable targeted queries, and network persistence was realized via a JSON file. In addition, an interactive *PyVis* visualization provides an intuitive view of the network.
 
-### Reflection and Learnings
+## Reflection and Learnings
 Key learnings from the project:
 
 - **Graph and network analysis**: Building and managing directed graphs with `networkx`.  
@@ -357,7 +355,7 @@ Key learnings from the project:
 
 These aspects strengthened my skills in **Python development, structured knowledge modeling, and software quality**.
 
-### Future Work
+## Future Work
 Promising directions:
 
 - **Scaling**: Introduce indexing or advanced search algorithms for performance.  
@@ -365,5 +363,5 @@ Promising directions:
 - **Interactive expansion**: Add new nodes directly via CLI or web UI.  
 - **NLP integration**: Use natural language processing to make queries more natural.  
 
-**Conclusion:**  
+## Conclusion 
 The project demonstrates how a theoretical assignment can become a functional prototype with a clear architecture and practical applicability. In particular, working with semantic structures and a test-oriented approach measurably expanded my software development skills.

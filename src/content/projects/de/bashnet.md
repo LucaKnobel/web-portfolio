@@ -1,14 +1,14 @@
 ---
 title: "Semantische Bash-Wissensverwaltungssoftware"
 description: "Eine Wissensplattform, die komplexe Bash-Konzepte strukturiert darstellt und über Suchfunktionen sowie Visualisierungen zugänglich macht."
-date: "07/2025"
+date: "2025-07"
 lang: "de"
 tags: ["Python", "UML", "Knowledge Graphs", "Pytest", "CLI"]
 cover: "../images/bashnet/cover.png"
 url: "https://github.com/LucaKnobel/bashnet-public"
-slug: "bashnet"
+
 ---
-## Projekt in Kürze
+# Projekt in Kürze
 
 Dieses Projekt zeigt die Entwicklung eines prototypischen Wissenssystems auf Basis semantischer Netzwerke. Ziel war es, eine strukturierte und durchsuchbare Datenbasis zu schaffen, die Konzepte miteinander verknüpft und so einen nachhaltigen Umgang mit Wissen ermöglicht. Der Ansatz orientiert sich an anerkannten Standards für Wissensmanagement und Qualitätssicherung.  
 
@@ -18,7 +18,7 @@ Das Projekt verbindet technische Umsetzung mit praktischem Nutzen: Es bietet ein
 
 Als Erweiterungen wurden eine grafische Visualisierung und zwei unterschiedliche Suchmodi (einfache und vertiefte Suche) konzipiert, um die Einsatzmöglichkeiten des Systems zu demonstrieren.  
 
-## Ausgangslage und Kontext
+# Ausgangslage und Kontext
 
 Die Grundlage für das Projekt bildet eine Aufgabenstellung aus dem Bereich Software Engineering in meinem HF-Studium.  
 Im Zentrum steht die Entwicklung einer Wissensdatenbank auf Basis eines semantischen Netzes.  
@@ -38,9 +38,9 @@ Ein zentrales Ziel war die Konzeption eines lernförderlichen Werkzeugs, das sys
 
 Darüber hinaus bot die Aufgabe die Gelegenheit, sich vertiefter mit semantischen Strukturen, datengetriebenen Ansätzen und rekursiven Informationszugängen auseinanderzusetzen.
 
-## Analyse und Konzeption
+# Analyse und Konzeption
 
-### Use Case Analyse
+## Use Case Analyse
 Die funktionalen Anforderungen der Applikation wurden in Form eines Use Case Diagramms modelliert. Die zentrale Interaktion erfolgt über ein Kommandozeileninterface (CLI), über welches die
 Benutzerin bzw. der Benutzer semantisch gespeichertes Wissen gezielt durchsuchen, importieren
 und exportieren kann.
@@ -117,7 +117,7 @@ Nachfolgend wird jeder Use Case detailiert tabellarisch beschrieben.
 | **Akzeptanzkriterien**     | - Die Hilfeausgabe erscheint sofort und vollständig.<br>- Alle Hauptbefehle sind mit Kurzbeschreibung gelistet.<br>- Bei fehlerhaften Eingaben wird entweder die Hilfe oder ein Hinweis ausgegeben.                                                                               |
 | **Testmethode**            | Die Funktion wird manuell getestet, indem `help` und fehlerhafte Eingaben geprüft werden. Die Vollständigkeit und Verständlichkeit der Ausgabe werden visuell bewertet. Automatisierte Tests sind optional möglich, aber nicht zwingend erforderlich.                             |
 
-### Aktivitätsdiagramm: Deep Search
+## Aktivitätsdiagramm: Deep Search
 ![Aktivitätsdiagramm für den Deep Search Prozess](../images/bashnet/activity-diagram.png)
 
 
@@ -139,8 +139,8 @@ Die Suche gliedert sich in mehrere Phasen:
 Die Swimlanes im Diagramm verdeutlichen die Aufgabenteilung zwischen **Benutzer**, **Applikationslogik** und dem **zugrunde liegenden Wissensnetz (Knowledge Graph)**. Der gesamte Prozess erfolgt ohne weitere Benutzerinteraktion nach Eingabe des Befehls und liefert strukturierte Ausgaben zur Wissensverarbeitung.
 
 
-## Technische Umsetzung
-### Architektur und Struktur
+# Technische Umsetzung
+## Architektur und Struktur
 Die Applikation ist in der Programmiersprache **Python (Version 3.12+)** entwickelt und folgt einem modularen, objektorientierten Architekturansatz. Der Aufbau orientiert sich an den **SOLID-Prinzipien**, um eine wartbare und erweiterbare Struktur zu gewährleisten.
 
 - **CLI-Logik** – Verwaltung der Benutzerinteraktion über das Kommandozeileninterface.  
@@ -266,7 +266,7 @@ def main():
 
 ```
 
-## Teststrategie und Qualitätssicherung
+# Teststrategie und Qualitätssicherung
 
 Zur Sicherstellung der Funktionalität und Stabilität der Applikation wurde eine mehrstufige Teststrategie entwickelt. Diese umfasst:
 
@@ -278,8 +278,8 @@ Zur Sicherstellung der Funktionalität und Stabilität der Applikation wurde ein
 Die automatisierten Tests befinden sich im Verzeichnis `tests/` und werden über `pytest` ausgeführt.  
 Insgesamt wurden **12 Unit-Tests** geschrieben und erfolgreich bestanden. Ergänzend erfolgte eine **manuelle Prüfung** der CLI-Reaktionen.
 
-### Testfälle und Ergebnisse
-#### UC-01 und UC-02 – Suchfunktion (simple / deep)
+## Testfälle und Ergebnisse
+### UC-01 und UC-02 – Suchfunktion (simple / deep)
 **Ziel:** Validierung der exakten Suche (UC-01) und der kontextsensitiven  Tiefensuche (UC-02).
 ```python
 # Auszug aus test search.py – UC-01: Simple Search
@@ -307,7 +307,7 @@ def test_deep_search_option():
 unbekannten Begriffen wird ein Fallback-Ergebnis geliefert.
 
 
-#### UC-03 – Import Data
+### UC-03 – Import Data
 
 
 **Ziel:** Überprüfung des Imports von strukturierten JSON-Dateien und der Erzeugung des Netzwerks.
@@ -334,7 +334,7 @@ def test_import_data_creates_knowledge_net(tmp_path):
 **Erwartung:** Die Datei knowledge net.json wird erstellt, alle gültigen Knoten und Relationen korrekt
 importiert und gespeichert.
 
-#### Ergänzende CLI-Screenshots
+### Ergänzende CLI-Screenshots
 
 Zur Validierung der visuellen Ausgabe wurden die wichtigsten Funktionen zusätzlich manuell getestet
 und als Screenshots dokumentiert. Diese zeigen exemplarisch, wie die Applikation auf typische
@@ -356,12 +356,12 @@ Befehle reagiert:
 *Ausgabe des Befehls `help` (UC-05)*
 
 
-## Resultate und Reflexion
+# Resultate und Reflexion
 
-### Zielerreichung
+## Zielerreichung
 Die wesentlichen Projektziele wurden erreicht. Das semantische Netz konnte erfolgreich mit einer modularen Datenstruktur umgesetzt werden. Über die implementierten Suchmodi (einfache und vertiefte Suche) ist eine gezielte Abfrage möglich, und die Persistierung des Netzes wurde in einer JSON-Datei realisiert. Zusätzlich entstand eine interaktive Visualisierung mit *PyVis*, die das Netz anschaulich darstellt.
 
-### Reflexion und Learnings
+## Reflexion und Learnings
 Im Projekt konnte wertvolle Erfahrung mit folgenden Themen gesammelt werden:
 
 - **Graph- und Netzwerkanalyse**: Aufbau und Verwaltung gerichteter Graphen mit `networkx`.  
@@ -372,12 +372,12 @@ Im Projekt konnte wertvolle Erfahrung mit folgenden Themen gesammelt werden:
 
 Diese Aspekte haben nicht nur die technische Umsetzung gefördert, sondern auch meine Kompetenz in den Bereichen **Python-Programmierung, strukturierte Wissensmodellierung und Softwarequalität** gestärkt.
 
-### Weiterentwicklung
+## Weiterentwicklung
 Im weiteren Verlauf bieten sich spannende Potenziale:
 - **Skalierung**: Einsatz von Indexierung oder erweiterten Suchalgorithmen zur Performanzsteigerung.  
 - **Benutzeroberfläche**: Ergänzung einer grafischen Web-Oberfläche (z. B. mit Flask) für eine noch breitere Nutzbarkeit.  
 - **Interaktive Erweiterung**: Möglichkeit, neue Knoten direkt über die CLI oder eine WebUI hinzuzufügen.  
 - **NLP-Integration**: Einsatz von Natural Language Processing, um Suchanfragen noch natürlicher zu gestalten.  
 
-**Fazit:**  
+## Fazit 
 Das Projekt hat gezeigt, wie aus einer theoretischen Aufgabenstellung ein funktionaler Prototyp mit klarer Architektur und praktischer Anwendbarkeit entstehen kann. Besonders der Umgang mit semantischen Strukturen und die konsequente Testorientierung haben meine Fähigkeiten im Bereich Softwareentwicklung messbar erweitert.

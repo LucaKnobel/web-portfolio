@@ -1,0 +1,265 @@
+---
+import { Icon } from "astro-icon/components";
+
+export interface Props {
+    /** The URL to navigate to */
+    href: string;
+    /** Text to display (optional) */
+    text?: string;
+    /** Icon name from iconify (optional) */
+    icon?: string;
+    /** Visual variant of the button */
+    variant?: "primary" | "secondary" | "ghost" | "link" | "gradient";
+    /** Additional CSS classes */
+    class?: string;
+    /** Aria label for accessibility (auto-generated if not provided) */
+    ariaLabel?: string;
+    /** Custom width (e.g. '220px', '100%') [required außer bei variant-link] */
+    width?: string;
+    /** Custom height (e.g. '40px', '3rem') [required außer bei variant-link] */
+    height?: string;
+}
+
+const {
+    href,
+    text,
+    icon,
+    variant = "secondary",
+    class: customClass = "",
+    ariaLabel,
+    width,
+    height,
+} = Astro.props;
+
+/* Detect if link is external */
+const isExternal = href.startsWith("http") || href.startsWith("//");
+
+/* Auto-generate aria-label if not provided */
+const computedAriaLabel = ariaLabel || text || `Navigate to ${href}`;
+
+/* Determine if it's text-only, icon-only, or combined */
+const hasText = !!text;
+const hasIcon = !!icon;
+const isIconOnly = hasIcon && !hasText;
+
+/* Build CSS classes */
+const classes = [
+    "action-button",
+    `variant-${variant}`,
+    isIconOnly ? "icon-only" : "",
+    customClass,
+]
+    .filter(Boolean)
+    .join(" ");
+---
+
+<a
+    href={href}
+    class={classes}
+    aria-label={computedAriaLabel}
+    target={isExternal ? "_blank" : undefined}
+    rel={isExternal ? "noopener noreferrer" : undefined}
+    style={{
+        ...(variant !== "link" ? { '--action-btn-width': width, '--action-btn-height': height } : {}),
+    }}
+>
+    {hasIcon && <Icon name={icon} class="button-icon" />}
+    {hasText && <span class="button-text">{text}</span>}
+</a>
+
+<style>
+    .action-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-1);
+        box-sizing: border-box;
+        width: var(--action-btn-width);
+        height: var(--action-btn-height);
+        border: var(--border-hairline) solid var(--color-border-hairline);
+        border-radius: var(--button-radius);
+        background: transparent;
+        color: var(--color-text);
+        font-weight: var(--fw-medium);
+        text-decoration: none;
+        cursor: pointer;
+        transition: all var(--dur-2) var(--ease-standard);
+    }
+
+    /* Primary */
+    .variant-primary {
+        background: var(--grad-primary-soft);
+        border-color: var(--color-primary);
+        color: var(--color-on-primary);
+
+        &:hover {
+            background: linear-gradient(180deg, var(--color-primary-hover) 0%, var(--color-primary) 100%);
+            transform: scale(var(--scale-hover));
+        }
+
+        &:active {
+            transform: scale(var(--scale-active));
+        }
+    }
+
+    /* Secondary */
+    .variant-secondary {
+        background: var(--grad-surface-soft);
+        border-color: var(--color-border-hairline);
+        color: var(--color-text);
+
+        &:hover {
+            background: var(--color-surface-3);
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+            transform: scale(var(--scale-hover));
+        }
+
+        &:active {
+            transform: scale(var(--scale-active));
+        }
+    }
+
+    /* Ghost */
+    .variant-ghost {
+        background: transparent;
+        border-color: transparent;
+        color: var(--color-text);
+
+        &:hover {
+            background: var(--color-surface-2);
+            color: var(--color-primary);
+            transform: scale(var(--scale-hover));
+        }
+
+        &:active {
+            transform: scale(var(--scale-active));
+        }
+    }
+
+    /* Link */
+    .variant-link {
+        background: transparent;
+        border: none;
+        color: var(--color-link);
+        padding: 0;
+        min-height: auto;
+        text-decoration: underline;
+        text-decoration-color: transparent;
+
+        &:hover {
+            color: var(--color-link-hover);
+            text-decoration-color: currentColor;
+        }
+    }
+
+    /* Gradient - Base (Dark Mode) */
+    .variant-gradient {
+        background: linear-gradient(
+            135deg,
+            var(--color-surface-1) 0%,
+            var(--color-surface-2) 50%,
+            var(--color-surface-3) 100%
+        );
+        border-color: var(--color-border-hairline);
+        color: var(--color-text);
+        box-shadow: var(--elev-1);
+        position: relative;
+        overflow: hidden;
+
+        /* Shine effect overlay */
+        &::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.08) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            transition: left var(--dur-2) var(--ease-standard);
+            z-index: 1;
+        }
+
+        /* Content layering */
+        .button-icon,
+        .button-text {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Hover state */
+        &:hover {
+            background: linear-gradient(
+                135deg,
+                var(--color-surface-2) 0%,
+                var(--color-surface-3) 100%
+            );
+            color: var(--color-primary);
+            border-color: var(--color-primary);
+            transform: scale(var(--scale-hover));
+            box-shadow: var(--elev-2);
+
+            &::before {
+                left: 100%;
+            }
+        }
+
+        &:active {
+            transform: scale(var(--scale-active));
+        }
+    }
+
+    /* Gradient - Light Mode Override */
+    :root:not([data-theme="dark"]) .variant-gradient {
+        background: linear-gradient(
+            135deg,
+            var(--neutral-25) 0%,
+            var(--neutral-50) 50%,
+            var(--neutral-100) 100%
+        );
+        border-color: var(--neutral-150);
+        box-shadow: var(--elev-2);
+
+        &::before {
+            background: linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.2) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+        }
+
+        &:hover {
+            background: linear-gradient(
+                135deg,
+                var(--neutral-50) 0%,
+                var(--neutral-100) 50%,
+                var(--neutral-150) 100%
+            );
+            border-color: var(--color-primary);
+            box-shadow: var(--elev-3);
+        }
+    }
+
+    .action-button:focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: 2px;
+    }
+
+    .button-icon {
+        flex-shrink: 0;
+        transition: all var(--dur-2) var(--ease-standard);
+        /* Icon-Größe proportional zur Button-Höhe, aber mit min/max für Lesbarkeit */
+        width: calc(clamp(var(--icon-sm), 0.6 * var(--action-btn-height, 40px), var(--icon-lg)));
+        height: calc(clamp(var(--icon-sm), 0.6 * var(--action-btn-height, 40px), var(--icon-lg)));
+    }
+
+    .button-text {
+        transition: all var(--dur-2) var(--ease-standard);
+    }
+</style>

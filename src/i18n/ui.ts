@@ -1,6 +1,6 @@
 export const languages = {
   de: "Deutsch",
-  en: "English",
+  en: "English"
 };
 
 export const defaultLang = "de";
@@ -39,6 +39,7 @@ export const ui = {
     "500.pageText": "Es ist ein interner Serverfehler aufgetreten.",
     "500.backHome": "Zur Startseite",
     "projects.pageTitle": "Projekte",
+    "meta.description": "Luca Knobel – Web Portfolio, Projekte, Karriere und Kontakt."
     
   },
   en: {
@@ -74,6 +75,7 @@ export const ui = {
     "500.pageText": "An internal server error has occurred.",
     "500.backHome": "Back to Home",
     "projects.pageTitle": "Projects",
+    "meta.description": "Luca Knobel – Web Portfolio, Projects, Career and Contact."
   },
 } as const;
 

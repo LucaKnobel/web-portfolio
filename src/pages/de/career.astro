@@ -1,43 +1,14 @@
 ---
-import type { CareerEntry, EducationEntry } from "@/types/entries";
-import "@/styles/base.css";
-import "@/styles/tokens.css";
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import CareerCard from "@/components/CareerCard.astro";
-import EducationCard from "@/components/EducationCard.astro";
-import { getCollection } from "astro:content";
+import CareerSection from "@/components/CareerSection.astro";
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
-
-const allCareerEntries = await getCollection("career");
-const allEducationEntries = await getCollection("education");
-
-const careerFile = allCareerEntries.find(entry => entry.id === lang);
-const educationFile = allEducationEntries.find(entry => entry.id === lang);
-
-const careerEntries: CareerEntry[] = careerFile?.data || [];
-const educationEntries: EducationEntry[] = educationFile?.data || [];
 ---
 
 <BaseLayout title={`Luca Knobel | ${t("career.pageTitle")}`}>
-  <section>
-    <h3>{t("career.professionalCareer")}</h3>
-    {careerEntries.map((entry) => <CareerCard {...entry} />)}
-  </section>
-  <section>
-    <h3>{t("career.education")}</h3>
-    {educationEntries.map((entry) => <EducationCard {...entry} />)}
-  </section>
+  <CareerSection lang={lang} t={t} type="professional" title={t("career.professionalCareer")}/>
+  <CareerSection lang={lang} t={t} type="education" title={t("career.education")}/>
 </BaseLayout>
-
-<style>
-  section {
-    margin: var(--spacing-lg) 0 var(--spacing-xxl) 0;
-  }
-  h3 {
-    margin: var(--spacing-sm) 0 var(--spacing-md) 0;
-    text-align: center;
-  }
-</style>

@@ -1,0 +1,154 @@
+---
+import Navigation from "@/components/Navigation.astro";
+import ThemeToggle from "@/components/ThemeToggle.vue";
+import LanguageSelect from "@/components/LanguageSelect.vue";
+import MobileMenu from "@/components/MobileMenu.vue";
+
+export interface HeaderProps {
+    /** Current language (e.g., 'de' or 'en') */
+    lang: string;
+    /** Translation function for UI strings */
+    t: Function;
+}
+
+const { lang, t } = Astro.props as HeaderProps;
+
+/* Main navigation links */
+const headerLinks = [
+    { href: `/${lang}/projects`, label: t("nav.projects") },
+    { href: `/${lang}/career`, label: t("nav.career") },
+    { href: `/${lang}/contact`, label: t("nav.contact") },
+];
+---
+
+<header class="site-header">
+    <div class="header-container">
+        <!-- Brand/Logo section -->
+        <div class="header-brand">
+            <a href={`/${lang}`} class="brand-link">
+                <span class="brand-text">Luca Knobel</span>
+            </a>
+        </div>
+        <!-- Desktop navigation - visible on larger screens -->
+        <div class="header-nav desktop-nav">
+            <Navigation links={headerLinks} />
+        </div>
+
+        <!-- Header controls - theme, language, mobile menu -->
+        <div class="header-controls">
+            <!-- Desktop controls - only visible on larger screens -->
+            <div class="desktop-controls">
+                <!-- Language selector - desktop only -->
+                <LanguageSelect client:idle />
+
+                <!-- Theme toggle - desktop only -->
+                <ThemeToggle client:idle />
+            </div>
+
+            <!-- Mobile menu toggle - visible on small screens -->
+            <div class="mobile-menu-toggle">
+                <MobileMenu client:idle links={headerLinks} />
+            </div>
+        </div>
+    </div>
+</header>
+
+<style>
+    .site-header {
+        background: var(--glass-bg);
+        border-bottom: var(--border-hairline) solid var(--color-border-hairline);
+        box-shadow: var(--elev-2);
+        position: sticky;
+        top: 0;
+        z-index: var(--layer-header);
+        backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur);
+        padding-block: 0;
+        min-height: 80px;
+
+        .header-container {
+            max-width: var(--content-max);
+            margin-inline: auto;
+            padding-inline: var(--gutter);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: var(--cluster-gap);
+            height: 80px;
+        }
+    }
+
+    /* Brand/Logo section */
+    .header-brand {
+        flex-shrink: 0;
+
+        .brand-link {
+            color: var(--color-text);
+            text-decoration: none;
+            font-weight: var(--fw-semibold);
+            font-size: var(--heading-xs);
+            line-height: 1.1;
+            transition: color var(--dur-2) var(--ease-standard);
+
+            &:hover {
+                color: var(--color-primary);
+            }
+        }
+    }
+
+    /* Desktop navigation - hidden on mobile */
+    .desktop-nav {
+        display: none;
+        flex: 1;
+        justify-content: center;
+    }
+
+    /* Header controls section */
+    .header-controls {
+        display: flex;
+        align-items: center;
+        gap: var(--stack-xs);
+        flex-shrink: 0;
+
+        /* Desktop controls - hidden on mobile */
+        .desktop-controls {
+            display: none;
+            align-items: center;
+            gap: var(--stack-xs);
+        }
+
+        /* Mobile menu - only visible on small screens */
+        .mobile-menu-toggle {
+            display: block;
+        }
+    }
+
+    /* Desktop layout */
+    @media (min-width: 1024px) {
+        .site-header {
+            padding-block: 0;
+            min-height: 80px;
+        }
+
+        .header-container {
+            height: 80px;
+        }
+
+        .desktop-nav {
+            display: flex;
+        }
+
+        .header-controls {
+            gap: var(--stack-sm);
+
+            .desktop-controls {
+                display: flex;
+                gap: var(--stack-sm);
+            }
+
+            .mobile-menu-toggle {
+                display: none;
+            }
+        }
+    }
+</style>

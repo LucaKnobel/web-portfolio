@@ -1,61 +1,13 @@
 ---
-import { getCollection } from "astro:content";
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import ProjectCard from "@/components/ProjectCard.astro";
+import ProjectSection from "@/components/ProjectSection.astro";
+
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
-
-const allProjects = await getCollection("projects");
-const languageProjects = allProjects.filter(project => project.data.lang === lang);
-
-const projects = languageProjects.sort((a, b) => {
-  const dateA = new Date(a.data.date);
-  const dateB = new Date(b.data.date);
-  return dateB.getTime() - dateA.getTime();
-});
-
-console.log("Projects:", projects);
-
 ---
 
 <BaseLayout title={`Luca Knobel | ${t("projects.pageTitle")}`}>
-    <h1 class="project-title">{t("projects.pageTitle")}</h1>
-    <div class="project-card-wrapper">
-        {
-            projects.map((project) => (
-                <ProjectCard
-                    title={project.data.title}
-                    description={project.data.description}
-                    date={project.data.date}
-                    tags={project.data.tags}
-                    coverSrc={project.data.cover}
-                    href={`/${lang}/projects/${project.id}`}
-                />
-            ))
-        }
-    </div>
-
-    <style>
-        .project-title {
-            text-align: center;
-            margin: var(--spacing-lg) 0 var(--spacing-xl) 0;
-        }
-        .project-card-wrapper {
-            display: flex;
-            flex-direction: column;
-            gap: var(--spacing-md);
-        }
-        @media (min-width: 1024px) {
-            .project-card-wrapper {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-                gap: var(--spacing-lg);
-                justify-items: center;
-                align-items: stretch;
-                padding: var(--spacing-lg);
-            }
-        }
-    </style>
+    <ProjectSection lang={lang} t={t} />
 </BaseLayout>

@@ -1,0 +1,70 @@
+@layer primitives;
+
+@layer primitives {
+
+  h1 {
+    font-size: var(--heading-lg);
+    font-weight: var(--fw-semibold);
+    line-height: 1.2;
+    margin-block: var(--stack-lg) var(--stack-md);
+  }
+
+  h2 {
+    font-size: var(--heading-md);
+    font-weight: var(--fw-semibold);
+    line-height: 1.25;
+    margin-block: var(--stack-lg) var(--stack-md);
+  }
+
+  h3 {
+    font-size: var(--heading-sm);
+    font-weight: var(--fw-medium);
+    line-height: 1.3;
+    margin-block: var(--stack-lg) var(--stack-sm);
+  }
+
+  h4 {
+    font-size: var(--heading-xs);
+    font-weight: var(--fw-medium);
+    line-height: 1.35;
+    margin-block: var(--stack-lg) var(--stack-sm);
+  }
+
+  p {
+    margin-block: 0 var(--stack-md);
+  }
+
+  /* Basic button styling using semantic tokens */
+  button,
+  [type="button"],
+  [type="submit"] {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--stack-xs);
+    height: var(--control-h-md);
+    padding-inline: var(--stack-md);
+    padding-block: 0;
+    border: var(--border-hairline) solid var(--color-border);
+    border-radius: var(--button-radius);
+    background: var(--color-surface-2);
+    color: var(--color-text);
+    font-family: inherit;
+    font-size: var(--text-body);
+    cursor: pointer;
+  }
+
+  button:hover,
+  [type="button"]:hover,
+  [type="submit"]:hover {
+    background: var(--color-surface-3);
+  }
+
+  /* Icon styling using semantic tokens */
+  .icon {
+    width: var(--icon-lg);
+    height: var(--icon-lg);
+    fill: currentColor;
+    flex: 0 0 auto;
+  }
+
+}

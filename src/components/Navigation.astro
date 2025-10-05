@@ -1,0 +1,98 @@
+---
+export interface NavLink {
+  /** Link URL */
+  href: string;
+  /** Link label text */
+  label: string;
+}
+
+interface Props {
+  /** Array of navigation links */
+  links: NavLink[];
+}
+
+const { links } = Astro.props;
+---
+
+<nav class="main-nav">
+  <ul class="nav-list">
+    {
+      links.map((item) => (
+        <li class="nav-item">
+          <a href={item.href} class="nav-link">
+            {item.label}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<style>
+  .main-nav {
+    width: 100%;
+
+    .nav-list {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--stack-sm);
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+
+    .nav-item {
+      width: 100%;
+      max-width: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-link {
+      color: var(--color-text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      width: 100%;
+      min-height: var(--touch-target-min);
+      padding: 0 var(--stack-xs);
+      text-align: center;
+      font-weight: var(--fw-medium);
+      border-radius: var(--button-radius);
+      transition: all var(--dur-2) var(--ease-standard);
+      box-sizing: border-box;
+
+      &:hover {
+        background: var(--color-surface-2);
+        color: var(--color-primary);
+        transform: scale(var(--scale-focus));
+      }
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .main-nav {
+      .nav-list {
+        flex-direction: row;
+        justify-content: center;
+        gap: var(--stack-xs);
+      }
+
+      .nav-item {
+        width: auto;
+        max-width: none;
+      }
+
+      .nav-link {
+        width: auto;
+        padding: var(--stack-xs) var(--stack-xs);
+        min-height: auto;
+      }
+    }
+  }
+</style>

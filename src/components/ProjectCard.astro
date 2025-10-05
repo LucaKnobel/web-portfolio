@@ -1,14 +1,18 @@
 ---
-import "@/styles/tokens.css";
-import "@/styles/base.css";
 import { Image } from "astro:assets";
 
 interface ProjectCardProps {
+    /** Project title */
     title: string;
+    /** Project description */
     description: string;
+    /** Project date (YYYY-MM) */
     date: string;
+    /** List of tags */
     tags: string[];
+    /** Cover image source */
     coverSrc: ImageMetadata;
+    /** Link to project details */
     href: string;
 }
 
@@ -16,73 +20,66 @@ const { title, description, date, tags, coverSrc, href } =
     Astro.props as ProjectCardProps;
 ---
 
-<div class="project-card-outer">
-    <a href={href} class="project-card" tabindex="0">
-        {
-            coverSrc && (
-                <Image
-                    src={coverSrc}
-                    alt={title}
-                    class="project-card-cover"
-                    loading="lazy"
-                    decoding="async"
-                    format="webp"
-                    width={800}
-                    height={450}
-                />
-            )
-        }
-        <div class="project-card-content">
-            <h2 class="project-card-title">{title}</h2>
-            <p class="project-card-desc">{description}</p>
-            <div class="project-card-meta">
-                <span class="project-card-date">{date}</span>
-                <div class="project-card-tags">
-                    {
-                        tags.map((tag) => (
-                            <span class="project-card-tag">{tag}</span>
-                        ))
+<a href={href} class="project-card" tabindex="0">
+    {
+        coverSrc && (
+            <Image
+                src={coverSrc}
+                alt={title}
+                class="project-card-cover"
+                loading="lazy"
+                decoding="async"
+                format="webp"
+                priority
+                width="1200"
+                height="675"
+            />
+        )
+    }
+    <div class="project-card-content">
+        <h2 class="project-card-title">{title}</h2>
+        <p class="project-card-desc">{description}</p>
+        <div class="project-card-meta">
+            <span class="project-card-date">{
+                (() => {
+                    /* expected "YYYY-MM" */
+                    if (typeof date === "string" && /^\d{4}-\d{2}/.test(date)) {
+                        const [year, month] = date.split("-");
+                        return `${month}/${year}`;
                     }
-                </div>
+                    return date;
+                })()
+            }</span>
+            <div class="project-card-tags">
+                {tags.map((tag) => <span class="project-card-tag">{tag}</span>)}
             </div>
         </div>
-    </a>
-</div>
+    </div>
+</a>
 
 <style>
-    .project-card-outer {
-        width: 100%;
-        max-width: 340px;
-        margin-inline: auto;
-        margin-bottom: var(--spacing-md);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
     .project-card {
         display: flex;
         flex-direction: column;
-        align-items: stretch;
-        background: var(--color-bg);
-        border-radius: 0.75rem;
-        box-shadow: 0 2px 12px var(--color-shadow);
+        background: var(--color-surface-3);
+        border-radius: var(--card-radius);
+        box-shadow: var(--elev-2);
         text-decoration: none;
         color: var(--color-text);
         transition:
-            box-shadow 0.2s,
-            scale 0.2s;
+            box-shadow var(--dur-2) var(--ease-standard),
+            scale var(--dur-2) var(--ease-standard);
         cursor: pointer;
         overflow: hidden;
-        width: 100%;
-        padding-bottom: var(--spacing-xs);
+        padding-bottom: var(--stack-xs);
+        border: var(--border-strong) var(--color-border) solid;
 
         &:hover,
         &:focus {
-            box-shadow: 0 8px 24px var(--color-shadow);
-            scale: 1.01;
-            position: relative;
-            outline: none;
+            box-shadow: var(--elev-3);
+            scale: 1.012;
+            outline: 2px solid var(--focus-ring-color);
+            outline-offset: 2px;
         }
 
         .project-card-cover {
@@ -90,34 +87,34 @@ const { title, description, date, tags, coverSrc, href } =
             aspect-ratio: 16 / 9;
             object-fit: cover;
             display: block;
-            border-radius: 0.75rem 0.75rem 0 0;
-            box-shadow: 0 1px 4px var(--color-shadow, rgba(0, 0, 0, 0.06));
-            border: none;
+            border-radius: var(--card-radius) var(--card-radius) 0 0;
+            box-shadow: var(--elev-1);
+            border: none
             margin: 0;
-            max-height: 200px;
+            max-height: 500px;
         }
 
         .project-card-content {
             width: 100%;
-            padding: var(--spacing-sm);
+            padding: var(--card-pad);
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            gap: var(--spacing-xs);
+            gap: var(--stack-xs);
 
             .project-card-title {
-                margin: 0 0 var(--spacing-xs) 0;
-                font-size: var(--font-size-h5);
-                font-weight: 700;
+                margin: 0;
+                font-size: var(--heading-sm);
+                font-weight: var(--fw-semibold);
                 color: var(--color-text);
                 letter-spacing: 0.01em;
             }
 
             .project-card-desc {
-                margin: 0 0 var(--spacing-xs) 0;
-                color: var(--color-text-muted);
-                font-size: var(--font-size-p);
-                line-height: var(--line-height-base);
+                margin: 0;
+                color: var(--color-muted);
+                font-size: var(--text-body);
+                line-height: var(--lh);
                 text-align: left;
             }
 
@@ -126,54 +123,34 @@ const { title, description, date, tags, coverSrc, href } =
                 display: flex;
                 flex-direction: column;
                 align-items: flex-start;
-                gap: var(--spacing-xs);
-                font-size: var(--font-size-xs);
-                margin-top: var(--spacing-xs);
+                gap: var(--stack-xs);
+                font-size: var(--text-small);
+                margin-top: var(--stack-xs);
 
                 .project-card-date {
-                    color: var(--color-text-muted);
-                    font-size: var(--font-size-xs, 0.93em);
+                    color: var(--color-muted);
+                    font-size: var(--text-small);
                     font-style: italic;
-                    margin-bottom: 2px;
+                    margin-bottom: var(--stack-xs);
                 }
 
                 .project-card-tags {
                     display: flex;
                     flex-wrap: wrap;
-                    gap: var(--spacing-xs);
+                    gap: var(--stack-xs);
 
                     .project-card-tag {
-                        background: var(--color-primary);
-                        color: var(--color-text-muted);
-                        border: 2px solid var(--color-border);
+                        background: var(--grad-primary-soft);
+                        color: var(--color-on-primary);
+                        border: none;
                         border-radius: 999px;
                         padding: 0.12em 0.8em;
-                        font-size: var(--font-size-xs);
-                        font-weight: 400;
+                        font-size: var(--text-small);
+                        font-weight: var(--fw-medium);
                         letter-spacing: 0.01em;
                         white-space: nowrap;
-                        margin-bottom: 2px;
-                        box-shadow: none;
                     }
                 }
-            }
-        }
-    }
-
-    @media (min-width: 1024px) {
-        .project-card-outer {
-            height: 100%;
-            max-width: none;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-        .project-card {
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            .project-card-cover {
-                max-height: 400px;
             }
         }
     }

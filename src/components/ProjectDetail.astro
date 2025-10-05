@@ -1,0 +1,448 @@
+---
+import ActionButton from "@/components/ActionButton.astro";
+import { Image } from "astro:assets";
+
+export interface ProjectDetailProps {
+    /** Project data object */
+    project: any;
+    /** Current language (e.g., 'de' or 'en') */
+    lang: string;
+    /** Translation function for UI strings */
+    t: Function;
+    /** Astro Content component for project details */
+    Content: any;
+}
+
+const { project, lang, t, Content } = Astro.props as ProjectDetailProps;
+---
+
+<article class="project-detail">
+    <header class="project-header">
+        <div class="project-meta">
+            <div class="project-meta-row">
+                <a href={`/${lang}/projects`} class="back-link">
+                    ← {t("nav.projects")}
+                </a>
+                <span class="project-date">
+                    {
+                        (() => {
+                            /* expected "YYYY-MM" */
+                            if (
+                                typeof project.data.date === "string" &&
+                                /^\d{4}-\d{2}/.test(project.data.date)
+                            ) {
+                                const [year, month] = project.data.date.split("-");
+                                return `${month}/${year}`;
+                            }
+                            return project.data.date;
+                        })()
+                    }
+                </span>
+            </div>
+            <h1 class="project-title">{project.data.title}</h1>
+            <div class="project-cover">
+                <Image
+                    src={project.data.cover}
+                    alt={project.data.title}
+                    loading="lazy"
+                    decoding="async"
+                    format="webp"
+                    priority
+                    width="1200"
+                    height="675"
+                />
+            </div>
+            {
+                project.data.url && (
+                    <ActionButton
+                        href={project.data.url}
+                        height="44px"
+                        width="200px"
+                        text="GitHub Repository"
+                        variant="gradient"
+                    />
+                )
+            }
+        </div>
+    </header>
+    <div class="project-content">
+        <Content />
+    </div>
+</article>
+
+<style>
+    .project-detail {
+        max-width: var(--content-max);
+        margin: 0 auto;
+        padding: var(--gutter);
+        background: var(--color-bg);
+        overflow-x: hidden;
+
+        .project-header {
+            margin-bottom: var(--stack-lg);
+        }
+        .project-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: var(--stack-xs);
+            margin-bottom: var(--stack-md);
+            font-size: var(--text-sm);
+            color: var(--color-muted);
+
+            .project-meta-row {
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                gap: var(--stack-xs);
+            }
+        }
+        .back-link {
+            color: var(--color-link);
+            text-decoration: none;
+            font-weight: var(--fw-medium);
+            transition: color var(--dur-1) var(--ease-standard);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: var(--touch-target-min);
+            min-height: var(--touch-target-min);
+            padding: 0 var(--stack-xs);
+            border-radius: var(--radius-sm);
+            box-sizing: border-box;
+            cursor: pointer;
+
+            &:hover,
+            &:focus {
+                color: var(--color-link-hover);
+                text-decoration: underline;
+            }
+        }
+        .project-date {
+            color: var(--color-muted);
+            font-variant-numeric: tabular-nums;
+            text-align: right;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+        .project-title {
+            font-size: var(--heading-lg);
+            font-weight: var(--fw-semibold);
+            margin: 0;
+            color: var(--color-text);
+            word-break: break-word;
+            hyphens: auto;
+            overflow-wrap: break-word;
+            max-width: 100%;
+            width: 100%;
+            text-align: left;
+        }
+        .project-cover {
+            width: 100%;
+            margin: var(--stack-md) 0 var(--stack-lg) 0;
+            border-radius: var(--card-radius);
+            overflow: hidden;
+            box-shadow: var(--elev-1);
+
+            img {
+                outline: none;
+                outline-offset: 0;
+                width: 100%;
+                height: auto;
+                display: block;
+                border-radius: var(--card-radius);
+            }
+        }
+        .project-content {
+            line-height: var(--lh);
+            color: var(--color-text);
+            word-break: break-word;
+
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6 {
+                font-weight: var(--fw-semibold);
+                color: var(--color-text);
+                margin-top: var(--stack-lg);
+                margin-bottom: var(--stack-sm);
+                line-height: 1.2;
+                word-break: break-word;
+                hyphens: auto;
+            }
+            h1 { font-size: var(--heading-lg); }
+            h2 { font-size: var(--heading-md); }
+            h3 { font-size: var(--heading-sm); }
+            h4 { font-size: var(--heading-xs); }
+            h5, h6 { font-size: var(--text-body); }
+
+            p,
+            li {
+                hyphens: manual;
+                -webkit-hyphens: manual;
+                -ms-hyphens: manual;
+                text-align: left;
+                word-break: normal;
+                margin-bottom: var(--stack-md);
+                word-spacing: normal;
+                letter-spacing: normal;
+            }
+
+            th,
+            td {
+                hyphens: auto;
+                -webkit-hyphens: auto;
+                -ms-hyphens: auto;
+            }
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6 {
+                hyphens: auto;
+                word-break: break-word;
+            }
+            th,
+            td {
+                text-align: left;
+                letter-spacing: 0.01em;
+            }
+            ul,
+            ol {
+                margin-bottom: var(--stack-md);
+                padding-left: var(--stack-lg);
+            }
+            li {
+                margin-bottom: var(--stack-xs);
+                hyphens: auto;
+                word-break: break-word;
+            }
+            pre {
+                background: var(--color-surface-2);
+                color: var(--color-text);
+                padding: var(--stack-lg);
+                border-radius: var(--radius-lg);
+                overflow-x: auto;
+                margin-bottom: var(--stack-lg);
+                font-size: var(--text-body);
+                max-width: 100vw;
+                font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+                    "Liberation Mono", "Courier New", monospace;
+                box-shadow: var(--elev-2);
+                border: 1px solid var(--color-border);
+                text-align: left;
+                white-space: pre;
+                word-break: normal;
+            }
+            code {
+                background: var(--color-surface-1);
+                color: var(--color-primary);
+                padding: 0.18em 0.45em;
+                border-radius: var(--radius-sm);
+                font-size: 0.97em;
+                font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+                    "Liberation Mono", "Courier New", monospace;
+                box-shadow: 0 1px 2px 0 var(--shadow-color);
+                border: 1px solid var(--color-border-hairline);
+                white-space: pre;
+                word-break: normal;
+            }
+            pre code {
+                background: none;
+                border: none;
+                padding: 0;
+                color: inherit;
+                box-shadow: none;
+                white-space: pre;
+                word-break: normal;
+            }
+            img,
+            picture,
+            astro-image {
+                max-width: 100%;
+                height: auto;
+                border-radius: var(--button-radius);
+                margin: var(--stack-md) 0;
+                display: block;
+            }
+            blockquote {
+                border-left: 4px solid var(--color-primary);
+                padding-left: var(--stack-md);
+                margin: var(--stack-md) 0;
+                font-style: italic;
+                color: var(--color-muted);
+            }
+            table {
+                /* Alternating row colors */
+                tbody tr:nth-child(odd) {
+                    background: var(--color-bg);
+                }
+                tbody tr:nth-child(even) {
+                    background: var(--color-surface-1);
+                }
+                width: 100%;
+                border-collapse: separate;
+                border-spacing: 0;
+                margin: var(--stack-lg) 0;
+                font-size: var(--text-body);
+                font-family: var(--font-sans);
+                border: var(--border-strong) solid var(--color-border);
+                border-radius: var(--radius-lg);
+                overflow: hidden;
+                table-layout: auto;
+
+                th {
+                    font-weight: var(--fw-semibold);
+                    border-bottom: var(--border-hairline) solid var(--color-border);
+                    letter-spacing: 0.01em;
+                    padding: var(--stack-xs) var(--stack-xs);
+                    text-align: left;
+                    vertical-align: top;
+                    word-break: break-word;
+                    hyphens: auto;
+                    font-size: var(--text-body);
+                    line-height: 1.2;
+                    background-color: var(--color-surface-3);
+                }
+                th:first-child {
+                    width: 32%;
+                    min-width: 90px;
+                    border-right: 1px solid var(--color-border-hairline);
+                }
+                th:not(:first-child) {
+                    width: 68%;
+                }
+                td {
+                    padding: var(--stack-xs) var(--stack-xs);
+                    border-bottom: 1px solid var(--color-border);
+                    text-align: left;
+                    vertical-align: top;
+                    word-break: break-word;
+                    hyphens: auto;
+                    font-size: var(--text-body);
+                    line-height: 1.3;
+                }
+                td:first-child {
+                    width: 32%;
+                    min-width: 90px;
+                    font-weight: var(--fw-medium);
+                    border-right: 1px solid var(--color-border-hairline);
+                }
+                td:not(:first-child) {
+                    width: 68%;
+                    font-weight: normal;
+                }
+                caption {
+                    caption-side: bottom;
+                    padding: var(--stack-xs) 0;
+                    font-size: var(--text-xs);
+                    text-align: left;
+                }
+            }
+            hr {
+                border: none;
+                border-top: 1px solid var(--divider-subtle);
+                margin: var(--stack-lg) 0;
+            }
+            a {
+                color: var(--color-link);
+                text-decoration: underline;
+                transition: color var(--dur-1) var(--ease-standard);
+
+                &:hover {
+                    color: var(--color-link-hover);
+                }
+            }
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .project-detail {
+            max-width: var(--content-max);
+            padding: var(--gutter) var(--gutter);
+        
+
+            .project-header {
+                margin-bottom: var(--stack-lg);
+            }
+            .project-meta {
+                gap: var(--stack-xxs);
+                margin-bottom: var(--stack-xxl);
+            }
+            .project-title {
+                font-size: var(--display-xl);
+                margin-bottom: var(--stack-sm);
+            }
+            .project-cover {
+                margin: var(--stack-xs) 0 var(--stack-md) 0;
+                align-self: flex-start;
+            }
+            .project-content img,
+            .project-content picture,
+            .project-content astro-image {
+                max-width: 800px;
+                height: auto;
+                display: block;
+                border-radius: var(--button-radius);
+                margin: var(--stack-md) 0;
+            }
+            .project-content {
+                h1 {
+                    font-size: var(--display-xl);
+                    margin-top: var(--stack-xl);
+                    margin-bottom: var(--stack-md);
+                }
+                h2 {
+                    font-size: var(--heading-lg);
+                    margin-top: var(--stack-lg);
+                    margin-bottom: var(--stack-md);
+                }
+                h3 {
+                    font-size: var(--heading-md);
+                    margin-top: var(--stack-md);
+                    margin-bottom: var(--stack-sm);
+                }
+                h4 {
+                    font-size: var(--heading-sm);
+                    margin-top: var(--stack-sm);
+                    margin-bottom: var(--stack-xs);
+                }
+                table {
+                    font-size: var(--text-body);
+                    th,
+                    td {
+                        padding: var(--stack-xs) var(--stack-sm);
+                    }
+                    th:first-child,
+                    td:first-child {
+                        width: 30%;
+                    }
+                    th:not(:first-child),
+                    td:not(:first-child) {
+                        width: 70%;
+                    }
+                }
+                p,
+                li {
+                    text-align: justify;
+                    text-justify: inter-word;
+                    margin-bottom: var(--stack-xs);
+                    hyphens: auto;
+                    -webkit-hyphens: auto;
+                    -ms-hyphens: auto;
+                }
+                pre,
+                code {
+                    text-align: left;
+                }
+            }
+        }
+    }
+</style>
