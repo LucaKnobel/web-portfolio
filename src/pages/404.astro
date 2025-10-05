@@ -1,18 +1,13 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import Error404 from "@/components/Error404.astro";
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
-
-
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 ---
 
-<BaseLayout title=`${t("404.pageTitle")}`>
-    <section class="error-page">
-        <h4>{t("404.pageTitle")}</h4>
-        <p>{t("404.pageText")}</p>
-        <a href="/">{t("404.backHome")}</a>
-    </section>
+<BaseLayout title={`${t("404.pageTitle")}`}>
+    <Error404 t={t} />
 </BaseLayout>
 
