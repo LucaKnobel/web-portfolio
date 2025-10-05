@@ -16,7 +16,7 @@ export interface Props {
     ariaLabel?: string;
     /** Custom width (e.g. '220px', '100%') [required außer bei variant-link] */
     width?: string;
-    /** Custom height (e.g. '40px', '3rem') [required außer bei variant-link] */
+    /** Custom height (e.g. '40px', '3rem') [required ausser bei variant-link] */
     height?: string;
 }
 
@@ -254,7 +254,7 @@ const classes = [
     .button-icon {
         flex-shrink: 0;
         transition: all var(--dur-2) var(--ease-standard);
-        /* Icon-Größe proportional zur Button-Höhe, aber mit min/max für Lesbarkeit */
+        /* Icon-Grösse proportional zur Button-Höhe, aber mit min/max für Lesbarkeit */
         width: calc(clamp(var(--icon-sm), 0.6 * var(--action-btn-height, 40px), var(--icon-lg)));
         height: calc(clamp(var(--icon-sm), 0.6 * var(--action-btn-height, 40px), var(--icon-lg)));
     }

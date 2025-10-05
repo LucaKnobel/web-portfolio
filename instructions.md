@@ -12,7 +12,7 @@ Deployment-Ziel: **Infomaniak** (CH/EU), **DSG/DSGVO-konform**.
 - **Interaktivität**: **React** nur als Island, klein, klar abgegrenzt, kein globales State-Monster.  
 - **i18n**: Sprachrouten `/de`, `/en`; zentrale JSON-Texte; `hreflang`; saubere Meta/OG/Sitemaps.  
 - **Styles**: CSS Custom Properties (Tokens), `base.css` für Baseline, mobile-first; Container-/Media-Queries; keine leaky globalen Styles.  
-- **Content**: Große Texte serverseitig oder statisch rendern, **kein Client-Markdown**.  
+- **Content**: Grosse Texte serverseitig oder statisch rendern, **kein Client-Markdown**.  
 - **Tests**: Fokus auf DOM-Ausgabe, Events, Accessibility; defensive Programmierung.  
 - **Datenschutz/Deploy**: Verarbeitung und Logs CH/EU; Serverless nur falls nötig (z. B. Kontakt-Mail) und ohne PII im Frontend.
 
