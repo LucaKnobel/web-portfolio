@@ -6,9 +6,9 @@ export interface Props {
 const { t } = Astro.props;
 ---
 <section class="error-page">
-    <h4>{t("404.pageTitle")}</h4>
-    <p>{t("404.pageText")}</p>
-    <ActionButton href="/" text={t('404.backHome')} width="150px" height="44px" variant="primary" />
+    <h4>{t("500.pageTitle")}</h4>
+    <p>{t("500.pageText")}</p>
+    <ActionButton href="/" text={t('500.backHome')} width="150px" height="44px" variant="primary" />
 </section>
 
 <style>
@@ -39,7 +39,6 @@ const { t } = Astro.props;
         margin: 0 0 var(--stack-md) 0;
         line-height: var(--lh);
     }
-  
     @media (max-width: 1024px) {
         .error-page {
             max-width: 98vw;
