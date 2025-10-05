@@ -46,6 +46,10 @@ const { project, lang, t, Content } = Astro.props as ProjectDetailProps;
                     alt={project.data.title}
                     loading="lazy"
                     decoding="async"
+                    format="webp"
+                    priority
+                    width="1200"
+                    height="675"
                 />
             </div>
             {
