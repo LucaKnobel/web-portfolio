@@ -1,14 +1,23 @@
 ---
 import ActionButton from "@/components/ActionButton.astro";
-export interface Props {
+
+export interface Error500Props {
+    /** Translation function for UI strings */
     t: Function;
 }
-const { t } = Astro.props;
+const { t } = Astro.props as Error500Props;
 ---
+
 <section class="error-page">
     <h4>{t("500.pageTitle")}</h4>
     <p>{t("500.pageText")}</p>
-    <ActionButton href="/" text={t('500.backHome')} width="150px" height="44px" variant="primary" />
+    <ActionButton
+        href="/"
+        text={t("500.backHome")}
+        width="150px"
+        height="44px"
+        variant="primary"
+    />
 </section>
 
 <style>

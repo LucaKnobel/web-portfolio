@@ -1,18 +1,21 @@
 ---
 import CareerCard from "@/components/CareerCard.astro";
 import { getCollection } from "astro:content";
-import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 
-const lang = getLangFromUrl(Astro.url);
-const t = useTranslations(lang);
 
-const type =
-    Astro.props.type || "professional"; /* "professional" or "education" */
-const title =
-    Astro.props.title ||
-    (type === "education"
-        ? t("career.education")
-        : t("career.professionalCareer"));
+export interface CareerSectionProps {
+    /** Current language (e.g., 'de' or 'en')*/
+    lang: string;
+    /** Translation function for UI strings */
+    t: Function;
+    /** Section type: 'professional' for work experience, 'education' for education */
+    type: "professional" | "education";
+    /** Section title (displayed as heading)*/
+    title: string;
+}
+
+const { lang, t, type, title } = Astro.props as CareerSectionProps;
+
 
 let entries = [];
 try {
@@ -34,7 +37,7 @@ try {
 
 <section>
     <h1 class="section-title">{title}</h1>
-    {entries.map((entry) => <CareerCard {...entry} />)}
+    {entries.map((entry) => <CareerCard t={t} entry={{ ...entry }} />)}
 </section>
 
 <style>

@@ -2,27 +2,36 @@
 import portrait from "@/assets/portrait-photo.jpg";
 import ActionButton from "@/components/ActionButton.astro";
 import { Image } from "astro:assets";
-import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 
-const lang = getLangFromUrl(Astro.url);
-const t = useTranslations(lang);
-
-interface Props {
+export interface IntroProps {
+    /** Current language (e.g., 'de' or 'en') */
+    lang: string;
+    /** Translation function for UI strings */
+    t: Function;
+    /** Name to display in intro */
     name?: string;
+    /** Role or subtitle */
     role?: string;
+    /** Portrait image source */
     portraitSrc?: ImageMetadata;
+    /** GitHub profile URL */
     githubUrl?: string;
+    /** LinkedIn profile URL */
     linkedinUrl?: string;
+    /** Contact page href */
     contactHref?: string;
 }
+
 const {
+    lang,
+    t,
     name = "Luca Knobel",
     role = "",
     portraitSrc = portrait,
     githubUrl = "https://github.com/LucaKnobel",
     linkedinUrl = "https://linkedin.com/in/luca-knobel-14b4a7221",
     contactHref = `/${lang}/contact`,
-} = Astro.props;
+} = Astro.props as IntroProps;
 ---
 
 <section aria-labelledby="intro-title">

@@ -1,15 +1,12 @@
 ---
-import { getLangFromUrl, useTranslations } from "@/i18n/utils";
-
-export interface Props {
+export interface CopyrightProps {
+    /** Translation function for UI strings */
+    t: Function;
     /** Name/entity for copyright (optional - uses translation if not provided) */
     name?: string;
 }
 
-const { name } = Astro.props;
-
-const lang = getLangFromUrl(Astro.url);
-const t = useTranslations(lang);
+const { t, name } = Astro.props as CopyrightProps;
 
 /* Use provided name or fallback to translation */
 const displayName = name || t("footer.copyright");

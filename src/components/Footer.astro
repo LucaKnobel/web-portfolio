@@ -1,11 +1,16 @@
 ---
-import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 import Navigation from "./Navigation.astro";
 import ActionButton from "./ActionButton.astro";
 import Copyright from "./Copyright.astro";
 
-const lang = getLangFromUrl(Astro.url);
-const t = useTranslations(lang);
+export interface FooterProps {
+    /** Language code for constructing localized links */
+    lang: string;
+    /** Translation function for UI strings */
+    t: Function;
+}
+
+const { lang, t } = Astro.props as FooterProps;
 
 const footerLinks = [
     { href: `/${lang}/projects`, label: t("nav.projects") },
@@ -37,7 +42,7 @@ const footerLinks = [
                 width="44px"
             />
         </div>
-        <Copyright />
+        <Copyright t={t} />
     </div>
 </footer>
 

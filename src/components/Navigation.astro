@@ -1,10 +1,13 @@
 ---
 export interface NavLink {
+  /** Link URL */
   href: string;
+  /** Link label text */
   label: string;
 }
 
 interface Props {
+  /** Array of navigation links */
   links: NavLink[];
 }
 

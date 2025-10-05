@@ -4,12 +4,16 @@ import ThemeToggle from "@/components/ThemeToggle.vue";
 import LanguageSelect from "@/components/LanguageSelect.vue";
 import MobileMenu from "@/components/MobileMenu.vue";
 
-import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+export interface HeaderProps {
+    /** Current language (e.g., 'de' or 'en') */
+    lang: string;
+    /** Translation function for UI strings */
+    t: Function;
+}
 
-const lang = getLangFromUrl(Astro.url);
-const t = useTranslations(lang);
+const { lang, t } = Astro.props as HeaderProps;
 
-// Main navigation links
+/* Main navigation links */
 const headerLinks = [
     { href: `/${lang}/projects`, label: t("nav.projects") },
     { href: `/${lang}/career`, label: t("nav.career") },

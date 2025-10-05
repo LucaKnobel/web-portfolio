@@ -2,13 +2,14 @@
 import "@/styles/tokens.css";
 import "@/styles/global.css";
 import "@/styles/primitives.css";
-import { getLangFromUrl } from "@/i18n/utils";
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 import Footer from "@/components/Footer.astro";
 import Header from "@/components/Header.astro";
 import { ClientRouter } from "astro:transitions";
 
 const { title = "Portfolio" } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 const theme = Astro.cookies.get("theme")?.value ?? "light";
 
 ---
@@ -23,12 +24,11 @@ const theme = Astro.cookies.get("theme")?.value ?? "light";
         <ClientRouter />
     </head>
     <body>
-        <Header />
+        <Header lang={lang} t={t} />
             <main>
             <slot />
         </main>
-        <Footer />
+        <Footer lang={lang} t={t} />
     </body>
-
 </html>
 

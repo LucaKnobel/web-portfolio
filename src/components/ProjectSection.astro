@@ -1,11 +1,14 @@
 ---
 import ProjectCard from "@/components/ProjectCard.astro";
 import { getCollection } from "astro:content";
-import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 
-
-const lang = getLangFromUrl(Astro.url);
-const t = useTranslations(lang);
+export interface ProjectSectionProps {
+    /** Current language (e.g., 'de' or 'en') */
+    lang: string;
+    /** Translation function for UI strings */
+    t: Function;
+}
+const { lang, t } = Astro.props as ProjectSectionProps;
 
 let projects = [];
 try {

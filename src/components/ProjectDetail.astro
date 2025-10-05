@@ -2,14 +2,18 @@
 import ActionButton from "@/components/ActionButton.astro";
 import { Image } from "astro:assets";
 
-export interface Props {
+export interface ProjectDetailProps {
+    /** Project data object */
     project: any;
+    /** Current language (e.g., 'de' or 'en') */
     lang: string;
+    /** Translation function for UI strings */
     t: Function;
+    /** Astro Content component for project details */
     Content: any;
 }
 
-const { project, lang, t, Content } = Astro.props;
+const { project, lang, t, Content } = Astro.props as ProjectDetailProps;
 ---
 
 <article class="project-detail">

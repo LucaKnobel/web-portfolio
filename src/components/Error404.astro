@@ -1,9 +1,11 @@
 ---
 import ActionButton from "@/components/ActionButton.astro";
-export interface Props {
+
+export interface Error404Props {
+    /** Translation function for UI strings */
     t: Function;
 }
-const { t } = Astro.props;
+const { t } = Astro.props as Error404Props;
 ---
 <section class="error-page">
     <h4>{t("404.pageTitle")}</h4>

@@ -1,17 +1,23 @@
 ---
 import { Image } from "astro:assets";
 
-interface ProjectCard {
+interface ProjectCardProps {
+    /** Project title */
     title: string;
+    /** Project description */
     description: string;
+    /** Project date (YYYY-MM) */
     date: string;
+    /** List of tags */
     tags: string[];
+    /** Cover image source */
     coverSrc: ImageMetadata;
+    /** Link to project details */
     href: string;
 }
 
 const { title, description, date, tags, coverSrc, href } =
-    Astro.props as ProjectCard;
+    Astro.props as ProjectCardProps;
 ---
 
 <a href={href} class="project-card" tabindex="0">
