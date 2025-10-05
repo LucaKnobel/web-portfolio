@@ -32,7 +32,7 @@
                     <nav class="modal-nav">
                         <ul class="nav-list">
                             <li v-for="link in links" :key="link.href" class="nav-item">
-                                <a :href="link.href" class="nav-link" @click="handleNavLinkClick">
+                                <a :href="link.href" class="nav-link" @click.prevent="handleNavLinkClick(link.href)">
                                     {{ link.label }}
                                 </a>
                             </li>
@@ -47,6 +47,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from "vue"
+import { navigate } from "astro:transitions/client";
 import { Icon } from "@iconify/vue"
 import ThemeToggle from "./ThemeToggle.vue"
 import LanguageSelect from "./LanguageSelect.vue"
@@ -94,9 +95,9 @@ const closeMenu = (): void => {
     document.body.style.overflow = "";
 }
 
-const handleNavLinkClick = (): void => {
-    // Let Astro's View Transitions handle the navigation smoothly
-    closeMenu();
+const handleNavLinkClick = (href: string) => {
+  closeMenu();
+  navigate(href);
 }
 
 const handleOverlayClick = (): void => {
