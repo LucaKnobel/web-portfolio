@@ -3,17 +3,22 @@ import ProjectCard from "@/components/ProjectCard.astro";
 import { getCollection } from "astro:content";
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 
+
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
-const allProjects = await getCollection("projects");
-const languageProjects = allProjects.filter(project => project.data.lang === lang);
-
-const projects = languageProjects.sort((a, b) => {
-  const dateA = new Date(a.data.date);
-  const dateB = new Date(b.data.date);
-  return dateB.getTime() - dateA.getTime();
-});
+let projects = [];
+try {
+    const allProjects = await getCollection("projects");
+    const languageProjects = allProjects.filter(project => project.data.lang === lang);
+    projects = languageProjects.sort((a, b) => {
+        const dateA = new Date(a.data.date);
+        const dateB = new Date(b.data.date);
+        return dateB.getTime() - dateA.getTime();
+    });
+} catch (err) {
+    return Astro.redirect("/500");
+}
 ---
 
 <section class="project-list-section">

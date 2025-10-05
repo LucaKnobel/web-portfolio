@@ -13,7 +13,12 @@ if (!lang || !slug) {
 
 const t = useTranslations(lang);
 
-const detail = await getProjectDetail(lang, slug);
+let detail;
+try {
+    detail = await getProjectDetail(lang, slug);
+} catch (err) {
+    return Astro.redirect("/500");
+}
 
 if (!detail || !detail.project || !detail.Content) {
     return Astro.redirect("/404");

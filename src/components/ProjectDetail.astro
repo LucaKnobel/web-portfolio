@@ -1,13 +1,15 @@
 ---
+import ActionButton from "@/components/ActionButton.astro";
+import { Image } from "astro:assets";
+
 export interface Props {
     project: any;
     lang: string;
     t: Function;
     Content: any;
 }
+
 const { project, lang, t, Content } = Astro.props;
-import ActionButton from "@/components/ActionButton.astro";
-import { Image } from "astro:assets";
 ---
 
 <article class="project-detail">
