@@ -1,229 +1,27 @@
 ---
-import { getEntry, render } from "astro:content";
+import { getProjectDetail } from "@/content/getProjectDetail.ts";
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { useTranslations } from "@/i18n/utils";
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+import ProjectDetail from "@/components/ProjectDetail.astro";
 
-// SSR: Parameter direkt aus URL extrahieren
 const { slug } = Astro.params;
-const lang = "en"; // Statische Sprache für englischen Ordner
+const lang = getLangFromUrl(Astro.url);
+
+if (!lang || !slug) {
+    return Astro.redirect("/404");
+}
+
 const t = useTranslations(lang);
 
-// Validiere slug parameter
-if (slug === undefined) {
-  return Astro.redirect("/404");
+const detail = await getProjectDetail(lang, slug);
+
+if (!detail || !detail.project || !detail.Content) {
+    return Astro.redirect("/404");
 }
 
-// Verwende getEntry() für einzelne Einträge im SSR-Modus
-const project = await getEntry("projects", `en/${slug}`);
-
-if (!project) {
-  return Astro.redirect("/404");
-}
-
-const { Content } = await render(project);
+const { project, Content } = detail;
 ---
 
-<BaseLayout title={`${project.data.title} | Luca Knobel`}>
-    <article class="project-detail">
-        <header class="project-header">
-            <div class="project-meta">
-                <a href={`/${lang}/projects`} class="back-link">
-                    ← {t("nav.projects")}
-                </a>
-                <span class="project-date">{project.data.date}</span>
-            </div>
-
-            <h1 class="project-title">{project.data.title}</h1>
-            <p class="project-description">{project.data.description}</p>
-
-            {
-                project.data.url && (
-                    <a
-                        href={project.data.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="project-link"
-                    >
-                        GitHub Repository
-                    </a>
-                )
-            }
-
-            <div class="project-tags">
-                {
-                    project.data.tags.map((tag) => (
-                        <span class="project-tag">{tag}</span>
-                    ))
-                }
-            </div>
-        </header>
-
-        <div class="project-cover">
-            <img
-                src={project.data.cover.src}
-                alt={project.data.title}
-                loading="lazy"
-            />
-        </div>
-
-        <div class="project-content">
-            <Content />
-        </div>
-    </article>
+<BaseLayout title={`Luca Knobel | ${project.data.title}`}>
+    <ProjectDetail project={project} lang={lang} t={t} Content={Content} />
 </BaseLayout>
-
-<style>
-    .project-detail {
-        max-width: var(--content-max);
-        margin: 0 auto;
-        padding: var(--gutter);
-    }
-
-    .project-header {
-        margin-bottom: var(--stack-lg);
-    }
-
-    .project-meta {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: var(--stack-md);
-        font-size: var(--text-sm);
-        color: var(--color-text-muted);
-    }
-
-    .back-link {
-        color: var(--color-link);
-        text-decoration: none;
-        font-weight: var(--fw-medium);
-    }
-
-    .back-link:hover {
-        text-decoration: underline;
-    }
-
-    .project-title {
-        font-size: var(--text-3xl);
-        margin-bottom: var(--stack-sm);
-    }
-
-    .project-description {
-        font-size: var(--text-lg);
-        color: var(--color-text-muted);
-        margin-bottom: var(--stack-md);
-    }
-
-    .project-link {
-        display: inline-block;
-        background: var(--color-primary);
-        color: white;
-        padding: var(--stack-sm) var(--stack-md);
-        border-radius: var(--button-radius);
-        text-decoration: none;
-        font-weight: var(--fw-medium);
-        margin-bottom: var(--stack-md);
-    }
-
-    .project-link:hover {
-        background: var(--color-primary-hover);
-    }
-
-    .project-tags {
-        display: flex;
-        gap: var(--stack-xs);
-        flex-wrap: wrap;
-    }
-
-    .project-tag {
-        background: var(--color-surface-2);
-        padding: var(--stack-xs) var(--stack-sm);
-        border-radius: var(--button-radius);
-        font-size: var(--text-sm);
-        color: var(--color-text-muted);
-    }
-
-    .project-cover {
-        margin-bottom: var(--stack-lg);
-        border-radius: var(--button-radius);
-        overflow: hidden;
-    }
-
-    .project-cover img {
-        width: 100%;
-        height: auto;
-        display: block;
-    }
-
-    .project-content {
-        line-height: var(--lh-relaxed);
-    }
-
-    .project-content :global(h2) {
-        margin-top: var(--stack-lg);
-        margin-bottom: var(--stack-md);
-    }
-
-    .project-content :global(h3) {
-        margin-top: var(--stack-md);
-        margin-bottom: var(--stack-sm);
-    }
-
-    .project-content :global(p) {
-        margin-bottom: var(--stack-md);
-    }
-
-    .project-content :global(ul),
-    .project-content :global(ol) {
-        margin-bottom: var(--stack-md);
-        padding-left: var(--stack-lg);
-    }
-
-    .project-content :global(li) {
-        margin-bottom: var(--stack-xs);
-    }
-
-    .project-content :global(pre) {
-        background: var(--color-surface-2);
-        padding: var(--stack-md);
-        border-radius: var(--button-radius);
-        overflow-x: auto;
-        margin-bottom: var(--stack-md);
-    }
-
-    .project-content :global(code) {
-        background: var(--color-surface-2);
-        padding: 0.125rem 0.25rem;
-        border-radius: 0.25rem;
-        font-size: 0.875em;
-    }
-
-    .project-content :global(pre code) {
-        background: none;
-        padding: 0;
-    }
-
-    .project-content :global(img) {
-        max-width: 100%;
-        height: auto;
-        border-radius: var(--button-radius);
-        margin: var(--stack-md) 0;
-    }
-
-    .project-content :global(blockquote) {
-        border-left: 4px solid var(--color-primary);
-        padding-left: var(--stack-md);
-        margin: var(--stack-md) 0;
-        font-style: italic;
-        color: var(--color-text-muted);
-    }
-
-    @media (min-width: var(--breakpoint-md)) {
-        .project-detail {
-            padding: var(--gutter) var(--gutter);
-        }
-
-        .project-title {
-            font-size: var(--text-4xl);
-        }
-    }
-</style>
