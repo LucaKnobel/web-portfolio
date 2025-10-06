@@ -333,7 +333,7 @@ public class BlockQueueServiceImpl : BlockQueueService.BlockQueueServiceBase
 ### Test
 In der Ausgabe des BlockQueueServices ist ersichtlich, dass der in Abbildung gezeigte Block erfolgreich in die BlockQueue eingetragen wurde. Zusätzlich wurde der Genesis-Block automatisch vom System erzeugt und bereits zur Validierung an eine Node (in diesem Fall «Bern») weitergegeben.
 
-![Aktivitätsdiagramm](../images/food-track-blockchain/block-in-queue-test.png)
+![Test BlockQueue-Eintrag](../images/food-track-blockchain/block-in-queue-test.png)
 
 *Ausschnitt: : Konsolenausgabe BlockQueueService, Test BlockQueue-Eintrag (3. Zeile)*
 
