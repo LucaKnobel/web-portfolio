@@ -14,11 +14,13 @@
     "@astrojs/vue": "^5.1.1",
     "astro": "^5.13.5",
     "astro-icon": "^1.1.5",
+    "nodemailer": "^7.0.9",
     "typescript": "^5.9.3",
     "vue": "^3.5.22"
   },
   "devDependencies": {
     "@iconify-json/mdi": "^1.2.3",
-    "@iconify/vue": "^5.0.0"
+    "@iconify/vue": "^5.0.0",
+    "@types/nodemailer": "^7.0.2"
   }
 }

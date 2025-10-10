@@ -1,5 +1,9 @@
 ---
-/* draft fetching rate limit from db */
+import { actions } from "astro:actions";
+
+/* jedes mal wenn diese seite aufgerufen wird db fetchen udn dschuane ob counter = 10 ist
+wenn ja, dann zeige eine entsprechende nachricht an */
+
 export interface ContactFormProps {
     /** Current language (e.g., 'de' or 'en') */
     lang: string;
@@ -8,15 +12,37 @@ export interface ContactFormProps {
 }
 
 const { lang, t } = Astro.props as ContactFormProps;
----
 
+const result = Astro.getActionResult(actions.sendMail);
+console.log("Action result:", result);
+
+// Check if we have a successful result
+const isSuccess = result?.data?.success === true;
+const isError = result?.error;
+---
 
 
 <section>
     <h1>{t("contact.formTitle")}</h1>
     <p>{t("contact.formDescription")}</p>
 
-    <form accept-charset="UTF-8">
+    <!-- Success Message -->
+    {isSuccess && (
+        <div class="message success">
+            <h2>{t("contact.successMessage")}</h2>
+        </div>
+    )}
+
+    <!-- Error Message -->
+    {isError && (
+        <div class="message error">
+            <h2>{t("contact.errorMessage")}</h2>
+        </div>
+    )}
+
+    <!-- Contact Form - only show if not successful -->
+    {!isSuccess && (
+        <form method="post" action={actions.sendMail}>
         <!-- Submit draft / action draft -->
         <!-- Honeypot field for spam protection -->
         <div aria-hidden="true" hidden>
@@ -27,6 +53,8 @@ const { lang, t } = Astro.props as ContactFormProps;
                 name="website"
                 tabindex="-1"
                 autocomplete="off"
+                value=""
+                style="display: none !important;"
             />
         </div>
 
@@ -169,6 +197,7 @@ const { lang, t } = Astro.props as ContactFormProps;
             {t("contact.send")}
         </button>
     </form>
+    )}
 </section>
 
 <style>
@@ -192,10 +221,36 @@ const { lang, t } = Astro.props as ContactFormProps;
         }
     }
 
+    .message {
+        padding: var(--card-pad);
+        border-radius: var(--card-radius);
+        margin-bottom: var(--stack-lg);
+        border: 1px solid;
+
+        h2 {
+            font-size: var(--heading-sm);
+            font-weight: var(--fw-semibold);
+            margin-bottom: 0 0 0 0;
+        }
+    }
+
+    .success {
+        background: var(--msg-success-bg);
+        border-color: var(--msg-success-border);
+        color: var(--msg-success-fg);
+    }
+
+    .error {
+        background: var(--msg-error-bg);
+        border-color: var(--msg-error-border);
+        color: var(--msg-error-fg);
+    }
+
     form {
         display: flex;
         flex-direction: column;
         gap: var(--stack-lg);
+        color: var(--color-text);
     }
 
     /* Honeypot hidden */
@@ -264,6 +319,7 @@ const { lang, t } = Astro.props as ContactFormProps;
         border: 1px solid var(--color-border);
         border-radius: var(--radius-md);
         background: var(--color-bg);
+        color: var(--color-text);
         font-family: inherit;
         font-size: var(--text-body);
 

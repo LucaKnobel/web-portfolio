@@ -1,4 +1,4 @@
-import { defineConfig } from "astro/config";
+import { defineConfig, envField } from "astro/config";
 import icon from "astro-icon";
 import node from "@astrojs/node";
 import vue from "@astrojs/vue";
@@ -8,6 +8,17 @@ export default defineConfig({
   adapter: node({
     mode: "standalone"
   }),
+
+  env: {
+    schema: {
+      SMTP_HOST: envField.string({ context: "server", access: "secret" }),
+      SMTP_PORT: envField.string({ context: "server", access: "secret" }),
+      SMTP_USER: envField.string({ context: "server", access: "secret" }),
+      SMTP_PASS: envField.string({ context: "server", access: "secret" }),
+      SMTP_FROM: envField.string({ context: "server", access: "secret" }),
+      SMTP_TO: envField.string({ context: "server", access: "secret" }),
+    }
+  },
 
   i18n: {
     locales: ["de", "en"],
