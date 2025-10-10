@@ -10,6 +10,8 @@ export interface ContactFormProps {
 const { lang, t } = Astro.props as ContactFormProps;
 ---
 
+
+
 <section>
     <h1>{t("contact.formTitle")}</h1>
     <p>{t("contact.formDescription")}</p>
@@ -72,7 +74,7 @@ const { lang, t } = Astro.props as ContactFormProps;
                     required
                     maxlength="254"
                     autocomplete="email"
-                />  
+                />
             </div>
 
             <div>
@@ -132,7 +134,6 @@ const { lang, t } = Astro.props as ContactFormProps;
                     rows="6"
                     maxlength="3000"
                     placeholder={t("contact.messagePlaceholder")}></textarea>
-   
             </div>
         </fieldset>
 
@@ -171,180 +172,180 @@ const { lang, t } = Astro.props as ContactFormProps;
 </section>
 
 <style>
-  section {
-    max-width: var(--measure);
-    margin: 0 auto;
-    padding: var(--section-y) var(--section-x);
-    margin-bottom: var(--stack-xxl);
-
-    h1 {
-      font-size: var(--heading-lg);
-      font-weight: var(--fw-semibold);
-      margin-bottom: var(--stack-md);
-      text-align: left;
-    }
-
-    p {
-      color: var(--color-muted);
-      margin-bottom: var(--stack-lg);
-      text-align: left;
-    }
-  }
-
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: var(--stack-lg);
-  }
-
-  /* Honeypot hidden */
-  [aria-hidden="true"] {
-    position: absolute;
-    left: -9999px;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-  }
-
-  fieldset {
-    border: 1px solid var(--color-border);
-    border-radius: var(--card-radius);
-    padding: var(--card-pad);
-    background: var(--color-surface-1);
-    margin: 0;
-
-    legend {
-      font-weight: var(--fw-semibold);
-      font-size: var(--heading-xs);
-      padding: 0 var(--stack-sm);
-      margin-bottom: var(--stack-sm);
-    }
-
-    div {
-      display: flex;
-      flex-direction: column;
-      gap: var(--label-gap);
-      margin-bottom: var(--form-row);
-
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
-  }
-
-  .privacy-field {
-    display: flex;
-    flex-direction: column;
-    gap: var(--stack-sm);
-
-    .checkbox-row {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      gap: var(--stack-sm);
-    }
-
-    .privacy-link {
-      padding-left: calc(var(--touch-target-min) + var(--stack-sm));
-    }
-  }
-
-  label {
-    font-weight: var(--fw-medium);
-    color: var(--color-text);
-  }
-
-  input,
-  textarea {
-    width: 100%;
-    height: var(--control-h-md);
-    padding: var(--stack-sm);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    background: var(--color-bg);
-    font-family: inherit;
-    font-size: var(--text-body);
-
-    &:focus {
-      outline: none;
-      border-color: var(--color-primary);
-    }
-  }
-
-  textarea {
-    height: auto;
-    min-height: calc(var(--control-h-md) * 5);
-    resize: vertical;
-  }
-
-  input[type="checkbox"] {
-    width: var(--touch-target-min);
-    height: var(--touch-target-min);
-    margin: 0;
-    cursor: pointer;
-    accent-color: var(--color-primary);
-  }
-
-  button {
-    width: 100%;
-    height: var(--control-h-lg);
-    padding: 0 var(--stack-lg);
-    background: var(--grad-primary-soft);
-    color: var(--color-on-primary);
-    border: none;
-    border-radius: var(--button-radius);
-    font-weight: var(--fw-medium);
-    font-size: var(--text-body);
-    cursor: pointer;
-    margin-top: var(--stack-md);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    &:hover {
-      transform: translateY(-1px);
-    }
-  }
-
-  a {
-    color: var(--color-link);
-    text-decoration: underline;
-
-    &:hover {
-      color: var(--color-link-hover);
-    }
-  }
-
-
-  @media (min-width: 1024px) {
     section {
-      max-width: var(--content-max);
+        max-width: var(--measure);
+        margin: 0 auto;
+        padding: var(--section-y) var(--section-x);
+        margin-bottom: var(--stack-xxl);
+
+        h1 {
+            font-size: var(--heading-lg);
+            font-weight: var(--fw-semibold);
+            margin-bottom: var(--stack-md);
+            text-align: left;
+        }
+
+        p {
+            color: var(--color-muted);
+            margin-bottom: var(--stack-lg);
+            text-align: left;
+        }
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: var(--stack-lg);
+    }
+
+    /* Honeypot hidden */
+    [aria-hidden="true"] {
+        position: absolute;
+        left: -9999px;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+    }
+
+    fieldset {
+        border: 1px solid var(--color-border);
+        border-radius: var(--card-radius);
+        padding: var(--card-pad);
+        background: var(--color-surface-1);
+        margin: 0;
+
+        legend {
+            font-weight: var(--fw-semibold);
+            font-size: var(--heading-xs);
+            padding: 0 var(--stack-sm);
+            margin-bottom: var(--stack-sm);
+        }
+
+        div {
+            display: flex;
+            flex-direction: column;
+            gap: var(--label-gap);
+            margin-bottom: var(--form-row);
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
+
+    .privacy-field {
+        display: flex;
+        flex-direction: column;
+        gap: var(--stack-sm);
+
+        .checkbox-row {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: var(--stack-sm);
+        }
+
+        .privacy-link {
+            padding-left: calc(var(--touch-target-min) + var(--stack-sm));
+        }
+    }
+
+    label {
+        font-weight: var(--fw-medium);
+        color: var(--color-text);
+    }
+
+    input,
+    textarea {
+        width: 100%;
+        height: var(--control-h-md);
+        padding: var(--stack-sm);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        background: var(--color-bg);
+        font-family: inherit;
+        font-size: var(--text-body);
+
+        &:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+    }
+
+    textarea {
+        height: auto;
+        min-height: calc(var(--control-h-md) * 5);
+        resize: vertical;
+    }
+
+    input[type="checkbox"] {
+        width: var(--touch-target-min);
+        height: var(--touch-target-min);
+        margin: 0;
+        cursor: pointer;
+        accent-color: var(--color-primary);
     }
 
     button {
-      width: auto;
-      align-self: flex-end;
+        width: 100%;
+        height: var(--control-h-lg);
+        padding: 0 var(--stack-lg);
+        background: var(--grad-primary-soft);
+        color: var(--color-on-primary);
+        border: none;
+        border-radius: var(--button-radius);
+        font-weight: var(--fw-medium);
+        font-size: var(--text-body);
+        cursor: pointer;
+        margin-top: var(--stack-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:hover {
+            transform: translateY(-1px);
+        }
     }
 
-    fieldset:first-of-type,
-    fieldset:nth-of-type(2) {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--card-gap);
+    a {
+        color: var(--color-link);
+        text-decoration: underline;
 
-      legend {
-        grid-column: 1 / -1;
-      }
-
-      div {
-        margin-bottom: 0;
-      }
+        &:hover {
+            color: var(--color-link-hover);
+        }
     }
 
-    /* Full width fields */
-    fieldset:nth-of-type(2) > div:nth-of-type(2) {
-      grid-column: 1 / -1;
+    @media (min-width: 1024px) {
+        section {
+            max-width: var(--content-max);
+        }
+
+        button {
+            width: auto;
+            align-self: flex-end;
+        }
+
+        fieldset:first-of-type,
+        fieldset:nth-of-type(2) {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--card-gap);
+
+            legend {
+                grid-column: 1 / -1;
+            }
+
+            div {
+                margin-bottom: 0;
+            }
+        }
+
+        /* Full width fields */
+        fieldset:nth-of-type(2) > div:nth-of-type(2) {
+            grid-column: 1 / -1;
+        }
     }
-  }
 </style>
+
