@@ -1,0 +1,350 @@
+---
+/* draft fetching rate limit from db */
+export interface ContactFormProps {
+    /** Current language (e.g., 'de' or 'en') */
+    lang: string;
+    /** Translation function for UI strings */
+    t: Function;
+}
+
+const { lang, t } = Astro.props as ContactFormProps;
+---
+
+<section>
+    <h1>{t("contact.formTitle")}</h1>
+    <p>{t("contact.formDescription")}</p>
+
+    <form accept-charset="UTF-8">
+        <!-- Submit draft / action draft -->
+        <!-- Honeypot field for spam protection -->
+        <div aria-hidden="true" hidden>
+            <label for="website">Website (leave empty):</label>
+            <input
+                type="text"
+                id="website"
+                name="website"
+                tabindex="-1"
+                autocomplete="off"
+            />
+        </div>
+
+        <!-- Personal Information -->
+        <fieldset>
+            <legend>{t("contact.personalLegend")}</legend>
+            <div>
+                <label for="firstName">
+                    {t("contact.firstName")}*
+                </label>
+                <input
+                    type="text"
+                    id="firstName"
+                    name="firstName"
+                    minlength="2"
+                    maxlength="50"
+                    required
+                    autocomplete="given-name"
+                />
+            </div>
+
+            <div>
+                <label for="lastName">
+                    {t("contact.lastName")}*
+                </label>
+                <input
+                    type="text"
+                    id="lastName"
+                    name="lastName"
+                    minlength="2"
+                    maxlength="60"
+                    required
+                    autocomplete="family-name"
+                />
+            </div>
+
+            <div>
+                <label for="email">
+                    {t("contact.email")}*
+                </label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    required
+                    maxlength="254"
+                    autocomplete="email"
+                />  
+            </div>
+
+            <div>
+                <label for="company">
+                    {t("contact.company")}
+                </label>
+                <input
+                    type="text"
+                    id="company"
+                    name="company"
+                    maxlength="100"
+                    autocomplete="organization"
+                />
+            </div>
+
+            <div>
+                <label for="phone">
+                    {t("contact.phone")}
+                </label>
+                <input
+                    type="tel"
+                    inputmode="tel"
+                    id="phone"
+                    name="phone"
+                    autocomplete="tel"
+                    maxlength="20"
+                />
+            </div>
+        </fieldset>
+
+        <!-- Message Details -->
+        <fieldset>
+            <legend>{t("contact.messageLegend")}</legend>
+
+            <div>
+                <label for="subject">
+                    {t("contact.subject")}*
+                </label>
+                <input
+                    type="text"
+                    id="subject"
+                    name="subject"
+                    required
+                    maxlength="100"
+                    placeholder={t("contact.subjectPlaceholder")}
+                />
+            </div>
+
+            <div>
+                <label for="message">
+                    {t("contact.message")}*
+                </label>
+                <textarea
+                    id="message"
+                    name="message"
+                    required
+                    rows="6"
+                    maxlength="3000"
+                    placeholder={t("contact.messagePlaceholder")}></textarea>
+   
+            </div>
+        </fieldset>
+
+        <!-- Privacy Consent -->
+        <fieldset>
+            <legend>{t("contact.privacyLegend")}</legend>
+
+            <div class="privacy-field">
+                <div class="checkbox-row">
+                    <input
+                        type="checkbox"
+                        id="privacy"
+                        name="privacy"
+                        required
+                    />
+                    <label for="privacy">
+                        {t("contact.privacyAccept")}*
+                    </label>
+                </div>
+                <div class="privacy-link">
+                    <a
+                        href={`/${lang}/privacy-policy`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        {t("nav.privacyPolicy")}
+                    </a>
+                </div>
+            </div>
+        </fieldset>
+
+        <button type="submit">
+            {t("contact.send")}
+        </button>
+    </form>
+</section>
+
+<style>
+  section {
+    max-width: var(--measure);
+    margin: 0 auto;
+    padding: var(--section-y) var(--section-x);
+    margin-bottom: var(--stack-xxl);
+
+    h1 {
+      font-size: var(--heading-lg);
+      font-weight: var(--fw-semibold);
+      margin-bottom: var(--stack-md);
+      text-align: left;
+    }
+
+    p {
+      color: var(--color-muted);
+      margin-bottom: var(--stack-lg);
+      text-align: left;
+    }
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--stack-lg);
+  }
+
+  /* Honeypot hidden */
+  [aria-hidden="true"] {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+
+  fieldset {
+    border: 1px solid var(--color-border);
+    border-radius: var(--card-radius);
+    padding: var(--card-pad);
+    background: var(--color-surface-1);
+    margin: 0;
+
+    legend {
+      font-weight: var(--fw-semibold);
+      font-size: var(--heading-xs);
+      padding: 0 var(--stack-sm);
+      margin-bottom: var(--stack-sm);
+    }
+
+    div {
+      display: flex;
+      flex-direction: column;
+      gap: var(--label-gap);
+      margin-bottom: var(--form-row);
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .privacy-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--stack-sm);
+
+    .checkbox-row {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: var(--stack-sm);
+    }
+
+    .privacy-link {
+      padding-left: calc(var(--touch-target-min) + var(--stack-sm));
+    }
+  }
+
+  label {
+    font-weight: var(--fw-medium);
+    color: var(--color-text);
+  }
+
+  input,
+  textarea {
+    width: 100%;
+    height: var(--control-h-md);
+    padding: var(--stack-sm);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-bg);
+    font-family: inherit;
+    font-size: var(--text-body);
+
+    &:focus {
+      outline: none;
+      border-color: var(--color-primary);
+    }
+  }
+
+  textarea {
+    height: auto;
+    min-height: calc(var(--control-h-md) * 5);
+    resize: vertical;
+  }
+
+  input[type="checkbox"] {
+    width: var(--touch-target-min);
+    height: var(--touch-target-min);
+    margin: 0;
+    cursor: pointer;
+    accent-color: var(--color-primary);
+  }
+
+  button {
+    width: 100%;
+    height: var(--control-h-lg);
+    padding: 0 var(--stack-lg);
+    background: var(--grad-primary-soft);
+    color: var(--color-on-primary);
+    border: none;
+    border-radius: var(--button-radius);
+    font-weight: var(--fw-medium);
+    font-size: var(--text-body);
+    cursor: pointer;
+    margin-top: var(--stack-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      transform: translateY(-1px);
+    }
+  }
+
+  a {
+    color: var(--color-link);
+    text-decoration: underline;
+
+    &:hover {
+      color: var(--color-link-hover);
+    }
+  }
+
+
+  @media (min-width: 1024px) {
+    section {
+      max-width: var(--content-max);
+    }
+
+    button {
+      width: auto;
+      align-self: flex-end;
+    }
+
+    fieldset:first-of-type,
+    fieldset:nth-of-type(2) {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--card-gap);
+
+      legend {
+        grid-column: 1 / -1;
+      }
+
+      div {
+        margin-bottom: 0;
+      }
+    }
+
+    /* Full width fields */
+    fieldset:nth-of-type(2) > div:nth-of-type(2) {
+      grid-column: 1 / -1;
+    }
+  }
+</style>
