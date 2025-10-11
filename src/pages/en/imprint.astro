@@ -1,0 +1,12 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import ImprintSection from "@/components/ImprintSection.astro";
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<BaseLayout title={`Luca Knobel | ${t("impressum.title")}`}>
+   <ImprintSection lang={lang} t={t} />
+</BaseLayout>

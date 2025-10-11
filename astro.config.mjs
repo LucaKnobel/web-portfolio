@@ -12,7 +12,7 @@ export default defineConfig({
   // Vitest configuration
   test: {
     globals: true,
-    environment: 'node',
+    environment: "node",
   },
 
   env: {
