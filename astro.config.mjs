@@ -11,6 +11,7 @@ export default defineConfig({
 
   env: {
     schema: {
+      DATABASE_URL: envField.string({ context: "server", access: "secret"}),
       SMTP_HOST: envField.string({ context: "server", access: "secret" }),
       SMTP_PORT: envField.string({ context: "server", access: "secret" }),
       SMTP_USER: envField.string({ context: "server", access: "secret" }),

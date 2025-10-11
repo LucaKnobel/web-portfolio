@@ -1,8 +1,9 @@
 ---
 import { actions } from "astro:actions";
+import { db } from "../db/index.js";
+import { rateLimits } from "../db/schema.js";
+import { eq } from "drizzle-orm";
 
-/* jedes mal wenn diese seite aufgerufen wird db fetchen udn dschuane ob counter = 10 ist
-wenn ja, dann zeige eine entsprechende nachricht an */
 
 export interface ContactFormProps {
     /** Current language (e.g., 'de' or 'en') */
@@ -13,11 +14,34 @@ export interface ContactFormProps {
 
 const { lang, t } = Astro.props as ContactFormProps;
 
+
+const today = new Date().toLocaleDateString('de-CH', {
+    year: 'numeric',
+    month: '2-digit', 
+    day: '2-digit',
+    timeZone: 'Europe/Zurich'
+}).split('.').reverse().join('-'); // "2025-10-11"
+let rateLimitReached = false;
+
+try {
+    const currentCount = await db.select({ count: rateLimits.count })
+        .from(rateLimits)
+        .where(eq(rateLimits.date, today))
+        .get();
+    
+    rateLimitReached = currentCount ? currentCount.count >= 10 : false;
+} catch (error) {
+    console.error("Failed to check rate limit on page load:", error);
+    // If DB fails, allow form to be shown
+    rateLimitReached = false;
+}
+
 const result = Astro.getActionResult(actions.sendMail);
 
 // Check if we have a successful result
 const isSuccess = result?.data?.success === true;
 const isError = result?.error;
+const isRateLimit = result?.error?.code === "TOO_MANY_REQUESTS";
 ---
 
 
@@ -32,15 +56,27 @@ const isError = result?.error;
         </div>
     )}
 
-    <!-- Error Message -->
-    {isError && (
+    <!-- Rate Limit Reached (on page load) -->
+    {rateLimitReached && !isSuccess && (
         <div class="message error">
-            <h2>{t("contact.errorMessage")}</h2>
+            <h2>{t("contact.rateLimit")}</h2>
         </div>
     )}
 
-    <!-- Contact Form - only show if not successful -->
-    {!isSuccess && (
+    <!-- Error Message (only for actual submission errors) -->
+    {isError && !rateLimitReached && (
+        <div class="message error">
+            <h2>
+                {isRateLimit 
+                    ? t("contact.rateLimit")
+                    : t("contact.errorMessage")
+                }
+            </h2>
+        </div>
+    )}
+
+    <!-- Contact Form - hide if rate limit reached OR successful -->
+    {!isSuccess && !rateLimitReached && (
         <form method="post" action={actions.sendMail}>
         <!-- Submit draft / action draft -->
         <!-- Honeypot field for spam protection -->
