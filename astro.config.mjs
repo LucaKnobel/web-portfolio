@@ -9,6 +9,12 @@ export default defineConfig({
     mode: "standalone"
   }),
 
+  // Vitest configuration
+  test: {
+    globals: true,
+    environment: 'node',
+  },
+
   env: {
     schema: {
       DATABASE_URL: envField.string({ context: "server", access: "secret"}),

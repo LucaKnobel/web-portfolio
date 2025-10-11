@@ -1,9 +1,7 @@
 import { defineAction, ActionError } from "astro:actions";
 import { z } from "astro:schema";
 import { getEmailService } from "../services/emailService.js";
-import { db } from "../db/index.js";
-import { rateLimits } from "../db/schema.js";
-import { eq } from "drizzle-orm";
+import { getRateLimitService } from "../services/rateLimitService.js";
 import type { EmailData } from "../utils/email.js";
 
 // Define the success result type
@@ -28,38 +26,24 @@ export const sendMail = defineAction({
     }),
     
     handler: async (input): Promise<SendMailResult> => {
-        // Get today's date in Swiss timezone (YYYY-MM-DD format)
-        const today = new Date().toLocaleDateString('de-CH', {
-            year: 'numeric',
-            month: '2-digit', 
-            day: '2-digit',
-            timeZone: 'Europe/Zurich'
-        }).split('.').reverse().join('-'); // "2025-10-11"
-        
-        // 1. Check current rate limit BEFORE sending email
         try {
-            const currentCount = await db.select({ count: rateLimits.count })
-                .from(rateLimits)
-                .where(eq(rateLimits.date, today))
-                .get();
+            const rateLimitService = getRateLimitService();
+            const emailService = getEmailService();
             
-            if (currentCount && currentCount.count >= 10) {
+            // Get today's date in Swiss timezone
+            const today = rateLimitService.getSwissDate();
+            
+            // 1. Check rate limit BEFORE sending email
+            const rateLimit = await rateLimitService.checkLimit(today);
+            
+            if (!rateLimit.allowed) {
                 throw new ActionError({
                     code: "TOO_MANY_REQUESTS",
                     message: "Daily email limit reached. Please try again tomorrow."
                 });
             }
-        } catch (error) {
-            if (error instanceof ActionError) {
-                throw error;
-            }
-            console.error("Rate limit check failed:", error);
-            // Continue anyway - don't block email for DB issues
-        }
 
-        try {
-            const emailService = getEmailService();
-
+            // 2. Send email
             const emailData: EmailData = {
                 firstName: input.firstName,
                 lastName: input.lastName,
@@ -85,30 +69,8 @@ export const sendMail = defineAction({
                 timestamp: new Date().toISOString(),
             });
 
-            // 2. Increment rate limit counter after successful email
-            try {
-                // Try to get existing record
-                const existingRecord = await db.select()
-                    .from(rateLimits)
-                    .where(eq(rateLimits.date, today))
-                    .get();
-
-                if (existingRecord) {
-                    // Update existing record
-                    await db.update(rateLimits)
-                        .set({ count: existingRecord.count + 1 })
-                        .where(eq(rateLimits.date, today));
-                } else {
-                    // Insert new record
-                    await db.insert(rateLimits)
-                        .values({ date: today, count: 1 });
-                }
-                
-                console.log("Rate limit counter updated for", today);
-            } catch (error) {
-                console.error("Failed to update rate limit counter:", error);
-                // Don't fail the email for this - email was already sent
-            }
+            // 3. Increment rate limit counter after successful email
+            await rateLimitService.incrementCount(today);
 
             return { 
                 success: true,

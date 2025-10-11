@@ -1,8 +1,6 @@
 ---
 import { actions } from "astro:actions";
-import { db } from "../db/index.js";
-import { rateLimits } from "../db/schema.js";
-import { eq } from "drizzle-orm";
+import { getRateLimitService } from "../services/rateLimitService.js";
 
 
 export interface ContactFormProps {
@@ -14,22 +12,13 @@ export interface ContactFormProps {
 
 const { lang, t } = Astro.props as ContactFormProps;
 
-
-const today = new Date().toLocaleDateString('de-CH', {
-    year: 'numeric',
-    month: '2-digit', 
-    day: '2-digit',
-    timeZone: 'Europe/Zurich'
-}).split('.').reverse().join('-'); // "2025-10-11"
+const rateLimitService = getRateLimitService();
+const today = rateLimitService.getSwissDate();
 let rateLimitReached = false;
 
 try {
-    const currentCount = await db.select({ count: rateLimits.count })
-        .from(rateLimits)
-        .where(eq(rateLimits.date, today))
-        .get();
-    
-    rateLimitReached = currentCount ? currentCount.count >= 10 : false;
+    const rateLimit = await rateLimitService.checkLimit(today);
+    rateLimitReached = !rateLimit.allowed;
 } catch (error) {
     console.error("Failed to check rate limit on page load:", error);
     // If DB fails, allow form to be shown
