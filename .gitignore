@@ -17,6 +17,12 @@ pnpm-debug.log*
 .env
 .env.production
 
+# database files
+data/
+*.db
+*.db-shm
+*.db-wal
+
 # macOS-specific files
 .DS_Store
 
