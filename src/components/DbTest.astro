@@ -1,0 +1,84 @@
+---
+import { actions } from "astro:actions";
+
+const result = Astro.getActionResult(actions.testCounter);
+const currentCount = result?.data?.count || 0;
+const currentDate = result?.data?.date || new Date().toISOString().split('T')[0];
+---
+
+<div class="db-test">
+    <h3>Database Test</h3>
+    
+    <div class="counter-display">
+        <p>Aktueller Counter: <strong>{currentCount}</strong></p>
+        <p>Datum: <strong>{currentDate}</strong></p>
+        {result?.data?.success && <p class="success"> Counter erhöht!</p>}
+        {result?.error && <p class="error"> Fehler: {result.error}</p>}
+    </div>
+
+    <form method="post" action={actions.testCounter}>
+        <button type="submit">Counter erhöhen (+1)</button>
+    </form>
+</div>
+
+<style>
+    .db-test {
+        padding: 1.5rem;
+        border: 2px solid var(--color-border);
+        border-radius: var(--card-radius);
+        background: var(--color-surface-1);
+        margin: 1rem 0;
+        max-width: 400px;
+    }
+
+    .db-test h3 {
+        font-size: var(--heading-md);
+        font-weight: var(--fw-semibold);
+        margin-bottom: 1rem;
+        color: var(--color-text);
+    }
+
+    .counter-display {
+        margin-bottom: 1.5rem;
+    }
+
+    .counter-display p {
+        margin: 0.8rem 0;
+        font-size: var(--text-lg);
+    }
+
+    .counter-display strong {
+        font-size: 1.2em;
+        color: var(--color-primary);
+    }
+
+    .success {
+        color: var(--msg-success-fg);
+        font-size: var(--text-md);
+        font-weight: var(--fw-medium);
+    }
+
+    .error {
+        color: var(--msg-error-fg);
+        font-size: var(--text-md);
+        font-weight: var(--fw-medium);
+    }
+
+    button {
+        padding: 0.8rem 1.5rem;
+        background: var(--color-primary);
+        color: var(--color-on-primary);
+        border: none;
+        border-radius: var(--button-radius);
+        cursor: pointer;
+        font-weight: var(--fw-semibold);
+        font-size: var(--text-md);
+        width: 100%;
+        transition: all 0.2s ease;
+    }
+
+    button:hover {
+        background: var(--color-primary-hover);
+        transform: translateY(-1px);
+    }
+</style>

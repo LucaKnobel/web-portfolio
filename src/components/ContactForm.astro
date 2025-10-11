@@ -14,7 +14,6 @@ export interface ContactFormProps {
 const { lang, t } = Astro.props as ContactFormProps;
 
 const result = Astro.getActionResult(actions.sendMail);
-console.log("Action result:", result);
 
 // Check if we have a successful result
 const isSuccess = result?.data?.success === true;

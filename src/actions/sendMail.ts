@@ -1,7 +1,12 @@
-import { defineAction } from "astro:actions";
+import { defineAction, ActionError } from "astro:actions";
 import { z } from "astro:schema";
 import { getEmailService } from "../services/emailService.js";
 import type { EmailData } from "../utils/email.js";
+
+// Define the success result type
+type SendMailResult = {
+    success: true;
+};
 
 export const sendMail = defineAction({
     accept: "form",
@@ -19,7 +24,7 @@ export const sendMail = defineAction({
                     .refine(v => v === "") /* Honeypot */
     }),
     
-    handler: async (input) => {
+    handler: async (input): Promise<SendMailResult> => {
         try {
             const emailService = getEmailService();
 
@@ -37,10 +42,10 @@ export const sendMail = defineAction({
 
             if (!result.success) {
                 console.error("Email sending failed:", result.error);
-                return { 
-                    success: false,
-                    error: "Email could not be sent. Please try again later.",
-                };
+                throw new ActionError({
+                    code: "BAD_REQUEST",
+                    message: "Email service unavailable. Please try again later."
+                });
             }
 
             console.log("Contact form processed successfully", {
@@ -50,7 +55,7 @@ export const sendMail = defineAction({
 
             return { 
                 success: true,
-            };
+            } as const;
 
         } catch (error) {
             console.error("Unexpected error during email sending:", {
@@ -58,9 +63,16 @@ export const sendMail = defineAction({
                 timestamp: new Date().toISOString(),
             });
 
-            return { 
-                success: false,
-            };
+            /* Re-throw ActionErrors as-is */
+            if (error instanceof ActionError) {
+                throw error;
+            }
+
+            /* Convert unexpected errors to ActionError */
+            throw new ActionError({
+                code: "INTERNAL_SERVER_ERROR",
+                message: "An unexpected error occurred. Please try again later."
+            });
         }
     }
 });
