@@ -9,6 +9,12 @@ export default defineConfig({
     mode: "standalone"
   }),
 
+  // Vitest configuration
+  test: {
+    globals: true,
+    environment: "node",
+  },
+
   i18n: {
     locales: ["de", "en"],
     defaultLocale: "de",

@@ -1,0 +1,98 @@
+---
+export interface ImprintSectionProps {
+    /** Language code for constructing localized links */
+    lang: string;
+    /** Translation function for UI strings */
+    t: Function;
+}
+
+const { lang, t } = Astro.props as ImprintSectionProps;
+---
+<section class="impressum">
+    <div class="impressum-content">
+        <h1>{t("impressum.title")}</h1>
+        
+        <div class="impressum-section">
+            <p>
+                {t("impressum.name")}<br>
+                {t("impressum.street")}<br>
+                {t("impressum.zip")} {t("impressum.city")}<br>
+                {t("impressum.country")}<br>
+                <a href="mailto:knobel.konsum@gmail.com">{t("impressum.email")}</a>
+            </p>
+            <a href={`/${lang}/privacy-policy`}>{t("impressum.privacy")}</a>
+        </div>
+    </div>
+</section>
+
+<style>
+    .impressum {
+        max-width: var(--content-max);
+        margin: var(--stack-xxl) auto;
+        padding: var(--section-y) var(--section-x);
+        color: var(--color-text);
+        line-height: var(--lh);
+        text-align: center;
+    }
+
+    .impressum-content {
+        max-width: var(--measure);
+        margin: 0 auto;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    h1 {
+        font-size: var(--heading-lg);
+        font-weight: var(--fw-semibold);
+        margin-bottom: var(--stack-lg);
+        color: var(--color-text);
+        text-align: center;
+    }
+
+    .impressum-section {
+        margin-bottom: var(--stack-lg);
+        text-align: center;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--stack-sm);
+    }
+
+    p {
+        margin-bottom: var(--stack-md);
+        color: var(--color-text);
+        font-size: var(--text-body);
+        line-height: var(--lh);
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    a {
+        color: var(--color-link);
+        text-decoration: underline;
+        transition: color var(--dur-1) var(--ease-standard);
+        min-height: var(--touch-target-min);
+        display: inline-block;
+        padding: var(--space-2) var(--space-1);
+
+        &:hover {
+            color: var(--color-link-hover);
+        }
+
+        &:focus {
+            outline: var(--focus-ring-width) solid var(--focus-ring-color);
+            outline-offset: var(--focus-ring-offset);
+        }
+
+        &:visited {
+            color: var(--color-link-visited);
+        }
+    }
+</style>

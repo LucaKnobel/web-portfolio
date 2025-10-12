@@ -1,0 +1,154 @@
+---
+import { getCollection, render } from "astro:content";
+
+export interface PrivacyPolicySectionProps {
+    /** Current language (e.g., 'de' or 'en') */
+    lang: string;
+}
+
+const { lang } = Astro.props as PrivacyPolicySectionProps;
+
+let privacyPolicyContent = null;
+
+try {
+    const allPrivacyPolicies = await getCollection("privacyPolicy");
+
+    /* Filter by language using directory structure */
+    privacyPolicyContent = allPrivacyPolicies.find((entry) =>
+        entry.id.startsWith(`${lang}/`),
+    );
+} catch (err) {
+    return Astro.redirect("/500");
+}
+
+if (!privacyPolicyContent) {
+    return Astro.redirect("/404");
+}
+
+const { Content } = await render(privacyPolicyContent);
+
+if (!Content) {
+    return Astro.redirect("/404");
+}
+---
+
+<section class="privacy-content">
+    <Content />
+</section>
+
+<style>
+    .privacy-content {
+        max-width: var(--content-max);
+        margin: 0 auto;
+        padding: var(--section-y) var(--section-x);
+        line-height: var(--lh);
+        color: var(--color-text);
+        word-break: break-word;
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-weight: var(--fw-semibold);
+            color: var(--color-text);
+            margin-top: var(--stack-lg);
+            margin-bottom: var(--stack-sm);
+            line-height: 1.2;
+            word-break: break-word;
+            hyphens: auto;
+        }
+        h1 { font-size: var(--heading-lg); }
+        h2 { font-size: var(--heading-md); }
+        h3 { font-size: var(--heading-sm); }
+        h4 { font-size: var(--heading-xs); }
+        h5, h6 { font-size: var(--text-body); }
+
+        p,
+        li {
+            hyphens: manual;
+            -webkit-hyphens: manual;
+            -ms-hyphens: manual;
+            text-align: left;
+            word-break: normal;
+            margin-bottom: var(--stack-md);
+            word-spacing: normal;
+            letter-spacing: normal;
+        }
+
+        ul,
+        ol {
+            margin-bottom: var(--stack-md);
+            padding-left: var(--stack-lg);
+        }
+        
+        li {
+            margin-bottom: var(--stack-xs);
+            hyphens: auto;
+            word-break: break-word;
+        }
+
+        a {
+            color: var(--color-link);
+            text-decoration: underline;
+            transition: color var(--dur-1) var(--ease-standard);
+            display: inline-flex;
+            align-items: center;
+            min-height: var(--touch-target-min);
+            padding: var(--space-1) var(--space-2);
+            margin: calc(var(--space-1) * -1) calc(var(--space-2) * -1);
+            border-radius: var(--radius-sm);
+            
+            &:hover {
+                color: var(--color-link-hover);
+            }
+        }
+
+        strong {
+            font-weight: var(--fw-semibold);
+        }
+
+        em {
+            font-style: italic;
+        }
+
+        
+    }
+
+    @media (min-width: 1024px) {
+        .privacy-content {
+            h1 {
+                font-size: var(--display-xl);
+                margin-top: var(--stack-xl);
+                margin-bottom: var(--stack-md);
+            }
+            h2 {
+                font-size: var(--heading-lg);
+                margin-top: var(--stack-lg);
+                margin-bottom: var(--stack-md);
+            }
+            h3 {
+                font-size: var(--heading-md);
+                margin-top: var(--stack-md);
+                margin-bottom: var(--stack-sm);
+            }
+            h4 {
+                font-size: var(--heading-sm);
+                margin-top: var(--stack-sm);
+                margin-bottom: var(--stack-xs);
+            }
+            
+            p,
+            li {
+                text-align: justify;
+                text-justify: inter-word;
+                margin-bottom: var(--stack-xs);
+                hyphens: auto;
+                -webkit-hyphens: auto;
+                -ms-hyphens: auto;
+            }
+
+        }
+    }
+</style>

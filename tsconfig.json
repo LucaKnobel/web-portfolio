@@ -21,10 +21,12 @@
     "checkJs": false,
     "skipLibCheck": true,
     "jsx": "preserve",
-    "jsxImportSource": "react"
+    "jsxImportSource": "react",
+    "types": ["vitest/globals"]
   },
   "include": [
     "src",
+    "tests",
     ".astro/types.d.ts",
     "astro.config.mjs",
     "env.d.ts"
