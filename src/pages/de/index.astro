@@ -1,0 +1,13 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Intro from "@/components/Intro.astro";
+
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+<BaseLayout title="Luca Knobel | Portfolio">
+    <Intro lang={lang} t={t} />
+</BaseLayout>
+

@@ -1,0 +1,73 @@
+---
+import CareerCard from "@/components/CareerCard.astro";
+import { getCollection } from "astro:content";
+
+
+export interface CareerSectionProps {
+    /** Current language (e.g., 'de' or 'en')*/
+    lang: string;
+    /** Translation function for UI strings */
+    t: Function;
+    /** Section type: 'professional' for work experience, 'education' for education */
+    type: "professional" | "education";
+    /** Section title (displayed as heading)*/
+    title: string;
+}
+
+const { lang, t, type, title } = Astro.props as CareerSectionProps;
+
+
+let entries = [];
+try {
+    if (type === "education") {
+        const allEducationEntries = await getCollection("education");
+        const educationFile = allEducationEntries.find(
+            (entry) => entry.id === lang,
+        );
+        entries = educationFile?.data || [];
+    } else {
+        const allCareerEntries = await getCollection("career");
+        const careerFile = allCareerEntries.find((entry) => entry.id === lang);
+        entries = careerFile?.data || [];
+    }
+} catch (err) {
+    return Astro.redirect("/500");
+}
+---
+
+<section>
+    <h1 class="section-title">{title}</h1>
+    {entries.map((entry) => <CareerCard t={t} entry={{ ...entry }} />)}
+</section>
+
+<style>
+    section {
+        max-width: var(--content-max);
+        margin-inline: var(--section-x);
+        padding-block: var(--section-y);
+        display: flex;
+        flex-direction: column;
+        gap: var(--section-x);
+    }
+
+    .section-title {
+        text-align: center;
+        font-size: var(--heading-md);
+        font-weight: var(--fw-semibold);
+        margin-bottom: var(--section-x);
+        color: var(--color-text);
+    }
+
+    @media (min-width: 1024px) {
+        section {
+            max-width: var(--content-max);
+            margin-inline: auto;
+            padding-block: var(--section-y);
+            gap: var(--section-x);
+        }
+        .section-title {
+            font-size: var(--heading-lg);
+            margin-bottom: var(--section-x);
+        }
+    }
+</style>

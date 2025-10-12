@@ -1,0 +1,59 @@
+[
+    {
+        "id": "ifa-high-tech-school",
+        "organizationName": "IFA - The Higher Technical School of Digital Economy",
+        "organizationWebsite": "https://ipso.ch/schulen/ifa",
+        "title": "Advanced Federal Diploma of Higher Education in Information Technology – Application Development, specializing in Application Security",
+        "studyMode": "Part-time",
+        "period": {
+            "start": "10/2023",
+            "end": "10/2026"
+        },
+        "keySkills": [
+            "Software development with focus on OOP, web, and security",
+            "IT systems, scripting, networks, and automation",
+            "Project and IT management",
+            "Basic business knowledge",
+            "Communication and analytical thinking"
+        ],
+        "finalGrade": ""
+    },
+    {
+        "id": "ifa-hbd",
+        "organizationName": "IFA - The Higher Technical School of Digital Economy",
+        "organizationWebsite": "https://ipso.ch/schulen/ifa",
+        "title": "Higher Business Diploma (HWD/VSK)",
+        "studyMode": "Part-time",
+        "period": {
+            "start": "10/2023",
+            "end": "10/2024"
+        },
+        "keySkills": [
+            "Business administration and accounting",
+            "Project management",
+            "Process and change management",
+            "Marketing and communication",
+            "Human resource management"
+        ],
+        "finalGrade": 5.1
+    },
+    {
+        "id": "epai-gibs-vocational-school",
+        "organizationName": "EPAI-GIBS",
+        "organizationWebsite": "https://www.fr.ch/de/gibs",
+        "title": "Vocational School for Automation Technicians (EFZ)",
+        "studyMode": "During apprenticeship",
+        "period": {
+            "start": "08/2017",
+            "end": "08/2021"
+        },
+        "keySkills": [
+            "Electrical engineering",
+            "Automation",
+            "Computer science",
+            "Mathematics",
+            "English"
+        ],
+        "finalGrade": 5.2
+    }
+]

@@ -17,6 +17,19 @@ pnpm-debug.log*
 .env
 .env.production
 
+# database files
+data/
+*.db
+*.db-shm
+*.db-wal
+*.db-journal
+
+# keep database schema and migrations
+!src/db/schema.ts
+!src/db/index.ts
+!drizzle.config.ts
+!src/db/migrations/
+
 # macOS-specific files
 .DS_Store
 

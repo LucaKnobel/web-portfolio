@@ -1,0 +1,12 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+import ContactForm from "@/components/ContactForm.astro";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<BaseLayout title={`Luca Knobel | ${t("career.pageTitle")}`}>
+    <ContactForm lang={lang} t={t} />
+</BaseLayout>

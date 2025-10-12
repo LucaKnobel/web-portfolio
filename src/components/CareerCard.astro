@@ -1,0 +1,199 @@
+---
+export interface CareerCardProps {
+  /** Translation function for UI strings */
+  t: Function;
+  /** Entry object containing all career/education data */
+  entry: {
+    /** Name of the organization */
+    organizationName: string;
+    /** Website of the organization */
+    organizationWebsite: string;
+    /** Job or education title */
+    title: string;
+    /** Employment rate (e.g., full-time, part-time) */
+    employmentRate?: string;
+    /** List of responsibilities */
+    responsibilities?: string[];
+    /** Study mode (e.g., on-site, remote) */
+    studyMode?: string;
+    /** Final grade (string or number) */
+    finalGrade?: string | number;
+    /** Period of employment or study */
+    period: {
+      /** Start date */
+      start: string;
+      /** End date */
+      end: string;
+    };
+    /** List of key skills */
+    keySkills: string[];
+  };
+}
+
+const { t, entry } = Astro.props as CareerCardProps;
+
+const {
+  organizationName,
+  organizationWebsite,
+  title,
+  employmentRate,
+  studyMode,
+  finalGrade,
+  period,
+  responsibilities,
+  keySkills,
+} = entry;
+---
+
+<article class="card-base">
+  <header>
+    <h4>{title}</h4>
+    <a href={organizationWebsite} target="_blank" rel="noopener noreferrer"
+      >{organizationName}</a
+    >
+    <div class="meta">
+      <div class="meta-row">
+        {employmentRate && <span>{employmentRate}</span>}
+        {studyMode && <span>{studyMode}</span>}
+        <span class="date-chip">{period.start} – {period.end}</span>
+      </div>
+      {
+        finalGrade && (
+          <span class="final-grade">
+            {t("career.finalGrade")}: {finalGrade}
+          </span>
+        )
+      }
+    </div>
+  </header>
+  <details>
+    <summary>{t("career.detailsSummary")}</summary>
+    <section class="details-content">
+      {
+        responsibilities && responsibilities.length > 0 && (
+          <>
+            <strong>{t("career.responsibilities")}:</strong>
+            <ul>
+              {responsibilities.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </>
+        )
+      }
+      <strong>{t("career.keySkills")}:</strong>
+      <ul>
+        {keySkills.map((skill) => <li>{skill}</li>)}
+      </ul>
+    </section>
+  </details>
+</article>
+
+<style>
+  .card-base {
+    background: var(--color-surface-1);
+    border-radius: var(--card-radius);
+    box-shadow: var(--elev-1);
+    padding: var(--card-pad);
+    margin: 0 auto;
+    border: 1px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    gap: var(--stack-sm);
+    max-width: 600px;
+    width: 95%;
+    transition:
+      box-shadow var(--dur-2) var(--ease-standard),
+      border-color var(--dur-1) var(--ease-standard);
+
+    header {
+      display: flex;
+      flex-direction: column;
+      gap: var(--stack-xs);
+
+      h4 {
+        font-size: var(--heading-sm);
+        font-weight: var(--fw-medium);
+        margin: 0;
+        color: var(--color-text);
+      }
+
+      a {
+        color: var(--color-link);
+        text-decoration: none;
+        font-size: var(--text-body);
+        transition: color var(--dur-1) var(--ease-standard);
+        &:hover {
+          color: var(--color-link-hover);
+          text-decoration: underline;
+        }
+      }
+    }
+
+    .meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.1em;
+      color: var(--color-muted);
+      font-size: var(--text-small);
+
+      .meta-row {
+        display: flex;
+        flex-direction: row;
+        gap: var(--stack-xs);
+        align-items: center;
+      }
+      .final-grade {
+        display: block;
+        margin-top: 2px;
+        color: var(--color-primary);
+        font-weight: var(--fw-medium);
+      }
+    }
+
+    details {
+      margin-top: var(--stack-xs);
+      border-top: 1px solid var(--color-border-hairline);
+      padding-top: var(--stack-xs);
+
+      summary {
+        cursor: pointer;
+        font-size: var(--text-small);
+        color: var(--color-primary);
+        outline: none;
+        padding: var(--stack-xs) 0;
+        font-weight: var(--fw-medium);
+        border-radius: var(--radius-sm);
+        transition: background var(--dur-1) var(--ease-standard);
+        background: none;
+        &:focus,
+        &:hover {
+          background: var(--color-surface-2);
+          color: var(--color-primary-hover);
+        }
+      }
+
+      .details-content {
+        margin-top: var(--stack-xs);
+        font-size: var(--text-body);
+        color: var(--color-text);
+
+        ul {
+          margin: 0 0 var(--stack-xs) 0;
+          padding-left: 1.2em;
+          list-style: disc;
+        }
+        strong {
+          font-weight: var(--fw-medium);
+          color: var(--color-primary);
+        }
+      }
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .card-base {
+      max-width: 800px;
+    }
+  }
+</style>

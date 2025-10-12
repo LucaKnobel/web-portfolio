@@ -1,0 +1,102 @@
+---
+import Navigation from "./Navigation.astro";
+import ActionButton from "./ActionButton.astro";
+import Copyright from "./Copyright.astro";
+
+export interface FooterProps {
+    /** Language code for constructing localized links */
+    lang: string;
+    /** Translation function for UI strings */
+    t: Function;
+}
+
+const { lang, t } = Astro.props as FooterProps;
+
+const footerLinks = [
+    { href: `/${lang}/projects`, label: t("nav.projects") },
+    { href: `/${lang}/contact`, label: t("nav.contact") },
+    { href: `/${lang}/career`, label: t("nav.career") },
+    { href: `/${lang}/imprint`, label: t("nav.imprint") },
+    { href: `/${lang}/privacy-policy`, label: t("nav.privacyPolicy") },
+];
+---
+
+<footer class="footer">
+    <div class="container">
+        <Navigation links={footerLinks} />
+        <div class="socials">
+            <ActionButton
+                href="https://github.com/LucaKnobel"
+                icon="mdi:github"
+                ariaLabel="GitHub"
+                variant="gradient"
+                height="44px"
+                width="44px"
+            />
+            <ActionButton
+                href="https://linkedin.com/in/luca-knobel-14b4a7221"
+                icon="mdi:linkedin"
+                ariaLabel="LinkedIn"
+                variant="gradient"
+                height="44px"
+                width="44px"
+            />
+        </div>
+        <Copyright t={t} />
+    </div>
+</footer>
+
+<style>
+    .footer {
+        margin-top: auto;
+        width: 100%;
+        padding: var(--stack-lg) var(--gutter);
+        background: var(--color-surface-1);
+        border-top: var(--border-hairline) solid var(--color-border-hairline);
+        text-align: center;
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: var(--stack-md);
+            max-width: var(--content-max);
+            margin-inline: auto;
+
+            .socials {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: var(--stack-sm);
+                flex-wrap: wrap;
+            }
+        }
+    }
+
+    @media (min-width: 600px) {
+        .footer {
+            .container {
+                gap: var(--stack-sm);
+
+                .socials {
+                    gap: var(--stack-sm);
+                }
+            }
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .footer {
+            padding: var(--stack-md) var(--gutter);
+
+            .container {
+                gap: var(--stack-xs);
+
+                .socials {
+                    gap: var(--stack-xs);
+                }
+            }
+        }
+    }
+</style>

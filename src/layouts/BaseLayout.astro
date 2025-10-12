@@ -1,0 +1,85 @@
+---
+import "@/styles/tokens.css";
+import "@/styles/global.css";
+import "@/styles/primitives.css";
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+import Footer from "@/components/Footer.astro";
+import Header from "@/components/Header.astro";
+import { ClientRouter } from "astro:transitions";
+import portrait from "@/assets/portrait-photo.jpg";
+
+export interface BaseLayoutProps {
+    /** Page title (for <title> and meta tags) */
+    title?: string;
+    /** Meta description */
+    description?: string;
+    /** Absolute URL to the preview/social image */
+    image?: string;
+    /** Canonical URL for SEO */
+    canonical?: string;
+    /** Array of alternate language links for hreflang */
+    alternateLinks?: Array<LanguageString>;
+}
+
+export interface LanguageString {
+    hreflang: string; // e.g. 'de', 'en', 'x-default'
+    href: string;     // absolute URL
+}
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const {
+    title = "Portfolio",
+    description = t("meta.description"),
+    image = portrait.src,
+    canonical = Astro.url?.href ?? "https://lucaknobel.ch/",
+    alternateLinks = [
+        { hreflang: "de", href: "https://lucaknobel.ch/de/" },
+        { hreflang: "en", href: "https://lucaknobel.ch/en/" }
+    ]
+} = Astro.props as BaseLayoutProps;
+
+const theme = Astro.cookies.get("theme")?.value ?? "light";
+
+---
+
+<!doctype html>
+<html lang={lang} data-theme={theme}>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+                <title>{title}</title>
+                <meta name="description" content={description} />
+                <link rel="canonical" href={canonical} />
+                {/* Open Graph (Facebook, WhatsApp, LinkedIn) */}
+                <meta property="og:title" content={title} />
+                <meta property="og:description" content={description} />
+                <meta property="og:type" content="website" />
+                <meta property="og:url" content={canonical} />
+                <meta property="og:image" content={image} />
+                {/* WhatsApp uses Open Graph tags, but we can add extra for completeness */}
+                <meta property="og:site_name" content="Luca Knobel Portfolio" />
+                {/* LinkedIn uses Open Graph, but prefers extra tags for company/person */}
+                <meta property="og:locale" content={lang === 'de' ? 'de_DE' : 'en_US'} />
+                {/* Twitter Card */}
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content={title} />
+                <meta name="twitter:description" content={description} />
+                <meta name="twitter:image" content={image} />
+                {/* hreflang alternate links */}
+                {alternateLinks.map((link: LanguageString) => (
+                    <link rel="alternate" hreflang={link.hreflang} href={link.href} />
+                ))}
+                <ClientRouter />
+    </head>
+    <body>
+        <Header lang={lang} t={t} />
+            <main>
+            <slot />
+        </main>
+        <Footer lang={lang} t={t} />
+    </body>
+</html>
+

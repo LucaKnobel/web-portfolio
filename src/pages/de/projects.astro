@@ -1,0 +1,13 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import ProjectSection from "@/components/ProjectSection.astro";
+
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<BaseLayout title={`Luca Knobel | ${t("projects.pageTitle")}`}>
+    <ProjectSection lang={lang} t={t} />
+</BaseLayout>
