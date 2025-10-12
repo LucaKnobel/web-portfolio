@@ -47,19 +47,19 @@ Diese Website wird bei **Infomaniak Network SA**, Rue Eugène-Marziano 25, 1227 
 Infomaniak stellt die technische Infrastruktur für das Web- und Mailhosting bereit und handelt dabei als **Auftragsbearbeiter** gemäss Art. 9 DSG und Art. 28 DSGVO.
 
 Beim Aufruf dieser Website erhebt Infomaniak automatisch sogenannte **Server-Logdaten**. Dazu gehören:
-- IP-Adresse des anfragenden Geräts  
-- Datum und Uhrzeit des Zugriffs  
-- Adresse der abgerufenen Seite oder Datei  
-- Browser-Typ und Betriebssystem  
+- IP-Adresse des anfragenden Geräts
+- Datum und Uhrzeit des Zugriffs
+- Adresse der abgerufenen Seite oder Datei
+- Browser-Typ und Betriebssystem
 - Referrer-URL (die zuvor besuchte Seite)
 
-Diese Daten sind für den sicheren Betrieb des Servers technisch erforderlich und werden von Infomaniak ausschliesslich zu Sicherheits-, Fehleranalyse- und Wartungszwecken verwendet.  
-Die Logdaten werden **ausschliesslich in Schweizer Rechenzentren gespeichert** und nach spätestens **30 Tagen automatisch gelöscht**.  
+Diese Daten sind für den sicheren Betrieb des Servers technisch erforderlich und werden von Infomaniak ausschliesslich zu Sicherheits-, Fehleranalyse- und Wartungszwecken verwendet.
+Die Logdaten werden **ausschliesslich in Schweizer Rechenzentren gespeichert** und nach spätestens **30 Tagen automatisch gelöscht**.
 Eine Auswertung zu Marketing- oder Tracking-Zwecken findet nicht statt.
 
 Es besteht ein **Vertrag zur Auftragsverarbeitung (DPA)** zwischen mir und Infomaniak, der die datenschutzkonforme Verarbeitung und die Vertraulichkeit der Personendaten regelt.
 
-**Weitere Informationen**: Detaillierte Informationen zum Datenschutz bei Infomaniak finden Sie in deren Datenschutzerklärung unter: https://www.infomaniak.com/de/agb/regelung-allgemeine-schutz-daten
+**Weitere Informationen**: Detaillierte Informationen zum Datenschutz bei Infomaniak finden Sie in deren <a href="https://www.infomaniak.com/de/agb/regelung-allgemeine-schutz-daten" target="_blank" rel="noopener noreferrer">Datenschutzerklärung</a>.
 ### 4.2 Kontaktformular und E-Mail-Versand
 
 **Zweck**: Bearbeitung von Kontaktanfragen an mich  
@@ -72,14 +72,13 @@ Es besteht ein **Vertrag zur Auftragsverarbeitung (DPA)** zwischen mir und Infom
 - Nachrichtenbetreff
 - Nachrichteninhalt
 
-
-
 **Verarbeitung**: 
 - Nachrichten werden über die Infomaniak-Mail-Server an mein E-Mail-Postfach versendet
 - Keine dauerhafte Speicherung der Formulardaten auf dem Server
 - E-Mails werden nur in meinem E-Mail-Postfach gespeichert
 
-**Rechtsgrundlage**: Einwilligung durch das Absenden des Formulars  
+**Rechtsgrundlage**: Einwilligung durch das Absenden des Formulars 
+ 
 **Aufbewahrung**: E-Mails in meinem Postfach werden nach 2 Jahren gelöscht, sofern nicht länger benötigt
 
 ### 4.3 Astro-Framework und TypeScript
@@ -92,8 +91,10 @@ Es besteht ein **Vertrag zur Auftragsverarbeitung (DPA)** zwischen mir und Infom
 
 ### 4.4 Analytics und Website-Überwachung
 
-**Google Analytics**: Diese Website verwendet **kein** Google Analytics.  
-**Andere Tracking-Tools**: Diese Website verwendet **keine** Tracking-Tools oder Analysedienste von Drittanbietern.  
+**Google Analytics**: Diese Website verwendet **kein** Google Analytics. 
+
+**Andere Tracking-Tools**: Diese Website verwendet **keine** Tracking-Tools oder Analysedienste von Drittanbietern. 
+
 **Social Media Plugins**: Diese Website bindet **keine** Social Media Plugins ein, die Daten an Drittanbieter übertragen.
 
 **Cookie-Verwendung**: Diese Website verwendet **keine** Cookies für Tracking oder Analyse. Lediglich technisch notwendige Session-Daten werden temporär verarbeitet.
@@ -185,7 +186,7 @@ Mein Hosting-Provider Infomaniak gewährleistet:
 - 24/7-Monitoring
 - Backup-Systeme mit geografischer Trennung
 
-**Datenschutzerklärung von Infomaniak**: https://www.infomaniak.com/de/agb/regelung-allgemeine-schutz-daten
+**Datenschutzerklärung von Infomaniak**: Weitere Details finden Sie in der <a href="https://www.infomaniak.com/de/agb/regelung-allgemeine-schutz-daten" target="_blank" rel="noopener noreferrer">Datenschutzerklärung von Infomaniak</a>.
 
 ## 10. Weitere relevante Informationen
 

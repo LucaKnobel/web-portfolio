@@ -46,19 +46,19 @@ This website is hosted by **Infomaniak Network SA**, Rue Eugène-Marziano 25, 12
 Infomaniak provides the technical infrastructure for web and email hosting and acts as a **data processor** according to Art. 9 DSG and Art. 28 GDPR.
 
 When accessing this website, Infomaniak automatically collects so-called **server log data**. This includes:
-- IP address of the requesting device  
-- Date and time of access  
-- Address of the requested page or file  
-- Browser type and operating system  
+- IP address of the requesting device
+- Date and time of access
+- Address of the requested page or file
+- Browser type and operating system
 - Referrer URL (previously visited page)
 
-This data is technically required for the secure operation of the server and is used by Infomaniak exclusively for security, error analysis, and maintenance purposes.  
-Log data is **stored exclusively in Swiss data centers** and **automatically deleted after 30 days at the latest**.  
+This data is technically required for the secure operation of the server and is used by Infomaniak exclusively for security, error analysis, and maintenance purposes.
+Log data is **stored exclusively in Swiss data centers** and **automatically deleted after 30 days at the latest**.
 No evaluation for marketing or tracking purposes takes place.
 
 There is a **Data Processing Agreement (DPA)** between me and Infomaniak that regulates data protection-compliant processing and confidentiality of personal data.
 
-**Further Information**: Detailed information about data protection at Infomaniak can be found in their privacy policy at: https://www.infomaniak.com/en/legal/general-terms-data-protection
+**Further Information**: Detailed information about data protection at Infomaniak can be found in their <a href="https://www.infomaniak.com/en/legal/general-data-protection-regulation" target="_blank" rel="noopener noreferrer">privacy policy</a>.
 
 ### 4.2 Contact Form and Email Sending
 
@@ -78,6 +78,7 @@ There is a **Data Processing Agreement (DPA)** between me and Infomaniak that re
 - Emails are only stored in my email inbox
 
 **Legal Basis**: Consent by submitting the form  
+
 **Retention**: Emails in my inbox are deleted after 2 years, unless needed longer
 
 ### 4.3 Astro Framework and TypeScript
@@ -90,7 +91,9 @@ There is a **Data Processing Agreement (DPA)** between me and Infomaniak that re
 ### 4.4 Analytics and Website Monitoring
 
 **Google Analytics**: This website does **not** use Google Analytics.  
+
 **Other Tracking Tools**: This website does **not** use tracking tools or third-party analytics services.  
+
 **Social Media Plugins**: This website does **not** embed social media plugins that transmit data to third parties.
 
 **Cookie Usage**: This website does **not** use cookies for tracking or analysis. Only technically necessary session data is processed temporarily.
@@ -181,7 +184,7 @@ My hosting provider Infomaniak ensures:
 - 24/7 monitoring
 - Backup systems with geographical separation
 
-**Infomaniak Privacy Policy**: https://www.infomaniak.com/en/legal/general-terms-data-protection
+**Infomaniak Privacy Policy**: Additional details can be found in <a href="https://www.infomaniak.com/en/legal/general-data-protection-regulation" target="_blank" rel="noopener noreferrer">Infomaniak's privacy policy</a>.
 
 ## 10. Additional Relevant Information
 

@@ -1,5 +1,8 @@
 import nodemailer from "nodemailer";
-import { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, SMTP_FROM, SMTP_TO } from "astro:env/server";
+import dotenv from "dotenv";
+
+/* Load environment variables */
+dotenv.config();
 
 export interface EmailData {
     firstName: string;
@@ -19,9 +22,16 @@ export interface EmailResult {
 
 /**
  * Creates SMTP transporter for Infomaniak
- * Uses Astro's env system for clean configuration
+ * Uses process.env for configuration
  */
 const createTransporter = () => {
+    const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS } = process.env;
+    
+    /* Validate required environment variables */
+    if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS || !SMTP_PORT) {
+        throw new Error("Missing required SMTP configuration. Please check your environment variables.");
+    }
+
     return nodemailer.createTransport({
         host: SMTP_HOST,
         port: parseInt(SMTP_PORT, 10),
@@ -31,7 +41,7 @@ const createTransporter = () => {
             pass: SMTP_PASS,
         },
     });
-};
+}
 
 /**
  * Formats email content
@@ -90,8 +100,8 @@ export const sendContactEmail = async (data: EmailData): Promise<EmailResult> =>
         const { html, text } = formatEmailContent(data);
 
         const mailOptions = {
-            from: `"${data.firstName} ${data.lastName}" <${SMTP_FROM}>`,
-            to: SMTP_TO,
+            from: `"${data.firstName} ${data.lastName}" <${process.env.SMTP_FROM}>`,
+            to: process.env.SMTP_TO,
             replyTo: data.email,
             subject: `[Web-Portfolio] ${data.subject}`,
             text,

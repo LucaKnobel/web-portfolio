@@ -44,8 +44,8 @@ const projects = defineCollection({
     pattern: "**/*.md", 
     base: "./src/content/projects",
     generateId: ({ entry }) => {
-      // Bewahre die Verzeichnisstruktur in der ID: "de/bashnet" und "en/bashnet"
-      return entry.replace(/\.md$/, '');
+      /* Preserve directory structure in ID: "de/bashnet" and "en/bashnet" */
+      return entry.replace(/\.md$/, "");
     }
   }),
   schema: ({ image }) => z.object({
@@ -59,8 +59,18 @@ const projects = defineCollection({
   }),
 });
 
+const privacyPolicy = defineCollection({
+  loader: glob({ pattern: "**/*.md",
+  base: "./src/content/privacy",
+  generateId: ({ entry }) => {
+      return entry.replace(/\.md$/, "");
+    } }),
+  
+});
+
 export const collections = { 
   career,
   education,
   projects,
+  privacyPolicy,
 };
