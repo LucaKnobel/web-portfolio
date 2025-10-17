@@ -6,11 +6,17 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "start": "node -r dotenv/config ./dist/server/entry.mjs",
+    "start": "node --env-file=../../../.env ./dist/server/entry.mjs",
     "astro": "astro",
     "test": "vitest",
     "test:run": "vitest run",
-    "test:watch": "vitest --watch"
+    "test:watch": "vitest --watch",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio",
+    "typecheck": "astro check",
+    "lint": "echo 'Add ESLint/Prettier here'",
+    "deploy:local": "bash scripts/deploy.sh"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
