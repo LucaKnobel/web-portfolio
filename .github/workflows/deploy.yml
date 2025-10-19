@@ -263,194 +263,178 @@ jobs:
           echo "✅ SSH connection and authentication verified"
 
       
-      # Ersetze Step 8b mit TTY-freier Alternative:
+     # Ersetze Step 8b mit erweiterten Shell-Tests:
 
-      # --- 8b. SSH without TTY (Infomaniak Compatible) ---  
-      - name: Debug - SSH without TTY (Infomaniak Compatible)
+      # --- 8b. Enhanced Shell Environment Debug ---
+      - name: Debug - Enhanced Shell Environment Analysis
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_PASS: ${{ secrets.SSH_PASS }}
         run: |
-          echo "🔍 Testing SSH without TTY (Infomaniak shared hosting compatible)..."
+          echo "🔍 Enhanced shell environment analysis for Infomaniak..."
           
-          # Test basic SSH without TTY
-          echo "🔍 Method 1: Basic SSH (no TTY)..."
-          if sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
-            "echo 'Basic SSH works'; whoami; pwd"; then
-            echo "✅ Basic SSH (no TTY) works"
+          # Test 1: Minimal command with error capture
+          echo "🔍 Test 1: Minimal echo command with error capture..."
+          EXIT_CODE=0
+          sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -o ConnectTimeout=30 "$SSH_USER@$SSH_HOST" \
+            "echo hello" || EXIT_CODE=$?
+          echo "Exit code: $EXIT_CODE"
+          
+          if [ $EXIT_CODE -eq 0 ]; then
+            echo "✅ Minimal echo works"
           else
-            echo "❌ Basic SSH failed"; exit 1;
-          fi
-          
-          # Test explicit bash invocation
-          echo "🔍 Method 2: Explicit bash shell..."
-          if sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
-            "bash -c 'echo Explicit bash works; echo HOME=\$HOME'"; then
-            echo "✅ Explicit bash works"
-          else
-            echo "❌ Explicit bash failed"; exit 1;
-          fi
-          
-          # Test login shell simulation
-          echo "🔍 Method 3: Login shell simulation..."
-          if sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
-            "bash --login -c 'echo Login shell simulation works; echo PATH=\$PATH'"; then
-            echo "✅ Login shell simulation works"
-          else
-            echo "❌ Login shell simulation failed"; exit 1;
-          fi
-          
-          echo "✅ SSH without TTY methods verified"
-
-      # --- 8c. Node.js Environment Test (TTY-free) ---
-      - name: Debug - Node.js Environment (TTY-free)
-        env:
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_USER: ${{ secrets.SSH_USER }}
-          SSH_PASS: ${{ secrets.SSH_PASS }}
-        run: |
-          echo "🔍 Testing Node.js environment without TTY..."
-          
-          # Test Node.js with different shell invocations
-          echo "🔍 Testing Node.js availability..."
-          sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
-            "bash --login -c 'echo Testing Node environment...; which node 2>/dev/null && echo Node found: \$(node -v) || echo Node not in PATH; which npm 2>/dev/null && echo NPM found: \$(npm -v) || echo NPM not in PATH; echo Test completed'" || {
-            echo "❌ Node.js environment test failed"; exit 1;
-          }
-          echo "✅ Node.js environment test completed"
-
-      # --- 8d. Directory Operations Test (TTY-free) ---
-      - name: Debug - Directory Operations (TTY-free)
-        env:
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_USER: ${{ secrets.SSH_USER }}
-          SSH_PASS: ${{ secrets.SSH_PASS }}
-          REMOTE_BASE: ${{ secrets.REMOTE_BASE }}
-        run: |
-          echo "🔍 Testing directory operations without TTY..."
-          echo "Remote base: $REMOTE_BASE"
-          
-          # Test directory operations without TTY
-          sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
-            "bash -c 'echo Directory test starting; test -d \"$REMOTE_BASE\" && echo Base exists: $REMOTE_BASE || echo Base missing: $REMOTE_BASE; mkdir -p \"$REMOTE_BASE/test_$RELEASE_ID\" && echo Test dir created; ls -la \"$REMOTE_BASE/\" | grep test_ || true; rmdir \"$REMOTE_BASE/test_$RELEASE_ID\" && echo Test dir removed; echo Directory test completed'" || {
-            echo "❌ Directory operations failed"; exit 1;
-          }
-          echo "✅ Directory operations work without TTY"
-
-      # --- 8e. Upload Test (TTY-free) ---
-      - name: Debug - Small Upload Test (TTY-free)
-        env:
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_USER: ${{ secrets.SSH_USER }}
-          SSH_PASS: ${{ secrets.SSH_PASS }}
-          REMOTE_BASE: ${{ secrets.REMOTE_BASE }}
-        run: |
-          echo "🔍 Testing file upload without TTY..."
-          
-          # Create test file
-          echo "Test upload at $(date) - TTY-free deployment" > test_upload.txt
-          
-          # Create release directory without TTY
-          sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
-            "bash -c 'mkdir -p \"$REMOTE_BASE/releases/$RELEASE_ID\" && echo Directory created: $REMOTE_BASE/releases/$RELEASE_ID'" || {
-            echo "❌ Release directory creation failed"; exit 1;
-          }
-          
-          # Test rsync upload (rsync doesn't need TTY)
-          sshpass -p "$SSH_PASS" rsync -av \
-            -e "ssh -o StrictHostKeyChecking=no" \
-            test_upload.txt \
-            "$SSH_USER@$SSH_HOST:$REMOTE_BASE/releases/$RELEASE_ID/" || {
-            echo "❌ Test upload failed"; exit 1;
-          }
-          
-          # Verify upload without TTY
-          sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
-            "bash -c 'test -f \"$REMOTE_BASE/releases/$RELEASE_ID/test_upload.txt\" && echo Upload verified: test file exists || echo Upload missing'" || {
-            echo "❌ Upload verification failed"; exit 1;
-          }
-          
-          echo "✅ Upload test successful without TTY"
-
-      # --- 8f. Full Upload (TTY-free) ---
-      - name: Debug - Full Release Upload (TTY-free)
-        env:
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_USER: ${{ secrets.SSH_USER }}
-          SSH_PASS: ${{ secrets.SSH_PASS }}
-          REMOTE_BASE: ${{ secrets.REMOTE_BASE }}
-        run: |
-          echo "🔍 Uploading full release package without TTY..."
-          
-          # Upload release package (rsync works without TTY)
-          sshpass -p "$SSH_PASS" rsync -avz --progress \
-            -e "ssh -o StrictHostKeyChecking=no" \
-            ./release-package/ \
-            "$SSH_USER@$SSH_HOST:$REMOTE_BASE/releases/$RELEASE_ID/" || {
-            echo "❌ Full upload failed"; exit 1;
-          }
-          
-          echo "✅ Full upload completed without TTY"
-
-      # --- 8g. Deployment Operations (TTY-free) ---
-      - name: Debug - Deployment Operations (TTY-free)
-        env:
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_USER: ${{ secrets.SSH_USER }}
-          SSH_PASS: ${{ secrets.SSH_PASS }}
-          REMOTE_BASE: ${{ secrets.REMOTE_BASE }}
-        run: |
-          echo "🔍 Running deployment operations without TTY..."
-          
-          # TTY-free deployment using standard SSH
-          sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
-            "bash --login -c '
-            # Error handling
-            set -euo pipefail
-            
-            # Set variables
-            BASE=\"$REMOTE_BASE\"
-            REL=\"\$BASE/releases/$RELEASE_ID\"
-            CUR=\"\$BASE/current\"
-            
-            echo \"🔍 Deployment variables:\"
-            echo \"   BASE: \$BASE\"
-            echo \"   REL: \$REL\"
-            echo \"   CUR: \$CUR\"
-            
-            # Verify upload
-            echo \"🔍 Verifying upload...\"
-            test -d \"\$REL\" || { echo \"❌ Release dir missing: \$REL\"; exit 1; }
-            test -f \"\$REL/package.json\" || { echo \"❌ package.json missing\"; exit 1; }
-            test -f \"\$REL/dist/server/entry.mjs\" || { echo \"❌ SSR entry missing\"; exit 1; }
-            echo \"✅ Files verified\"
-            
-            # Install dependencies
-            echo \"🔍 Installing dependencies...\"
-            cd \"\$REL\"
-            npm ci --omit=dev --no-audit --no-fund || { echo \"❌ npm ci failed\"; exit 1; }
-            echo \"✅ Dependencies installed: \$(ls node_modules/ | wc -l) packages\"
-            
-            # Deployment switch
-            echo \"🔍 Performing deployment switch...\"
-            cd \"\$BASE\"
-            if [ -e \"\$CUR\" ]; then
-              mv \"\$CUR\" \"current_backup_\$(date +%s)\" 2>/dev/null || true
-              echo \"✅ Previous version backed up\"
+            echo "❌ Minimal echo failed (exit: $EXIT_CODE)"
+            if [ $EXIT_CODE -eq 127 ]; then
+              echo "   → Command not found error"
+            elif [ $EXIT_CODE -eq 1 ]; then
+              echo "   → General command failure"
+            elif [ $EXIT_CODE -eq 255 ]; then
+              echo "   → SSH connection issue"
             fi
-            mv \"\$REL\" \"\$CUR\" || { echo \"❌ Switch failed\"; exit 1; }
-            echo \"✅ New release activated\"
-            
-            # Passenger restart trigger
-            echo \"🔍 Triggering restart...\"
-            mkdir -p \"\$CUR/tmp\"
-            date > \"\$CUR/tmp/restart.txt\"
-            echo \"✅ Restart triggered: \$(date)\"
-            
-            echo \"🎉 TTY-free deployment completed successfully!\"
-            '" || {
-            echo "❌ Deployment operations failed"; exit 1;
-          }
+          fi
           
-          echo "🎉 TTY-free deployment operations completed!"
+          # Test 2: Try different shell approaches
+          echo "🔍 Test 2: Alternative shell invocations..."
+          
+          # Try with explicit /bin/sh
+          echo "   → Testing /bin/sh..."
+          if sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
+            '/bin/sh -c "echo sh works"'; then
+            echo "   ✅ /bin/sh works"
+          else
+            echo "   ❌ /bin/sh failed"
+          fi
+          
+          # Try with explicit /bin/bash
+          echo "   → Testing /bin/bash..."
+          if sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
+            '/bin/bash -c "echo bash works"'; then
+            echo "   ✅ /bin/bash works"
+          else
+            echo "   ❌ /bin/bash failed"
+          fi
+          
+          # Test 3: Check what shell is available
+          echo "🔍 Test 3: Shell availability check..."
+          sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
+            'echo $0 2>/dev/null || echo "Cannot determine shell"'
+          
+          # Test 4: Try with login shell
+          echo "🔍 Test 4: Login shell attempt..."
+          if sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
+            'bash --login -c "echo login shell works"'; then
+            echo "✅ Login shell works"
+          else
+            echo "❌ Login shell failed"
+          fi
+          
+          # Test 5: Check environment variables
+          echo "🔍 Test 5: Environment check..."
+          sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
+            'echo USER=$USER HOME=$HOME SHELL=$SHELL' || echo "Environment check failed"
+          
+          # Test 6: File system basic check
+          echo "🔍 Test 6: File system access..."
+          if sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
+            'pwd'; then
+            echo "✅ pwd works - basic file system access available"
+          else
+            echo "❌ Even pwd fails - severe restrictions"
+          fi
+          
+          echo "🔍 Shell environment analysis completed"
+
+      # --- 8c. Alternative Deployment Method Discovery ---
+      - name: Debug - Alternative Deployment Methods
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PASS: ${{ secrets.SSH_PASS }}
+          REMOTE_BASE: ${{ secrets.REMOTE_BASE }}
+        run: |
+          echo "🔍 Exploring alternative deployment methods..."
+          
+          # Check if SFTP is available as fallback
+          echo "🔍 Testing SFTP availability..."
+          if echo "pwd" | sshpass -p "$SSH_PASS" sftp -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST"; then
+            echo "✅ SFTP access works - can use for file upload"
+          else
+            echo "❌ SFTP also failed"
+          fi
+          
+          # Test very basic directory listing
+          echo "🔍 Testing basic directory operations..."
+          if sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
+            'ls'; then
+            echo "✅ ls command works"
+            
+            # Try to test the remote base path
+            echo "🔍 Testing remote base path access..."
+            sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
+              "ls '$REMOTE_BASE' 2>/dev/null || echo 'Remote base not accessible: $REMOTE_BASE'"
+          else
+            echo "❌ Even ls command fails"
+          fi
+          
+          # Check what's actually available
+          echo "🔍 Testing available commands..."
+          AVAILABLE_COMMANDS=""
+          for cmd in pwd ls mkdir rmdir cp mv rm; do
+            if sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
+              "which $cmd >/dev/null 2>&1"; then
+              AVAILABLE_COMMANDS="$AVAILABLE_COMMANDS $cmd"
+            fi
+          done
+          
+          if [ -n "$AVAILABLE_COMMANDS" ]; then
+            echo "✅ Available commands:$AVAILABLE_COMMANDS"
+          else
+            echo "❌ No standard commands available - very restricted environment"
+          fi
+          
+          echo "🔍 Alternative method discovery completed"
+
+      # --- 8d. Simple File Upload Test ---
+      - name: Debug - Simple File Upload via SFTP/SCP
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PASS: ${{ secrets.SSH_PASS }}
+          REMOTE_BASE: ${{ secrets.REMOTE_BASE }}
+        run: |
+          echo "🔍 Testing simple file upload methods..."
+          
+          # Create a test file
+          echo "Test file created at $(date)" > upload_test.txt
+          
+          # Try SCP upload (might work even if SSH shell is restricted)
+          echo "🔍 Testing SCP upload..."
+          if sshpass -p "$SSH_PASS" scp -o StrictHostKeyChecking=no upload_test.txt \
+            "$SSH_USER@$SSH_HOST:upload_test.txt"; then
+            echo "✅ SCP upload works"
+            
+            # Try to verify the file was uploaded
+            echo "🔍 Verifying SCP upload..."
+            if sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
+              'test -f upload_test.txt && echo "File exists" || echo "File missing"'; then
+              echo "✅ File verification possible"
+            else
+              echo "❌ Cannot verify file upload"
+            fi
+          else
+            echo "❌ SCP upload failed"
+          fi
+          
+          # Try rsync (might work better than SSH commands)
+          echo "🔍 Testing rsync upload..."
+          if sshpass -p "$SSH_PASS" rsync -av \
+            -e "ssh -o StrictHostKeyChecking=no" \
+            upload_test.txt \
+            "$SSH_USER@$SSH_HOST:rsync_test.txt"; then
+            echo "✅ rsync upload works"
+          else
+            echo "❌ rsync upload failed"
+          fi
+          
+          echo "🔍 File upload method testing completed"
