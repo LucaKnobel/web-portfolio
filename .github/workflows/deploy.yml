@@ -238,8 +238,11 @@ jobs:
           # --- Step 2: Verify upload and install production dependencies ---
           echo ""
           echo "🔧 Step 2: Installing production dependencies on server..."
-          
-         
+                    # First: Quick preflight check
+          echo "🔍 Preflight: Checking server environment..."
+          sshpass -p "$SSH_PASS" ssh -oStrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
+            "command -v node; node -v; command -v npm; npm -v; test -d '$REMOTE_BASE'; ls -la '$REMOTE_BASE'"
+          echo "✅ Server environment check passed"
           
           # Second: Check upload was successful
           echo "🔍 Preflight: Verifying upload..."
@@ -344,7 +347,7 @@ jobs:
           echo "📈 Benefits: Fast upload (no node_modules), stable network usage, server-optimized deps"
           
       # --- 9. SSH deployment verification ---
-      - name: Verify SSH Deployment
+      - name: SSH Deploy - Complete in One Session  
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_USER: ${{ secrets.SSH_USER }}
@@ -352,143 +355,78 @@ jobs:
           REMOTE_BASE: ${{ secrets.REMOTE_BASE }}
         run: |
           set -euo pipefail
-          echo "🔍 Starting comprehensive deployment verification via SSH..."
-          echo "🔍 Verification target: $SSH_USER@$SSH_HOST:$REMOTE_BASE"
+          echo "🚀 Starting complete SSH deployment in single session..."
+          echo "🔍 Target: $SSH_USER@$SSH_HOST:$REMOTE_BASE"
+          echo "🔍 Release: $RELEASE_ID"
           
-          sshpass -p "$SSH_PASS" ssh -oStrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
-            "export REMOTE_BASE='$REMOTE_BASE' RELEASE_ID='$RELEASE_ID'; bash -s" << 'EOF'
-            # Set variables BEFORE pipefail  
-            REMOTE_BASE="$REMOTE_BASE"
-            RELEASE_ID="$RELEASE_ID"
+          # Single SSH session does everything: upload verification, npm install, switch
+          sshpass -p "$SSH_PASS" ssh -tt -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
+            "export REMOTE_BASE='$REMOTE_BASE' RELEASE_ID='$RELEASE_ID'; bash -lc 'bash -s'" << 'EOF'
+            # Variables setup  
             BASE="$REMOTE_BASE"
+            REL="$BASE/releases/$RELEASE_ID" 
             CUR="$BASE/current"
             
+            # Strict error handling
             set -euo pipefail
+            set -x
             
-            echo "🔍 SSH Verification Session: Connected"
-            echo "🔍 Server details:"
-            echo "   Hostname: $(hostname)"
-            echo "   Current time: $(date -Iseconds)"
-            echo "   Working directory: $(pwd)"
-            echo "🔍 Variables:"
+            echo "🔍 SSH Single Session: Starting complete deployment"
             echo "   BASE: $BASE"
+            echo "   REL: $REL"
             echo "   CUR: $CUR"
             echo "   RELEASE_ID: $RELEASE_ID"
             
-            # Navigate to app directory
+            # Step 1: Environment & Upload verification
+            echo "🔍 Step 1: Verifying environment and upload..."
+            echo "Node: $(node -v 2>/dev/null || echo 'not-found')"
+            echo "NPM: $(npm -v 2>/dev/null || echo 'not-found')" 
+            test -d "$BASE" || { echo "❌ Base directory missing"; exit 1; }
+            test -d "$REL" || { echo "❌ Release directory missing"; exit 1; }
+            test -f "$REL/dist/server/entry.mjs" || { echo "❌ SSR entry missing"; exit 1; }
+            test -f "$REL/package.json" || { echo "❌ Package.json missing"; exit 1; }
+            echo "✅ Environment and upload verified"
+            
+            # Step 2: Install production dependencies
+            echo "🔍 Step 2: Installing production dependencies..."
+            cd "$REL"
+            npm ci --omit=dev --no-audit --no-fund
+            test -d "node_modules" || { echo "❌ Dependencies install failed"; exit 1; }
+            echo "✅ Dependencies installed: $(ls node_modules/ | wc -l) packages"
+            
+            # Step 3: Atomic release switch
+            echo "🔍 Step 3: Atomic release switch..."
             cd "$BASE"
-            echo "🔍 App directory: $(pwd)"
             
-            # Check current release
-            echo ""
-            echo "🔍 Current release verification:"
+            # Backup current release
             if [ -e "$CUR" ]; then
-              echo "✅ Current release exists"
-              if [ -L "$CUR" ]; then
-                echo "🔗 Current is symlink to: $(readlink "$CUR")"
-              else
-                echo "📂 Current is directory (not symlink)"
-              fi
-              
-              echo "📊 Current release size: $(du -sh "$CUR" | cut -f1)"
-              echo "📂 Current release contents:"
-              ls -la "$CUR/" | head -10
-            else
-              echo "❌ Current release not found!"
-              exit 1
+              [ -e "current_old" ] && rm -rf "current_old"
+              mv "$CUR" "current_old"
+              echo "✅ Previous release backed up"
             fi
             
-            # Check essential files
-            echo ""
-            echo "🔍 Essential files verification:"
+            # Activate new release
+            mv "$REL" "$CUR"
+            test -f "$CUR/dist/server/entry.mjs" || { echo "❌ Switch verification failed"; exit 1; }
+            echo "✅ New release activated"
             
-            echo "🔍 Checking SSR entry point..."
-            if [ -f "$CUR/dist/server/entry.mjs" ]; then
-              echo "✅ SSR entry point found: $CUR/dist/server/entry.mjs"
-              echo "📊 SSR entry size: $(ls -lh "$CUR/dist/server/entry.mjs" | awk '{print $5}')"
-            else
-              echo "❌ SSR entry point missing!"
-              exit 1
-            fi
+            # Step 4: Restart trigger
+            echo "🔍 Step 4: Triggering restart..."
+            mkdir -p "$CUR/tmp"
+            date > "$CUR/tmp/restart.txt"
+            echo "✅ Restart triggered"
             
-            echo "🔍 Checking package.json..."
-            if [ -f "$CUR/package.json" ]; then
-              echo "✅ Package.json found"
-              echo "📋 Package info:"
-              grep -E '"name"|"version"' "$CUR/package.json" || true
-            else
-              echo "❌ Package.json missing!"
-              exit 1
-            fi
-            
-            echo "🔍 Checking production dependencies..."
-            if [ -d "$CUR/node_modules" ]; then
-              echo "✅ Node modules directory found"
-              echo "📊 Node modules size: $(du -sh "$CUR/node_modules" | cut -f1)"
-              echo "📦 Number of packages: $(ls "$CUR/node_modules" | wc -l)"
-              echo "🔍 Sample packages:"
-              ls "$CUR/node_modules" | head -5
-            else
-              echo "❌ Node modules missing!"
-              exit 1
-            fi
-            
-            # Check restart trigger
-            echo ""
-            echo "🔍 Restart trigger verification:"
-            if [ -f "$CUR/tmp/restart.txt" ]; then
-              echo "✅ Restart trigger found"
-              echo "📅 Restart trigger timestamp: $(stat -c %y "$CUR/tmp/restart.txt")"
-              echo "⏰ Time since restart: $(( $(date +%s) - $(stat -c %Y "$CUR/tmp/restart.txt") )) seconds ago"
-            else
-              echo "⚠️ Restart trigger file not found"
-            fi
-            
-            # Check release info
-            echo ""
-            echo "🔍 Release information:"
-            if [ -f "$CUR/RELEASE_INFO" ]; then
-              echo "✅ Release info found:"
-              cat "$CUR/RELEASE_INFO"
-            else
-              echo "⚠️ Release info file not found"
-            fi
-            
-            # Check releases directory
-            echo ""
-            echo "🔍 Releases directory overview:"
-            if [ -d "$BASE/releases" ]; then
-              echo "📂 Available releases:"
-              ls -la "$BASE/releases/" | tail -10
-              echo "📊 Total releases: $(ls "$BASE/releases" | wc -l)"
-              echo "💾 Releases disk usage: $(du -sh "$BASE/releases" | cut -f1)"
-            else
-              echo "📂 No releases directory found"
-            fi
-            
-            # Check backup
-            echo ""
-            echo "🔍 Backup verification:"
-            if [ -e "$BASE/current_old" ]; then
-              echo "✅ Previous release backup exists"
-              echo "📊 Backup size: $(du -sh "$BASE/current_old" | cut -f1)"
-            else
-              echo "🔍 No previous release backup (expected for first deployment)"
-            fi
-            
-            echo ""
-            echo "🎉 Deployment verification completed successfully!"
-            echo "📋 Verification Summary:"
-            echo "   ✅ Current release: Active and verified"
-            echo "   ✅ SSR entry point: Found and accessible"
-            echo "   ✅ Dependencies: Installed on server"
-            echo "   ✅ Restart trigger: Created and timestamped"
-            echo "   🚀 Application: Ready to serve requests"
+            # Final summary
+            echo "🎉 Complete deployment summary:"
+            echo "   Release: $RELEASE_ID"
+            echo "   Size: $(du -sh "$CUR" | cut -f1)"
+            echo "   Time: $(date -Iseconds)"
+            echo "   Packages: $(ls "$CUR/node_modules" | wc -l)"
+            echo "   Status: Ready to serve traffic"
           EOF
           
-          echo ""
-          echo "✅ SSH deployment verification completed successfully"
-          echo "🔍 All critical components verified via SSH"
+          echo "🎉 Single SSH session deployment completed successfully!"
+          echo "🌐 Live at: https://lucaknobel.ch"
 
       # --- 10. SSH deployment completion summary ---
       - name: SSH Deployment Complete
