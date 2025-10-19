@@ -194,57 +194,91 @@ jobs:
         run: |
           set -euo pipefail
           echo "🔍 Starting SFTP deployment process..."
-          echo "Target host: $SFTP_HOST"
-          echo "Target user: $SFTP_USER"
-          echo "Remote base: $REMOTE_BASE"
-          echo "Release ID: $RELEASE_ID"
+  
           
           echo "🚀 Connecting to $SFTP_HOST ..."
           lftp -u "$SFTP_USER","$SFTP_PASS" sftp://$SFTP_HOST <<EOF
           set sftp:auto-confirm yes
           set net:max-retries 2
           set net:timeout 30
+          set cmd:trace on
 
           # --- Work on server ---
           echo "🔍 Changing to remote base directory..."
+          !echo "LFTP: About to change to directory: $REMOTE_BASE"
           cd $REMOTE_BASE || { echo "❌ Base path missing: $REMOTE_BASE"; bye; }
+          !echo "LFTP: Successfully changed to base directory"
+          pwd
+          !echo "LFTP: Current working directory confirmed"
 
           # 1) Ensure releases directory exists
           echo "🔍 Ensuring releases directory exists..."
+          !echo "LFTP: Creating releases directory if not exists"
           mkdir releases || true
+          !echo "LFTP: Releases directory command completed"
+          ls -la releases/
           echo "✅ Releases directory ready"
 
           # 2) Create new release directory
           echo "🔍 Creating new release directory: $RELEASE_ID"
+          !echo "LFTP: Creating release directory: releases/$RELEASE_ID"
           mkdir releases/$RELEASE_ID
+          !echo "LFTP: Release directory created, changing into it"
           cd releases/$RELEASE_ID
+          pwd
+          !echo "LFTP: Now in release directory"
           echo "✅ Release directory created"
 
           # 3) Upload files
           echo "🔍 Starting file upload (mirror with parallel=4)..."
-          mirror -R --delete --parallel=4 ../../release-package .
+          !echo "LFTP: About to start mirror upload from ../../release-package"
+          !echo "LFTP: Local package contents:"
+          !ls -la ../../release-package/
+          mirror -R --delete --parallel=4 --verbose ../../release-package .
+          !echo "LFTP: Mirror upload completed, checking uploaded files"
+          ls -la
+          !echo "LFTP: Upload verification - checking key files"
+          ls -la dist/server/entry.mjs || echo "⚠️ SSR entry not found in upload"
+          ls -la package.json || echo "⚠️ Package.json not found in upload"
           echo "✅ Files uploaded successfully"
 
           # 4) Go back to app directory
           echo "🔍 Returning to app directory..."
+          !echo "LFTP: Changing back to app directory"
           cd ../..
           pwd
+          !echo "LFTP: Back in app directory, listing contents"
+          ls -la
           echo "✅ Back in app directory"
 
           # 5) Atomic switch
           echo "🔍 Starting atomic release switch..."
+          !echo "LFTP: About to backup current release"
           mv current current_old || true
+          !echo "LFTP: Backup completed (if current existed)"
+          ls -la current_old || echo "No previous release to backup"
           echo "✅ Old release backed up (if existed)"
           
+          !echo "LFTP: Moving new release to current"
           mv releases/$RELEASE_ID current
+          !echo "LFTP: Release switch completed, verifying"
+          ls -la current/
+          ls -la current/dist/server/entry.mjs || echo "⚠️ SSR entry not found in current"
           echo "✅ New release activated"
 
           # 6) Trigger restart
           echo "🔍 Triggering application restart..."
+          !echo "LFTP: Creating tmp directory for restart trigger"
           mkdir -p current/tmp
+          !echo "LFTP: Creating restart trigger file"
           put -O current/tmp /dev/null -o restart.txt
+          !echo "LFTP: Verifying restart trigger"
+          ls -la current/tmp/restart.txt || echo "⚠️ Restart trigger file not created"
           echo "✅ Restart triggered"
 
+          !echo "LFTP: Final deployment state check"
+          ls -la current
+          !echo "LFTP: Deployment completed successfully"
           bye
           EOF
           echo "✅ SFTP deployment completed successfully"      # --- 9. Deployment verification ---
