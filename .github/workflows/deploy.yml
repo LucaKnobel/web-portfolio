@@ -199,105 +199,193 @@ jobs:
           rsync --version | head -5
           echo "✅ SSH tools ready for deployment"
 
-      # Ersetze Step 8 komplett:
+      # Ersetze Step 8 mit diesen Debug-Steps:
 
-      # --- 8. SSH deployment: Stable upload + deploy ---
-      - name: SSH Deploy - Stable Upload and Deploy
+      # --- 8a. SSH Basic Connection Test ---
+      - name: Debug - SSH Basic Connection
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PASS: ${{ secrets.SSH_PASS }}
+        run: |
+          echo "🔍 Testing basic SSH connectivity..."
+          echo "Host: $SSH_HOST"
+          echo "User: $SSH_USER"
+          echo "Password length: ${#SSH_PASS}"
+          
+          # Basic connection test
+          sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
+            "echo 'SSH connection successful'; whoami; hostname" || { 
+            echo "❌ Basic SSH connection failed"; exit 1; 
+          }
+          echo "✅ Basic SSH works"
+
+      # --- 8b. SSH with TTY Test ---  
+      - name: Debug - SSH TTY and Login Shell
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PASS: ${{ secrets.SSH_PASS }}
+        run: |
+          echo "🔍 Testing SSH with TTY and login shell..."
+          
+          # Test TTY allocation
+          sshpass -p "$SSH_PASS" ssh -tt -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
+            "echo 'TTY test successful'; tty" || {
+            echo "❌ TTY allocation failed"; exit 1;
+          }
+          echo "✅ TTY allocation works"
+          
+          # Test login shell
+          sshpass -p "$SSH_PASS" ssh -tt -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
+            "bash -lc 'echo Login shell works; echo PATH=\$PATH'" || {
+            echo "❌ Login shell failed"; exit 1;
+          }
+          echo "✅ Login shell works"
+
+      # --- 8c. Node.js Environment Test ---
+      - name: Debug - Node.js Environment
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PASS: ${{ secrets.SSH_PASS }}
+        run: |
+          echo "🔍 Testing Node.js environment on server..."
+          
+          # Test Node.js availability with error handling
+          sshpass -p "$SSH_PASS" ssh -tt -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
+            "bash -lc 'echo Node test starting; node -v 2>/dev/null && echo Node OK || echo Node MISSING; npm -v 2>/dev/null && echo NPM OK || echo NPM MISSING; echo Test completed'" || {
+            echo "❌ Node.js environment test failed"; exit 1;
+          }
+          echo "✅ Node.js environment test completed"
+
+      # --- 8d. Directory Operations Test ---
+      - name: Debug - Directory Operations
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_PASS: ${{ secrets.SSH_PASS }}
           REMOTE_BASE: ${{ secrets.REMOTE_BASE }}
         run: |
-          set -euo pipefail
-          echo "🚀 SSH deployment with stable upload"
-          echo "🔍 Target: $SSH_USER@$SSH_HOST:$REMOTE_BASE"
-          echo "🔍 Release: $RELEASE_ID"
+          echo "🔍 Testing directory operations..."
+          echo "Remote base: $REMOTE_BASE"
           
-          # Step 1: Create release directory first
-          echo "📁 Creating release directory..."
+          # Test directory operations
           sshpass -p "$SSH_PASS" ssh -tt -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
-            "bash -lc 'mkdir -p \"$REMOTE_BASE/releases/$RELEASE_ID\" && echo \"Directory created\"'"
+            "bash -lc 'echo Directory test starting; test -d \"$REMOTE_BASE\" && echo Base exists || echo Base missing; mkdir -p \"$REMOTE_BASE/test_$RELEASE_ID\" && echo Test dir created; rmdir \"$REMOTE_BASE/test_$RELEASE_ID\" && echo Test dir removed; echo Directory test completed'" || {
+            echo "❌ Directory operations failed"; exit 1;
+          }
+          echo "✅ Directory operations work"
+
+      # --- 8e. Upload Test (Small File) ---
+      - name: Debug - Small Upload Test
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PASS: ${{ secrets.SSH_PASS }}
+          REMOTE_BASE: ${{ secrets.REMOTE_BASE }}
+        run: |
+          echo "🔍 Testing small file upload..."
           
-          # Step 2: Upload via rsync (more stable than tar pipe)
-          echo "📤 Uploading release package..."
+          # Create test file
+          echo "Test upload at $(date)" > test_upload.txt
+          
+          # Create release directory
+          sshpass -p "$SSH_PASS" ssh -tt -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
+            "bash -lc 'mkdir -p \"$REMOTE_BASE/releases/$RELEASE_ID\"'" || {
+            echo "❌ Release directory creation failed"; exit 1;
+          }
+          
+          # Test rsync upload
+          sshpass -p "$SSH_PASS" rsync -av \
+            -e "ssh -o StrictHostKeyChecking=no" \
+            test_upload.txt \
+            "$SSH_USER@$SSH_HOST:$REMOTE_BASE/releases/$RELEASE_ID/" || {
+            echo "❌ Test upload failed"; exit 1;
+          }
+          
+          # Verify upload
+          sshpass -p "$SSH_PASS" ssh -tt -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
+            "bash -lc 'test -f \"$REMOTE_BASE/releases/$RELEASE_ID/test_upload.txt\" && echo Upload verified || echo Upload missing'" || {
+            echo "❌ Upload verification failed"; exit 1;
+          }
+          
+          echo "✅ Small upload test successful"
+
+      # --- 8f. Full Upload if Previous Tests Pass ---
+      - name: Debug - Full Release Upload
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PASS: ${{ secrets.SSH_PASS }}
+          REMOTE_BASE: ${{ secrets.REMOTE_BASE }}
+        run: |
+          echo "🔍 Uploading full release package..."
+          
+          # Upload release package
           sshpass -p "$SSH_PASS" rsync -avz --progress \
             -e "ssh -o StrictHostKeyChecking=no" \
             ./release-package/ \
-            "$SSH_USER@$SSH_HOST:$REMOTE_BASE/releases/$RELEASE_ID/"
-          echo "✅ Upload completed"
+            "$SSH_USER@$SSH_HOST:$REMOTE_BASE/releases/$RELEASE_ID/" || {
+            echo "❌ Full upload failed"; exit 1;
+          }
           
-          # Step 3: Deploy in SSH session (no upload, just deployment)
-          echo "🔧 Starting deployment operations..."
-          sshpass -p "$SSH_PASS" ssh -tt -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" << EOF
-          # Load Node.js environment
+          echo "✅ Full upload completed"
+
+      # --- 8g. Deployment Operations ---
+      - name: Debug - Deployment Operations  
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PASS: ${{ secrets.SSH_PASS }}
+          REMOTE_BASE: ${{ secrets.REMOTE_BASE }}
+        run: |
+          echo "🔍 Running deployment operations..."
+          
+          # Deployment in isolated SSH session
+          sshpass -p "$SSH_PASS" ssh -tt -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" << 'EOF'
+          # Load environment
           source ~/.bashrc 2>/dev/null || source ~/.profile 2>/dev/null || true
           
-          # Strict error handling
+          # Error handling with debugging
           set -euo pipefail
-          set -x
           
-          # Variables (substitute at build time)
-          BASE="$REMOTE_BASE"
-          REL="\$BASE/releases/$RELEASE_ID"
-          CUR="\$BASE/current"
+          # Set variables with debugging
+          BASE="${{ secrets.REMOTE_BASE }}"
+          REL="$BASE/releases/${{ env.RELEASE_ID }}"
+          CUR="$BASE/current"
           
-          echo "🔍 Deployment session started"
-          echo "   BASE: \$BASE"
-          echo "   REL: \$REL"
-          echo "   CUR: \$CUR"
-          echo "   RELEASE_ID: $RELEASE_ID"
+          echo "🔍 Deployment variables:"
+          echo "   BASE: $BASE"
+          echo "   REL: $REL"
+          echo "   CUR: $CUR"
           
-          # Verify upload completed successfully
+          # Verify files exist
           echo "🔍 Verifying upload..."
-          echo "Node: \$(node -v 2>/dev/null || echo 'not-available')"
-          echo "NPM: \$(npm -v 2>/dev/null || echo 'not-available')"
-          test -d "\$REL" || { echo "❌ Release directory missing"; exit 1; }
-          test -f "\$REL/dist/server/entry.mjs" || { echo "❌ SSR entry missing"; exit 1; }
-          test -f "\$REL/package.json" || { echo "❌ Package.json missing"; exit 1; }
-          echo "✅ Upload verified"
+          test -d "$REL" || { echo "❌ Release dir missing: $REL"; exit 1; }
+          test -f "$REL/package.json" || { echo "❌ package.json missing"; exit 1; }
+          test -f "$REL/dist/server/entry.mjs" || { echo "❌ SSR entry missing"; exit 1; }
+          echo "✅ Files verified"
           
-          # Install production dependencies
-          echo "🔍 Installing production dependencies..."
-          cd "\$REL"
+          # Install dependencies
+          echo "🔍 Installing dependencies..."
+          cd "$REL"
           npm ci --omit=dev --no-audit --no-fund || { echo "❌ npm ci failed"; exit 1; }
-          test -d "node_modules" || { echo "❌ node_modules missing"; exit 1; }
-          echo "✅ Dependencies installed: \$(ls node_modules/ | wc -l) packages"
+          echo "✅ Dependencies installed"
           
-          # Atomic release switch
-          echo "🔍 Performing atomic release switch..."
-          cd "\$BASE"
-          
-          # Backup current release if exists
-          if [ -e "\$CUR" ]; then
-            [ -e "current_old" ] && rm -rf "current_old"
-            mv "\$CUR" "current_old"
-            echo "✅ Previous release backed up"
-          else
-            echo "🔍 No previous release (first deployment)"
+          # Simple deployment (no atomic switch for now)
+          echo "🔍 Creating backup and switch..."
+          cd "$BASE"
+          if [ -e "$CUR" ]; then
+            mv "$CUR" "current_backup_$(date +%s)" 2>/dev/null || true
           fi
+          mv "$REL" "$CUR" || { echo "❌ Switch failed"; exit 1; }
+          echo "✅ Deployment completed"
           
-          # Switch to new release
-          mv "\$REL" "\$CUR"
-          test -f "\$CUR/dist/server/entry.mjs" || { echo "❌ Switch verification failed"; exit 1; }
-          echo "✅ New release activated"
-          
-          # Trigger Passenger restart
-          echo "🔍 Triggering Passenger restart..."
-          mkdir -p "\$CUR/tmp"
-          date > "\$CUR/tmp/restart.txt"
-          echo "✅ Restart triggered: \$(date)"
-          
-          # Final summary
-          echo "🎉 Deployment Summary:"
-          echo "   Release: $RELEASE_ID"
-          echo "   Path: \$CUR"
-          echo "   Size: \$(du -sh \"\$CUR\" | cut -f1)"
-          echo "   Packages: \$(ls \"\$CUR/node_modules\" | wc -l)"
-          echo "   Time: \$(date -Iseconds)"
-          echo "   Status: Ready for Astro SSR traffic"
+          # Restart trigger
+          mkdir -p "$CUR/tmp"
+          date > "$CUR/tmp/restart.txt"
+          echo "✅ Restart triggered"
           EOF
           
-          echo "🎉 SSH deployment completed successfully!"
-          echo "🌐 Live: https://lucaknobel.ch"
-          echo "✅ Astro SSR application deployed and ready"
+          echo "🎉 Deployment operations completed!"
