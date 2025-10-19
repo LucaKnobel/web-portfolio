@@ -14,369 +14,165 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # --- 1. Get source code ---
-      - name: Checkout Repository
+      # 1) Code holen
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
-      - name: Debug - Repository Info
-        run: |
-          echo "🔍 Repository checkout completed"
-          echo "Working directory: $(pwd)"
-          echo "Git commit: ${{ github.sha }}"
-          echo "Git ref: ${{ github.ref }}"
-          echo "Files in root:"
-          ls -la
-          
-      # --- 2. Prepare Node environment ---
+      # 2) Node vorbereiten
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
-      - name: Debug - Node Environment
+      # 3) Install + Build (SSR)
+      - name: Install & Build
         run: |
-          echo "🔍 Node.js environment setup completed"
-          echo "Node version: $(node --version)"
-          echo "NPM version: $(npm --version)"
-          echo "NPM cache location: $(npm config get cache)"
-          
-      # --- 3. Install dependencies & build ---
-      - name: Install & Build (SSR)
-        run: |
-          echo "🔍 Starting dependency installation..."
+          set -euo pipefail
           npm ci
-          echo "✅ Dependencies installed"
-          
-          echo "🔍 Running TypeScript type check..."
           npm run typecheck
-          echo "✅ Type check completed"
-          
-          echo "🔍 Starting production build..."
           npm run build
-          echo "✅ Build completed"
 
-      - name: Debug - Build Process
+      # 4) Build verifizieren
+      - name: Validate Build
         run: |
-          echo "🔍 Build process completed, checking output..."
-          echo "Dist directory contents:"
-          ls -la dist/
-          echo "Server directory contents:"
-          ls -la dist/server/ || echo "No server directory"
-          echo "Client directory contents:"
-          ls -la dist/client/ || echo "No client directory"
-          
-      # --- 4. Validate build output ---
-      - name: Validate Build Output
-        run: |
-          echo "🔍 Validating build output..."
-          
-          echo "Checking SSR entry point..."
-          if [ ! -f "dist/server/entry.mjs" ]; then
-            echo "❌ SSR entry point missing: dist/server/entry.mjs"
-            exit 1
-          fi
-          echo "✅ SSR entry point found: dist/server/entry.mjs"
-          
-          echo "Checking client assets..."
-          if [ ! -d "dist/client" ]; then
-            echo "❌ Client assets missing: dist/client"
-            exit 1
-          fi
-          echo "✅ Client assets found: dist/client"
-          
-          echo "✅ Build validation successful"
+          set -euo pipefail
+          [ -f "dist/server/entry.mjs" ] || { echo "❌ SSR entry missing: dist/server/entry.mjs"; exit 1; }
+          [ -d "dist/client" ] || { echo "❌ Client assets missing: dist/client"; exit 1; }
+          echo "✅ Build OK"
 
-      - name: Debug - Build Validation
-        run: |
-          echo "🔍 Build validation completed, showing file sizes..."
-          echo "SSR entry point size:"
-          ls -lh dist/server/entry.mjs
-          echo "Client assets overview:"
-          du -sh dist/client/*
-          echo "Total dist size:"
-          du -sh dist/
-          
-      # --- 5. Keep only production dependencies ---
-      - name: Prepare Production Dependencies
-        run: |
-          echo "🔍 Preparing production dependencies..."
-          echo "Before pruning - node_modules size:"
-          du -sh node_modules/
-          
-          npm prune --production
-          echo "✅ Development dependencies removed"
-          
-          echo "After pruning - node_modules size:"
-          du -sh node_modules/
-          
-          [ -d node_modules ] || { echo "❌ node_modules missing after prune"; exit 1; }
-          echo "✅ Production dependencies ready"
-
-      - name: Debug - Dependencies
-        run: |
-          echo "🔍 Production dependencies overview..."
-          echo "Number of packages:"
-          ls node_modules/ | wc -l
-          echo "Top 10 largest packages:"
-          du -sh node_modules/* | sort -hr | head -10
-          
-      # --- 6. Create minimal release package (dist + package.json only) ---
+      # 5) Minimal-Paket erstellen (dist + package.json + lockfile)
       - name: Create Minimal Release Package
         run: |
-          echo "🔍 Creating minimal release package for SSH deployment..."
-          
-          # Generate human-readable timestamp
-          TIMESTAMP=$(date '+%Y%m%d-%H%M%S')
+          set -euo pipefail
+          TS=$(date '+%Y%m%d-%H%M%S')
           SHORT_SHA=$(echo '${{ github.sha }}' | cut -c1-8)
-          RELEASE_ID="${TIMESTAMP}_${{ github.run_id }}_${SHORT_SHA}"
-          
-          echo "🔍 Release ID components:"
-          echo "   Timestamp: $TIMESTAMP ($(date '+%Y-%m-%d %H:%M:%S'))"
-          echo "   Run ID: ${{ github.run_id }}"
-          echo "   Short SHA: $SHORT_SHA"
-          echo "Generated Release ID: ${RELEASE_ID}"
+          RELEASE_ID="${TS}_${{ github.run_id }}_${SHORT_SHA}"
           echo "RELEASE_ID=${RELEASE_ID}" >> $GITHUB_ENV
 
-          echo "🔍 Creating minimal release-package directory..."
           mkdir -p release-package
-          
-          echo "🔍 Copying dist directory (SSR build output)..."
           cp -r dist release-package/
-          echo "✅ Dist directory copied ($(du -sh dist/ | cut -f1))"
-          
-          echo "🔍 Copying package.json (for npm ci on server)..."
-          cp package.json release-package/
-          echo "✅ Package.json copied"
-          
-          echo "🔍 Copying package-lock.json (for exact dependency resolution)..."
-          cp package-lock.json release-package/
-          echo "✅ Package-lock.json copied"
+          cp package.json package-lock.json release-package/ || true
 
-          echo "🔍 Creating release manifest..."
-          echo "# Release Manifest" > release-package/RELEASE_INFO
-          echo "Release ID: $RELEASE_ID" >> release-package/RELEASE_INFO
-          echo "Human-readable: $(date '+%Y-%m-%d %H:%M:%S UTC') (Run: ${{ github.run_id }})" >> release-package/RELEASE_INFO
-          echo "Git SHA: ${{ github.sha }}" >> release-package/RELEASE_INFO
-          echo "Build Date: $(date -Iseconds)" >> release-package/RELEASE_INFO
-          echo "Node Version: ${{ env.NODE_VERSION }}" >> release-package/RELEASE_INFO
-          echo "Deployment Method: SSH-only (no node_modules upload)" >> release-package/RELEASE_INFO
-          echo "✅ Release manifest created"
+          {
+            echo "# Release Manifest"
+            echo "Release ID: ${RELEASE_ID}"
+            echo "Git SHA: ${{ github.sha }}"
+            echo "Build Date: $(date -Iseconds)"
+            echo "Node Version: ${{ env.NODE_VERSION }}"
+            echo "Method: SSH + rsync, server-side npm ci --omit=dev"
+          } > release-package/RELEASE_INFO
 
-          echo "✅ Minimal release package prepared (${RELEASE_ID})"
-          echo "📦 Total package size: $(du -sh release-package/ | cut -f1) (no node_modules!)"
-
-      - name: Debug - Minimal Release Package
-        run: |
-          echo "🔍 Minimal release package overview..."
-          echo "Release ID: $RELEASE_ID"
-          echo "📦 Package contents:"
-          ls -la release-package/
-          echo "📊 Package size breakdown:"
-          du -sh release-package/*
-          echo "📈 Total package size (should be small without node_modules):"
-          du -sh release-package/
-          echo "📋 Release info file:"
-          cat release-package/RELEASE_INFO
-          echo "🔍 Dist structure check:"
-          find release-package/dist -name "*.mjs" -o -name "*.js" | head -10
-          echo "✅ Minimal package ready for fast SSH upload"
-          
-      # --- 7. Install SSH tools (sshpass for password auth) ---
+      # 6) Tools für SSH/rsync
       - name: Install SSH Tools
         run: |
-          echo "🔍 Installing SSH tools for password authentication..."
           sudo apt-get update
           sudo apt-get install -y sshpass rsync
-          echo "✅ SSH tools installed"
 
-      - name: Debug - SSH Tools Installation
-        run: |
-          echo "🔍 SSH tools installation verification..."
-          sshpass -V
-          rsync --version | head -5
-          echo "✅ SSH tools ready for deployment"
-
-      # Ersetze Step 8 mit diesen Debug-Steps:
-
-      # Ersetze Step 8a mit detailliertem Debug:
-
-      # --- 8a. SSH Credentials Debug ---
-      - name: Debug - SSH Credentials and Connection
+      # 7) Secrets + SSH-Basisprüfung (ohne sensible Daten zu leaken)
+      - name: Debug Secrets & Connectivity
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_PASS: ${{ secrets.SSH_PASS }}
         run: |
-          echo "🔍 SSH Connection Debug - Security-First Analysis"
-          
-          # Validate secrets are not empty (without exposing them)
-          echo "🔍 Validating GitHub Secrets..."
-          [ -n "$SSH_HOST" ] && echo "✅ SSH_HOST: Set (length: ${#SSH_HOST})" || echo "❌ SSH_HOST: Empty"
-          [ -n "$SSH_USER" ] && echo "✅ SSH_USER: Set (length: ${#SSH_USER})" || echo "❌ SSH_USER: Empty"
-          [ -n "$SSH_PASS" ] && echo "✅ SSH_PASS: Set (length: ${#SSH_PASS})" || echo "❌ SSH_PASS: Empty"
-          
-          # Check for common issues
-          echo "🔍 SSH_HOST format check..."
-          if [[ "$SSH_HOST" =~ ^ssh-.+\.infomaniak\.com$ ]]; then
-            echo "✅ SSH_HOST appears to be valid Infomaniak format"
+          set -euo pipefail
+          [ -n "${SSH_HOST:-}" ] || { echo "❌ SSH_HOST secret fehlt"; exit 1; }
+          [ -n "${SSH_USER:-}" ] || { echo "❌ SSH_USER secret fehlt"; exit 1; }
+          [ -n "${SSH_PASS:-}" ] || { echo "❌ SSH_PASS secret fehlt"; exit 1; }
+
+          # Port 22 erreichbar?
+          timeout 5 bash -lc "</dev/tcp/$SSH_HOST/22" && echo "✅ Port 22 erreichbar" || { echo "❌ SSH-Port nicht erreichbar"; exit 1; }
+
+          # Auth Test (mit -tt für pseudo-tty, manche Umgebungen verlangen das)
+          if sshpass -p "$SSH_PASS" ssh -tt -o StrictHostKeyChecking=no -o ConnectTimeout=10 \
+               -o PreferredAuthentications=password -o PubkeyAuthentication=no \
+               "$SSH_USER@$SSH_HOST" "echo OK"; then
+            echo "✅ SSH Login ok"
           else
-            echo "⚠️  SSH_HOST format unusual (expected: ssh-xxxxx.infomaniak.com)"
-          fi
-          
-          # Test network connectivity first
-          echo "🔍 Testing network connectivity to $SSH_HOST..."
-          if ping -c 1 -W 5 "$SSH_HOST" >/dev/null 2>&1; then
-            echo "✅ Host is reachable via ping"
-          else
-            echo "⚠️  Host not responding to ping (may be normal for SSH servers)"
-          fi
-          
-          # Test SSH port connectivity
-          echo "🔍 Testing SSH port connectivity..."
-          if timeout 10 bash -c "</dev/tcp/$SSH_HOST/22" 2>/dev/null; then
-            echo "✅ SSH port 22 is open"
-          else
-            echo "❌ SSH port 22 is not accessible"
-            echo "   → Check if SSH_HOST is correct"
-            echo "   → Check if Infomaniak SSH is enabled"
+            echo "❌ SSH Login fehlgeschlagen"
             exit 1
           fi
-          
-          # Test SSH with verbose output (but hide password)
-          echo "🔍 Testing SSH authentication..."
-          if sshpass -p "$SSH_PASS" ssh -v -o StrictHostKeyChecking=no -o ConnectTimeout=10 \
-            -o PreferredAuthentications=password -o PubkeyAuthentication=no \
-            "$SSH_USER@$SSH_HOST" "echo 'SSH_AUTH_SUCCESS'" 2>&1 | \
-            grep -q "SSH_AUTH_SUCCESS"; then
-            echo "✅ SSH authentication successful"
-          else
-            echo "❌ SSH authentication failed"
-            echo "   → Check SSH_USER and SSH_PASS in GitHub Secrets"
-            echo "   → Verify credentials with Infomaniak control panel"
-            echo "   → Ensure SSH access is enabled for your hosting account"
-            exit 1
-          fi
-          
-          echo "✅ SSH connection and authentication verified"
 
-      
-     # Ersetze Steps 8b-8d mit diesem funktionierenden Deployment:
-
-      # --- 8b. Working SSH Deployment (Infomaniak Compatible) ---
-      - name: SSH Deployment - Working Configuration
+      # 8) Upload + Server-Deploy (ohne Fremd-Actions)
+      - name: Upload & Server Deploy
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_PASS: ${{ secrets.SSH_PASS }}
           REMOTE_BASE: ${{ secrets.REMOTE_BASE }}
         run: |
-          echo "🚀 SSH Deployment - Using Working Server Configuration"
-          echo "🔍 Target: $SSH_USER@$SSH_HOST:$REMOTE_BASE"
-          echo "🔍 Release: $RELEASE_ID"
-          
-          # Step 1: Create release directory
-          echo "📁 Creating release directory structure..."
-          sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -o ConnectTimeout=30 \
-            "$SSH_USER@$SSH_HOST" \
-            "mkdir -p '$REMOTE_BASE/releases/$RELEASE_ID' && echo 'Directory created: $REMOTE_BASE/releases/$RELEASE_ID'"
-          
-          # Step 2: Upload release package
-          echo "📤 Uploading release package..."
-          sshpass -p "$SSH_PASS" rsync -avz --progress \
+          set -euo pipefail
+          echo "🌍 Target: $SSH_USER@$SSH_HOST"
+          echo "📂 Remote base: $REMOTE_BASE"
+          echo "🏷️ Release: $RELEASE_ID"
+
+          # a) Release-Verzeichnis anlegen
+          sshpass -p "$SSH_PASS" ssh -tt -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
+            "mkdir -p '$REMOTE_BASE/releases/$RELEASE_ID'"
+
+          # b) rsync Upload
+          sshpass -p "$SSH_PASS" rsync -avz --delete \
             -e "ssh -o StrictHostKeyChecking=no" \
             ./release-package/ \
             "$SSH_USER@$SSH_HOST:$REMOTE_BASE/releases/$RELEASE_ID/"
-          echo "✅ Upload completed"
-          
-          # Step 3: Server-side deployment operations
-          echo "🔧 Executing server-side deployment..."
-          sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -o ConnectTimeout=30 \
-            "$SSH_USER@$SSH_HOST" << EOF
-          # Load environment and set error handling
-          export PATH="/usr/local/bin:/usr/bin:/bin"
-          set -euo pipefail
-          
-          # Variables
-          BASE="$REMOTE_BASE"
-          REL="\$BASE/releases/$RELEASE_ID"
-          CUR="\$BASE/current"
-          
-          echo "🔍 Server-side deployment starting..."
-          echo "   Node: \$(node -v)"
-          echo "   NPM: \$(npm -v)"
-          echo "   BASE: \$BASE"
-          echo "   REL: \$REL"
-          echo "   CUR: \$CUR"
-          
-          # Verify upload
-          echo "🔍 Verifying uploaded files..."
-          test -d "\$REL" || { echo "❌ Release directory missing"; exit 1; }
-          test -f "\$REL/package.json" || { echo "❌ package.json missing"; exit 1; }
-          test -f "\$REL/dist/server/entry.mjs" || { echo "❌ SSR entry missing"; exit 1; }
-          echo "✅ Upload verification successful"
-          
-          # Install production dependencies
-          echo "🔍 Installing production dependencies..."
-          cd "\$REL"
-          npm ci --omit=dev --no-audit --no-fund
-          test -d "node_modules" || { echo "❌ Dependencies installation failed"; exit 1; }
-          echo "✅ Dependencies installed: \$(ls node_modules/ | wc -l) packages"
-          
-          # Atomic release switch
-          echo "🔍 Performing atomic release switch..."
-          cd "\$BASE"
-          
-          # Backup current release if exists
-          if [ -e "\$CUR" ]; then
-            BACKUP_NAME="current_backup_\$(date +%Y%m%d_%H%M%S)"
-            mv "\$CUR" "\$BACKUP_NAME"
-            echo "✅ Previous release backed up as \$BACKUP_NAME"
-          else
-            echo "🔍 No previous release (first deployment)"
-          fi
-          
-          # Activate new release
-          mv "\$REL" "\$CUR"
-          test -f "\$CUR/dist/server/entry.mjs" || { echo "❌ Switch verification failed"; exit 1; }
-          echo "✅ New release activated"
-          
-          # Trigger Passenger restart
-          echo "🔍 Triggering Passenger restart..."
-          mkdir -p "\$CUR/tmp"
-          date > "\$CUR/tmp/restart.txt"
-          echo "✅ Restart triggered: \$(date)"
-          
-          # Final summary
-          echo "🎉 Deployment Summary:"
-          echo "   Release ID: $RELEASE_ID"
-          echo "   Active path: \$CUR"
-          echo "   Total size: \$(du -sh \"\$CUR\" | cut -f1)"
-          echo "   Node packages: \$(ls \"\$CUR/node_modules\" | wc -l)"
-          echo "   Node version: \$(node -v)"
-          echo "   Deployment time: \$(date -Iseconds)"
-          echo "   Status: Astro SSR ready for production traffic"
-          EOF
-          
-          echo "🎉 SSH deployment completed successfully!"
-          echo "🌐 Live URL: https://lucaknobel.ch"
-          echo "✅ Astro 5+ SSR application deployed and ready"
 
-      # --- 8c. Deployment Verification ---
-      - name: Verify Deployment Success
+          # c) Server-Script: npm ci (prod), Symlink-Switch, Restart-Trigger
+          sshpass -p "$SSH_PASS" ssh -tt -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
+            "export BASE='$REMOTE_BASE' REL='$REMOTE_BASE/releases/$RELEASE_ID' CUR='$REMOTE_BASE/current'; bash -s" <<'EOS'
+          set -euxo pipefail
+
+          echo "🔎 Preflight"
+          test -d "$BASE"
+          test -d "$REL"
+          test -f "$REL/dist/server/entry.mjs"
+          test -f "$REL/package.json"
+
+          echo "📦 npm ci --omit=dev"
+          cd "$REL"
+          # Node/NPM vorhanden?
+          command -v node
+          command -v npm
+          npm ci --omit=dev --no-audit --no-fund
+          test -d node_modules
+
+          echo "🔁 Atomic switch via symlink"
+          # Alle Releases bleiben erhalten; current zeigt nur um.
+          ln -sfn "$REL" "$CUR"
+          # Verifizieren, dass current auf dieses Release zeigt
+          if [ -L "$CUR" ]; then
+            TARGET=$(readlink "$CUR")
+            echo "current -> $TARGET"
+          fi
+          test -f "$CUR/dist/server/entry.mjs"
+
+          echo "🌀 Restart trigger"
+          mkdir -p "$CUR/tmp"
+          date > "$CUR/tmp/restart.txt"
+          test -f "$CUR/tmp/restart.txt"
+
+          echo "✅ Server deploy done"
+          EOS
+
+      # 9) Abschluss-Checks (lesen, nicht starten)
+      - name: Post-Deploy Verification
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_PASS: ${{ secrets.SSH_PASS }}
           REMOTE_BASE: ${{ secrets.REMOTE_BASE }}
         run: |
-          echo "🔍 Final deployment verification..."
-          
-          # Verify deployment structure
-          sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
-            "test -f '$REMOTE_BASE/current/dist/server/entry.mjs' && echo '✅ SSR entry active' || echo '❌ SSR entry missing'; test -f '$REMOTE_BASE/current/tmp/restart.txt' && echo '✅ Restart trigger found' || echo '❌ Restart trigger missing'; test -d '$REMOTE_BASE/current/node_modules' && echo '✅ Dependencies installed' || echo '❌ Dependencies missing'"
-          
-          echo "✅ Deployment verification completed"
-          echo "🚀 Astro 5+ SSR deployment successful!"
+          set -euo pipefail
+          sshpass -p "$SSH_PASS" ssh -tt -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
+            "BASE='$REMOTE_BASE'; CUR='$REMOTE_BASE/current'; \
+             echo '🔎 current:'; ls -l \"\$CUR\"; \
+             echo '🔎 key files:'; ls -l \"\$CUR/dist/server/entry.mjs\" \"\$CUR/package.json\"; \
+             echo '🔎 restart:'; ls -l \"\$CUR/tmp/restart.txt\" || true; \
+             echo '🔎 releases:'; ls -1 \"\$BASE/releases\" | tail -n 10"
+
+      - name: Done
+        run: |
+          echo "🎉 Deployment abgeschlossen"
+          echo "Release: $RELEASE_ID"
