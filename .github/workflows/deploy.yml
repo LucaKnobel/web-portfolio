@@ -202,9 +202,9 @@ jobs:
       # --- 8. SSH-only deployment: Upload minimal package + install deps on server ---
       - name: SSH Deploy - Upload and Switch
         env:
-          SSH_HOST: ${{ secrets.SFTP_HOST }}
-          SSH_USER: ${{ secrets.SFTP_USER }}
-          SSH_PASS: ${{ secrets.SFTP_PASS }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PASS: ${{ secrets.SSH_PASS }}
           REMOTE_BASE: ${{ secrets.REMOTE_BASE }}
         run: |
           set -euo pipefail
@@ -223,7 +223,7 @@ jobs:
           echo "🔍 Target: $SSH_USER@$SSH_HOST:$REMOTE_BASE/releases/$RELEASE_ID/"
           
           # Create release directory and upload files
-          echo "🔍 Creating remote release directory..."
+          echo "🔍 Creating remote reease directory..."
           sshpass -p "$SSH_PASS" ssh -oStrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
             "mkdir -p $REMOTE_BASE/releases/$RELEASE_ID"
           echo "✅ Remote release directory created"
@@ -350,9 +350,9 @@ jobs:
       # --- 9. SSH deployment verification ---
       - name: Verify SSH Deployment
         env:
-          SSH_HOST: ${{ secrets.SFTP_HOST }}
-          SSH_USER: ${{ secrets.SFTP_USER }}
-          SSH_PASS: ${{ secrets.SFTP_PASS }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PASS: ${{ secrets.SSH_PASS }}
           REMOTE_BASE: ${{ secrets.REMOTE_BASE }}
         run: |
           set -euo pipefail
@@ -504,7 +504,7 @@ jobs:
           echo "   📅 Git SHA: ${{ github.sha }}"
           echo "   🕐 Build Date: $(date -Iseconds)"
           echo "   🔧 Node Version: ${{ env.NODE_VERSION }}"
-          echo "   🎯 Target Host: ${{ secrets.SFTP_HOST }}"
+          echo "   🎯 Target Host: ${{ secrets.SSH_HOST }}"
           echo "   🚀 Deployment Method: SSH-only (fast & efficient)"
           echo ""
           echo "🌟 SSH Deployment Benefits Achieved:"
