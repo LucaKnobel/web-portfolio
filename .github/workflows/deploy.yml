@@ -229,18 +229,20 @@ jobs:
           echo ""
           echo "🔧 Step 2: Installing production dependencies on server..."
           
-          sshpass -p "$SSH_PASS" ssh -oStrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" << 'EOF'
+         sshpass -p "$SSH_PASS" ssh -oStrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" <<EOF
+            REMOTE_BASE="$REMOTE_BASE"
+            RELEASE_ID="$RELEASE_ID"
             set -euo pipefail
-            
+
             echo "🔍 SSH Session: Connected to server"
-            echo "🔍 Current working directory: $(pwd)"
-            echo "🔍 Server hostname: $(hostname)"
-            echo "🔍 Server uptime: $(uptime)"
-            
+            echo "🔍 Current working directory: \$(pwd)"
+            echo "🔍 Server hostname: \$(hostname)"
+            echo "🔍 Server uptime: \$(uptime)"
+
             # Navigate to app base directory
             echo "🔍 Changing to app base directory..."
-            cd $REMOTE_BASE
-            echo "✅ Now in: $(pwd)"
+            cd "\$REMOTE_BASE"
+            echo "✅ Now in: \$(pwd)"
             
             # Verify upload was successful
             echo "🔍 Verifying uploaded release..."
