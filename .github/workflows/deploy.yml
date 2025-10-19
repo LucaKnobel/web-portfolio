@@ -192,9 +192,9 @@ jobs:
       # --- 8. SSH-only deployment: Upload minimal package + install deps on server ---
       - name: SSH Deploy - Upload and Switch
         env:
-          SSH_HOST: ${{ secrets.SFTP_HOST }}
-          SSH_USER: ${{ secrets.SFTP_USER }}
-          SSH_PASS: ${{ secrets.SFTP_PASS }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PASS: ${{ secrets.SSH_PASS }}
           REMOTE_BASE: ${{ secrets.REMOTE_BASE }}
         run: |
           set -euo pipefail
