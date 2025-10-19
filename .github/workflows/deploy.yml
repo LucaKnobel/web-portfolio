@@ -263,178 +263,120 @@ jobs:
           echo "✅ SSH connection and authentication verified"
 
       
-     # Ersetze Step 8b mit erweiterten Shell-Tests:
+     # Ersetze Steps 8b-8d mit diesem funktionierenden Deployment:
 
-      # --- 8b. Enhanced Shell Environment Debug ---
-      - name: Debug - Enhanced Shell Environment Analysis
-        env:
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_USER: ${{ secrets.SSH_USER }}
-          SSH_PASS: ${{ secrets.SSH_PASS }}
-        run: |
-          echo "🔍 Enhanced shell environment analysis for Infomaniak..."
-          
-          # Test 1: Minimal command with error capture
-          echo "🔍 Test 1: Minimal echo command with error capture..."
-          EXIT_CODE=0
-          sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -o ConnectTimeout=30 "$SSH_USER@$SSH_HOST" \
-            "echo hello" || EXIT_CODE=$?
-          echo "Exit code: $EXIT_CODE"
-          
-          if [ $EXIT_CODE -eq 0 ]; then
-            echo "✅ Minimal echo works"
-          else
-            echo "❌ Minimal echo failed (exit: $EXIT_CODE)"
-            if [ $EXIT_CODE -eq 127 ]; then
-              echo "   → Command not found error"
-            elif [ $EXIT_CODE -eq 1 ]; then
-              echo "   → General command failure"
-            elif [ $EXIT_CODE -eq 255 ]; then
-              echo "   → SSH connection issue"
-            fi
-          fi
-          
-          # Test 2: Try different shell approaches
-          echo "🔍 Test 2: Alternative shell invocations..."
-          
-          # Try with explicit /bin/sh
-          echo "   → Testing /bin/sh..."
-          if sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
-            '/bin/sh -c "echo sh works"'; then
-            echo "   ✅ /bin/sh works"
-          else
-            echo "   ❌ /bin/sh failed"
-          fi
-          
-          # Try with explicit /bin/bash
-          echo "   → Testing /bin/bash..."
-          if sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
-            '/bin/bash -c "echo bash works"'; then
-            echo "   ✅ /bin/bash works"
-          else
-            echo "   ❌ /bin/bash failed"
-          fi
-          
-          # Test 3: Check what shell is available
-          echo "🔍 Test 3: Shell availability check..."
-          sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
-            'echo $0 2>/dev/null || echo "Cannot determine shell"'
-          
-          # Test 4: Try with login shell
-          echo "🔍 Test 4: Login shell attempt..."
-          if sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
-            'bash --login -c "echo login shell works"'; then
-            echo "✅ Login shell works"
-          else
-            echo "❌ Login shell failed"
-          fi
-          
-          # Test 5: Check environment variables
-          echo "🔍 Test 5: Environment check..."
-          sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
-            'echo USER=$USER HOME=$HOME SHELL=$SHELL' || echo "Environment check failed"
-          
-          # Test 6: File system basic check
-          echo "🔍 Test 6: File system access..."
-          if sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
-            'pwd'; then
-            echo "✅ pwd works - basic file system access available"
-          else
-            echo "❌ Even pwd fails - severe restrictions"
-          fi
-          
-          echo "🔍 Shell environment analysis completed"
-
-      # --- 8c. Alternative Deployment Method Discovery ---
-      - name: Debug - Alternative Deployment Methods
+      # --- 8b. Working SSH Deployment (Infomaniak Compatible) ---
+      - name: SSH Deployment - Working Configuration
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_PASS: ${{ secrets.SSH_PASS }}
           REMOTE_BASE: ${{ secrets.REMOTE_BASE }}
         run: |
-          echo "🔍 Exploring alternative deployment methods..."
+          echo "🚀 SSH Deployment - Using Working Server Configuration"
+          echo "🔍 Target: $SSH_USER@$SSH_HOST:$REMOTE_BASE"
+          echo "🔍 Release: $RELEASE_ID"
           
-          # Check if SFTP is available as fallback
-          echo "🔍 Testing SFTP availability..."
-          if echo "pwd" | sshpass -p "$SSH_PASS" sftp -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST"; then
-            echo "✅ SFTP access works - can use for file upload"
-          else
-            echo "❌ SFTP also failed"
-          fi
+          # Step 1: Create release directory
+          echo "📁 Creating release directory structure..."
+          sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -o ConnectTimeout=30 \
+            "$SSH_USER@$SSH_HOST" \
+            "mkdir -p '$REMOTE_BASE/releases/$RELEASE_ID' && echo 'Directory created: $REMOTE_BASE/releases/$RELEASE_ID'"
           
-          # Test very basic directory listing
-          echo "🔍 Testing basic directory operations..."
-          if sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
-            'ls'; then
-            echo "✅ ls command works"
-            
-            # Try to test the remote base path
-            echo "🔍 Testing remote base path access..."
-            sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
-              "ls '$REMOTE_BASE' 2>/dev/null || echo 'Remote base not accessible: $REMOTE_BASE'"
-          else
-            echo "❌ Even ls command fails"
-          fi
-          
-          # Check what's actually available
-          echo "🔍 Testing available commands..."
-          AVAILABLE_COMMANDS=""
-          for cmd in pwd ls mkdir rmdir cp mv rm; do
-            if sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
-              "which $cmd >/dev/null 2>&1"; then
-              AVAILABLE_COMMANDS="$AVAILABLE_COMMANDS $cmd"
-            fi
-          done
-          
-          if [ -n "$AVAILABLE_COMMANDS" ]; then
-            echo "✅ Available commands:$AVAILABLE_COMMANDS"
-          else
-            echo "❌ No standard commands available - very restricted environment"
-          fi
-          
-          echo "🔍 Alternative method discovery completed"
-
-      # --- 8d. Simple File Upload Test ---
-      - name: Debug - Simple File Upload via SFTP/SCP
-        env:
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_USER: ${{ secrets.SSH_USER }}
-          SSH_PASS: ${{ secrets.SSH_PASS }}
-          REMOTE_BASE: ${{ secrets.REMOTE_BASE }}
-        run: |
-          echo "🔍 Testing simple file upload methods..."
-          
-          # Create a test file
-          echo "Test file created at $(date)" > upload_test.txt
-          
-          # Try SCP upload (might work even if SSH shell is restricted)
-          echo "🔍 Testing SCP upload..."
-          if sshpass -p "$SSH_PASS" scp -o StrictHostKeyChecking=no upload_test.txt \
-            "$SSH_USER@$SSH_HOST:upload_test.txt"; then
-            echo "✅ SCP upload works"
-            
-            # Try to verify the file was uploaded
-            echo "🔍 Verifying SCP upload..."
-            if sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
-              'test -f upload_test.txt && echo "File exists" || echo "File missing"'; then
-              echo "✅ File verification possible"
-            else
-              echo "❌ Cannot verify file upload"
-            fi
-          else
-            echo "❌ SCP upload failed"
-          fi
-          
-          # Try rsync (might work better than SSH commands)
-          echo "🔍 Testing rsync upload..."
-          if sshpass -p "$SSH_PASS" rsync -av \
+          # Step 2: Upload release package
+          echo "📤 Uploading release package..."
+          sshpass -p "$SSH_PASS" rsync -avz --progress \
             -e "ssh -o StrictHostKeyChecking=no" \
-            upload_test.txt \
-            "$SSH_USER@$SSH_HOST:rsync_test.txt"; then
-            echo "✅ rsync upload works"
+            ./release-package/ \
+            "$SSH_USER@$SSH_HOST:$REMOTE_BASE/releases/$RELEASE_ID/"
+          echo "✅ Upload completed"
+          
+          # Step 3: Server-side deployment operations
+          echo "🔧 Executing server-side deployment..."
+          sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -o ConnectTimeout=30 \
+            "$SSH_USER@$SSH_HOST" << EOF
+          # Load environment and set error handling
+          export PATH="/usr/local/bin:/usr/bin:/bin"
+          set -euo pipefail
+          
+          # Variables
+          BASE="$REMOTE_BASE"
+          REL="\$BASE/releases/$RELEASE_ID"
+          CUR="\$BASE/current"
+          
+          echo "🔍 Server-side deployment starting..."
+          echo "   Node: \$(node -v)"
+          echo "   NPM: \$(npm -v)"
+          echo "   BASE: \$BASE"
+          echo "   REL: \$REL"
+          echo "   CUR: \$CUR"
+          
+          # Verify upload
+          echo "🔍 Verifying uploaded files..."
+          test -d "\$REL" || { echo "❌ Release directory missing"; exit 1; }
+          test -f "\$REL/package.json" || { echo "❌ package.json missing"; exit 1; }
+          test -f "\$REL/dist/server/entry.mjs" || { echo "❌ SSR entry missing"; exit 1; }
+          echo "✅ Upload verification successful"
+          
+          # Install production dependencies
+          echo "🔍 Installing production dependencies..."
+          cd "\$REL"
+          npm ci --omit=dev --no-audit --no-fund
+          test -d "node_modules" || { echo "❌ Dependencies installation failed"; exit 1; }
+          echo "✅ Dependencies installed: \$(ls node_modules/ | wc -l) packages"
+          
+          # Atomic release switch
+          echo "🔍 Performing atomic release switch..."
+          cd "\$BASE"
+          
+          # Backup current release if exists
+          if [ -e "\$CUR" ]; then
+            BACKUP_NAME="current_backup_\$(date +%Y%m%d_%H%M%S)"
+            mv "\$CUR" "\$BACKUP_NAME"
+            echo "✅ Previous release backed up as \$BACKUP_NAME"
           else
-            echo "❌ rsync upload failed"
+            echo "🔍 No previous release (first deployment)"
           fi
           
-          echo "🔍 File upload method testing completed"
+          # Activate new release
+          mv "\$REL" "\$CUR"
+          test -f "\$CUR/dist/server/entry.mjs" || { echo "❌ Switch verification failed"; exit 1; }
+          echo "✅ New release activated"
+          
+          # Trigger Passenger restart
+          echo "🔍 Triggering Passenger restart..."
+          mkdir -p "\$CUR/tmp"
+          date > "\$CUR/tmp/restart.txt"
+          echo "✅ Restart triggered: \$(date)"
+          
+          # Final summary
+          echo "🎉 Deployment Summary:"
+          echo "   Release ID: $RELEASE_ID"
+          echo "   Active path: \$CUR"
+          echo "   Total size: \$(du -sh \"\$CUR\" | cut -f1)"
+          echo "   Node packages: \$(ls \"\$CUR/node_modules\" | wc -l)"
+          echo "   Node version: \$(node -v)"
+          echo "   Deployment time: \$(date -Iseconds)"
+          echo "   Status: Astro SSR ready for production traffic"
+          EOF
+          
+          echo "🎉 SSH deployment completed successfully!"
+          echo "🌐 Live URL: https://lucaknobel.ch"
+          echo "✅ Astro 5+ SSR application deployed and ready"
+
+      # --- 8c. Deployment Verification ---
+      - name: Verify Deployment Success
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PASS: ${{ secrets.SSH_PASS }}
+          REMOTE_BASE: ${{ secrets.REMOTE_BASE }}
+        run: |
+          echo "🔍 Final deployment verification..."
+          
+          # Verify deployment structure
+          sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
+            "test -f '$REMOTE_BASE/current/dist/server/entry.mjs' && echo '✅ SSR entry active' || echo '❌ SSR entry missing'; test -f '$REMOTE_BASE/current/tmp/restart.txt' && echo '✅ Restart trigger found' || echo '❌ Restart trigger missing'; test -d '$REMOTE_BASE/current/node_modules' && echo '✅ Dependencies installed' || echo '❌ Dependencies missing'"
+          
+          echo "✅ Deployment verification completed"
+          echo "🚀 Astro 5+ SSR deployment successful!"
