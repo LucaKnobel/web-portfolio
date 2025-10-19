@@ -193,95 +193,61 @@ jobs:
           REMOTE_BASE: ${{ secrets.REMOTE_BASE }}
         run: |
           set -euo pipefail
-          echo "🔍 Starting SFTP deployment process..."
-  
-          
-          echo "🚀 Connecting to $SFTP_HOST ..."
+          # Lokalen Paketpfad ABSOLUT setzen (für lftp lcd)
+          LOCAL_PACKAGE_DIR="$(pwd)/release-package"
+          echo "LOCAL_PACKAGE_DIR=$LOCAL_PACKAGE_DIR"
+
+          echo "🚀 Connect to $SFTP_HOST via SFTP"
           lftp -u "$SFTP_USER","$SFTP_PASS" sftp://$SFTP_HOST <<EOF
           set sftp:auto-confirm yes
           set net:max-retries 2
           set net:timeout 30
           set cmd:trace on
 
-          # --- Work on server ---
-          echo "🔍 Changing to remote base directory..."
-          !echo "LFTP: About to change to directory: $REMOTE_BASE"
-          cd $REMOTE_BASE || { echo "❌ Base path missing: $REMOTE_BASE"; bye; }
-          !echo "LFTP: Successfully changed to base directory"
-          pwd
-          !echo "LFTP: Current working directory confirmed"
+          # 0) Logging: lokale & remote Positionen
+          lcd $LOCAL_PACKAGE_DIR
+          !echo "LOCAL (lcd):"
+          !pwd
+          !ls -la
 
-          # 1) Ensure releases directory exists
-          echo "🔍 Ensuring releases directory exists..."
-          !echo "LFTP: Creating releases directory if not exists"
+          cd $REMOTE_BASE
+          echo "REMOTE (cd $REMOTE_BASE):"
+          pwd
+          cls -la
+
+          # 1) releases/ sicherstellen + in neues Release gehen
           mkdir releases || true
-          !echo "LFTP: Releases directory command completed"
-          ls -la releases/
-          echo "✅ Releases directory ready"
-
-          # 2) Create new release directory
-          echo "🔍 Creating new release directory: $RELEASE_ID"
-          !echo "LFTP: Creating release directory: releases/$RELEASE_ID"
-          mkdir releases/$RELEASE_ID
-          !echo "LFTP: Release directory created, changing into it"
-          cd releases/$RELEASE_ID
+          cd releases
+          mkdir $RELEASE_ID
+          cd $RELEASE_ID
+          echo "REMOTE (release dir):"
           pwd
-          !echo "LFTP: Now in release directory"
-          echo "✅ Release directory created"
+          cls -la
 
-          # 3) Upload files
-          echo "🔍 Starting file upload (mirror with parallel=4)..."
-          !echo "LFTP: About to start mirror upload from ../../release-package"
-          !echo "LFTP: Local package contents:"
-          !ls -la ../../release-package/
-          mirror -R --delete --parallel=4 --verbose ../../release-package .
-          !echo "LFTP: Mirror upload completed, checking uploaded files"
-          ls -la
-          !echo "LFTP: Upload verification - checking key files"
-          ls -la dist/server/entry.mjs || echo "⚠️ SSR entry not found in upload"
-          ls -la package.json || echo "⚠️ Package.json not found in upload"
-          echo "✅ Files uploaded successfully"
+          # 2) Upload (von lokalem lcd '.' ins aktuelle Remote '.')
+          echo "Start mirror upload..."
+          mirror -R --parallel=4 . .
+          echo "Upload done. Check:"
+          cls -la
 
-          # 4) Go back to app directory
-          echo "🔍 Returning to app directory..."
-          !echo "LFTP: Changing back to app directory"
+          # 3) Zurück zum App-Root, Switch & Restart
           cd ../..
+          echo "REMOTE (app root after upload):"
           pwd
-          !echo "LFTP: Back in app directory, listing contents"
-          ls -la
-          echo "✅ Back in app directory"
+          cls -la
 
-          # 5) Atomic switch
-          echo "🔍 Starting atomic release switch..."
-          !echo "LFTP: About to backup current release"
           mv current current_old || true
-          !echo "LFTP: Backup completed (if current existed)"
-          ls -la current_old || echo "No previous release to backup"
-          echo "✅ Old release backed up (if existed)"
-          
-          !echo "LFTP: Moving new release to current"
           mv releases/$RELEASE_ID current
-          !echo "LFTP: Release switch completed, verifying"
-          ls -la current/
-          ls -la current/dist/server/entry.mjs || echo "⚠️ SSR entry not found in current"
-          echo "✅ New release activated"
 
-          # 6) Trigger restart
-          echo "🔍 Triggering application restart..."
-          !echo "LFTP: Creating tmp directory for restart trigger"
           mkdir -p current/tmp
-          !echo "LFTP: Creating restart trigger file"
           put -O current/tmp /dev/null -o restart.txt
-          !echo "LFTP: Verifying restart trigger"
-          ls -la current/tmp/restart.txt || echo "⚠️ Restart trigger file not created"
-          echo "✅ Restart triggered"
 
-          !echo "LFTP: Final deployment state check"
-          ls -la current
-          !echo "LFTP: Deployment completed successfully"
+          echo "Final state (current):"
+          cls -la current
           bye
           EOF
-          echo "✅ SFTP deployment completed successfully"      # --- 9. Deployment verification ---
+
+          echo "✅ SFTP deployment completed."
       - name: Verify Deployment
         env:
           SFTP_HOST: ${{ secrets.SFTP_HOST }}
@@ -290,41 +256,34 @@ jobs:
           REMOTE_BASE: ${{ secrets.REMOTE_BASE }}
         run: |
           set -euo pipefail
-          echo "🔍 Starting deployment verification..."
-          echo "Connecting to $SFTP_HOST for verification..."
-          
           lftp -u "$SFTP_USER","$SFTP_PASS" sftp://$SFTP_HOST <<EOF
           set sftp:auto-confirm yes
+          set cmd:trace on
           cd $REMOTE_BASE
-          
-          echo "🔍 Checking active deployment target..."
-          ls -l current
-          echo "✅ Active deployment verified"
-          
-          echo "🔍 Listing all releases on server..."
-          ls -l releases
-          echo "✅ Release inventory complete"
-          
-          echo "🔍 Checking restart trigger file..."
-          ls -l current/tmp/restart.txt || echo "⚠️ Restart file not found"
-          
-          echo "🔍 Verifying essential files in current release..."
-          ls -l current/dist/server/entry.mjs || echo "❌ SSR entry missing"
-          ls -l current/package.json || echo "❌ Package.json missing"
-          
+          echo "REMOTE base:"
+          pwd
+          echo "current listing:"
+          cls -la current
+          echo "releases listing:"
+          cls -la releases
+          echo "release info (should exist):"
+          cat current/RELEASE_INFO || echo "⚠️ RELEASE_INFO missing"
+          echo "SSR entry:"
+          cls -la current/dist/server/entry.mjs || echo "❌ SSR entry missing"
+          echo "restart.txt:"
+          cls -la current/tmp/restart.txt || echo "⚠️ restart.txt missing"
           bye
           EOF
-          echo "✅ Deployment verification completed"
 
       # --- 10. Deployment completion ---
       - name: Deployment Complete
-        run: |
-          echo "🎉 Deployment completed successfully!"
-          echo "📋 Deployment Summary:"
-          echo "   Release ID: $RELEASE_ID"
-          echo "   Git SHA: ${{ github.sha }}"
-          echo "   Build Date: $(date -Iseconds)"
-          echo "   Node Version: ${{ env.NODE_VERSION }}"
-          echo "   Target Host: ${{ secrets.SFTP_HOST }}"
-          echo "🌐 Live URL: https://lucaknobel.ch"
-          echo "✅ All deployment steps completed successfully"
+          run: |
+            echo "🎉 Deployment completed successfully!"
+            echo "📋 Deployment Summary:"
+            echo "   Release ID: $RELEASE_ID"
+            echo "   Git SHA: ${{ github.sha }}"
+            echo "   Build Date: $(date -Iseconds)"
+            echo "   Node Version: ${{ env.NODE_VERSION }}"
+            echo "   Target Host: ${{ secrets.SFTP_HOST }}"
+            echo "🌐 Live URL: https://lucaknobel.ch"
+            echo "✅ All deployment steps completed successfully"
