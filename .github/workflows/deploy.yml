@@ -10,204 +10,128 @@ env:
 
 jobs:
   deploy:
-    name: Deploy to Production
+    name: Build & Deploy (Native)
     runs-on: ubuntu-latest
-    
+
     steps:
+      # --- 1. Code holen ---
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
+      # --- 2. Node Umgebung vorbereiten ---
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
-      - name: Install Dependencies
+      # --- 3. Abhängigkeiten installieren & Build ---
+      - name: Install & Build (SSR)
         run: |
-          npm ci --production=false
-          
-      - name: Run Type Check
-        run: |
+          npm ci
           npm run typecheck
-          
-      - name: Build Application (SSR)
-        run: |
           npm run build
-          
+
+      # --- 4. Build prüfen ---
       - name: Validate Build Output
         run: |
-          # Security: Verify SSR build artifacts
           if [ ! -f "dist/server/entry.mjs" ]; then
-            echo "SSR entry point missing"
+            echo "❌ SSR entry point missing"
             exit 1
           fi
-          
           if [ ! -d "dist/client" ]; then
-            echo "Client assets missing"
+            echo "❌ Client assets missing"
             exit 1
           fi
-          
-          echo "Build validation successful"
+          echo "✅ Build validation successful"
 
+      # --- 5. Nur Produktions-Abhängigkeiten behalten ---
       - name: Prepare Production Dependencies
         run: |
-          # Keep only production dependencies
           npm prune --production
-          
-          # Verify critical dependencies remain
-          if [ ! -d "node_modules" ]; then
-            echo "Production dependencies missing"
-            exit 1
-          fi
+          [ -d node_modules ] || { echo "❌ node_modules missing"; exit 1; }
 
+      # --- 6. Release-Paket erstellen ---
       - name: Create Release Package
         run: |
-          # Generate unique release identifier
           RELEASE_ID="${{ github.run_id }}_$(echo '${{ github.sha }}' | cut -c1-8)"
           echo "RELEASE_ID=${RELEASE_ID}" >> $GITHUB_ENV
-          
-          # Create deployment package
+
           mkdir -p release-package
-          
-          # Copy essential files only (security: no .env, no .git)
-          cp -r dist/ release-package/
-          cp -r node_modules/ release-package/
-          cp package.json release-package/
-          
-          # Create package manifest
+          cp -r dist node_modules package.json release-package/
+
           echo "# Release Manifest" > release-package/RELEASE_INFO
-          echo "Release ID: ${RELEASE_ID}" >> release-package/RELEASE_INFO
+          echo "Release ID: $RELEASE_ID" >> release-package/RELEASE_INFO
           echo "Git SHA: ${{ github.sha }}" >> release-package/RELEASE_INFO
           echo "Build Date: $(date -Iseconds)" >> release-package/RELEASE_INFO
           echo "Node Version: ${{ env.NODE_VERSION }}" >> release-package/RELEASE_INFO
-          
-          echo "Release package created: ${RELEASE_ID}"
 
-      - name: Deploy via SFTP
-        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
-        with:
-          username: ${{ secrets.SFTP_USER }}
-          server: ${{ secrets.SFTP_HOST }}
-          password: ${{ secrets.SFTP_PASS }}
-          local_path: './release-package/*'
-          remote_path: '${{ secrets.REMOTE_BASE }}/releases/${{ env.RELEASE_ID }}'
-          sftp_only: true
-          delete_remote_files: false
+          echo "✅ Release package prepared (${RELEASE_ID})"
 
-      - name: Atomic Release Switch
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SFTP_HOST }}
-          username: ${{ secrets.SFTP_USER }}
-          password: ${{ secrets.SFTP_PASS }}
-          script: |
-            set -e
-            
-            # Navigate to app directory
-            cd ${{ secrets.REMOTE_BASE }}
-            
-            # Verify new release exists
-            if [ ! -d "releases/${{ env.RELEASE_ID }}" ]; then
-              echo "New release directory not found"
-              exit 1
-            fi
-            
-            # Verify new release has required files
-            if [ ! -f "releases/${{ env.RELEASE_ID }}/dist/server/entry.mjs" ]; then
-              echo "New release missing entry point"
-              exit 1
-            fi
-            
-            echo "New release validated: ${{ env.RELEASE_ID }}"
-            
-            # Backup current release (if exists)
-            if [ -e "current" ]; then
-              echo "Backing up current release..."
-              if [ -e "current_old" ]; then
-                rm -rf current_old
-              fi
-              mv current current_old
-              echo "Current release backed up to current_old"
-            fi
-            
-            # Atomic switch to new release
-            echo "Switching to new release..."
-            ln -sfn "releases/${{ env.RELEASE_ID }}" current
-            
-            # Verify symlink
-            if [ ! -L "current" ] || [ ! -e "current" ]; then
-              echo "Symlink creation failed"
-              # Rollback if possible
-              if [ -e "current_old" ]; then
-                mv current_old current
-                echo "Rolled back to previous release"
-              fi
-              exit 1
-            fi
-            
-            echo "Symlink created successfully"
-            
-            # Create restart trigger (Passenger/Node restart)
-            mkdir -p current/tmp
-            touch current/tmp/restart.txt
-            echo "Restart triggered"
-            
-            # Display release info
-            echo "Deployment Summary:"
-            echo "   Release ID: ${{ env.RELEASE_ID }}"
-            echo "   Active Path: $(readlink current)"
-            echo "   Timestamp: $(date -Iseconds)"
-            
-            echo "Deployment completed successfully"
+      # --- 7. lftp installieren ---
+      - name: Install lftp
+        run: sudo apt-get update && sudo apt-get install -y lftp
 
+      # --- 8. SFTP-Upload + Switch + Restart (ein einziger Block) ---
+      - name: Upload and Switch via SFTP
+        env:
+          SFTP_HOST: ${{ secrets.SFTP_HOST }}
+          SFTP_USER: ${{ secrets.SFTP_USER }}
+          SFTP_PASS: ${{ secrets.SFTP_PASS }}
+          REMOTE_BASE: ${{ secrets.REMOTE_BASE }}
+        run: |
+          set -euo pipefail
+          echo "🚀 Connecting to $SFTP_HOST ..."
+          lftp -u "$SFTP_USER","$SFTP_PASS" sftp://$SFTP_HOST <<EOF
+          set sftp:auto-confirm yes
+          set net:max-retries 2
+          set net:timeout 30
+
+          # 1) Neues Release-Verzeichnis
+          mkdir -p $REMOTE_BASE/releases/$RELEASE_ID
+
+          # 2) Upload (dist, node_modules, package.json)
+          mirror -R --delete --parallel=4 release-package $REMOTE_BASE/releases/$RELEASE_ID
+
+          # 3) Atomar umschalten
+          cd $REMOTE_BASE
+          mv current current_old || true
+          mv releases/$RELEASE_ID current
+
+          # 4) Restart triggern
+          mkdir -p current/tmp
+          put -O current/tmp /dev/null -o restart.txt
+
+          bye
+          EOF
+          echo "✅ Upload and switch done."
+
+      # --- 9. Deployment-Validierung ---
       - name: Verify Deployment
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SFTP_HOST }}
-          username: ${{ secrets.SFTP_USER }}
-          password: ${{ secrets.SFTP_PASS }}
-          script: |
-            cd ${{ secrets.REMOTE_BASE }}
-            
-            # Verify symlink points to correct release
-            CURRENT_TARGET=$(readlink current)
-            EXPECTED_TARGET="releases/${{ env.RELEASE_ID }}"
-            
-            if [ "$CURRENT_TARGET" = "$EXPECTED_TARGET" ]; then
-              echo "Symlink verification successful"
-              echo "   Current: $CURRENT_TARGET"
-            else
-              echo "Symlink verification failed"
-              echo "   Expected: $EXPECTED_TARGET"
-              echo "   Actual: $CURRENT_TARGET"
-              exit 1
-            fi
-            
-            # Check if restart was triggered
-            if [ -f "current/tmp/restart.txt" ]; then
-              echo "estart trigger confirmed"
-            else
-              echo "Restart trigger not found"
-            fi
-            
-            # Display release count (for monitoring)
-            RELEASE_COUNT=$(find releases/ -maxdepth 1 -type d -name "*_*" | wc -l)
-            echo "Total releases: $RELEASE_COUNT"
-
-      - name: Deployment Success Notification
-        if: success()
+        env:
+          SFTP_HOST: ${{ secrets.SFTP_HOST }}
+          SFTP_USER: ${{ secrets.SFTP_USER }}
+          SFTP_PASS: ${{ secrets.SFTP_PASS }}
+          REMOTE_BASE: ${{ secrets.REMOTE_BASE }}
         run: |
-          echo "Deployment completed successfully!"
-          echo "Release ID: ${{ env.RELEASE_ID }}"
-          echo "Git SHA: ${{ github.sha }}"
-          echo "Deployed to: https://lucaknobel.ch"
+          set -euo pipefail
+          echo "🔍 Checking deployment ..."
+          lftp -u "$SFTP_USER","$SFTP_PASS" sftp://$SFTP_HOST <<EOF
+          set sftp:auto-confirm yes
+          cd $REMOTE_BASE
+          echo "Active target:"
+          ls -l current
+          echo "Releases on server:"
+          ls -l releases
+          bye
+          EOF
+          echo "✅ Deployment verification finished"
 
-      - name: Deployment Failure Notification
-        if: failure()
+      # --- 10. Abschluss ---
+      - name: Done
         run: |
-          echo "Deployment failed!"
-          echo "Check the logs above for details."
-          echo "Previous release should still be active."
+          echo "✅ Deployment completed successfully!"
+          echo "Release ID: $RELEASE_ID"
+          echo "URL: https://lucaknobel.ch"
