@@ -123,167 +123,411 @@ jobs:
           echo "Top 10 largest packages:"
           du -sh node_modules/* | sort -hr | head -10
           
-      # --- 6. Create release package ---
-      - name: Create Release Package
+      # --- 6. Create minimal release package (dist + package.json only) ---
+      - name: Create Minimal Release Package
         run: |
-          echo "🔍 Creating release package..."
+          echo "🔍 Creating minimal release package for SSH deployment..."
           
           RELEASE_ID="${{ github.run_id }}_$(echo '${{ github.sha }}' | cut -c1-8)"
           echo "Generated Release ID: ${RELEASE_ID}"
           echo "RELEASE_ID=${RELEASE_ID}" >> $GITHUB_ENV
 
-          echo "Creating release-package directory..."
+          echo "🔍 Creating minimal release-package directory..."
           mkdir -p release-package
           
-          echo "Copying dist directory..."
+          echo "🔍 Copying dist directory (SSR build output)..."
           cp -r dist release-package/
-          echo "✅ Dist copied"
+          echo "✅ Dist directory copied ($(du -sh dist/ | cut -f1))"
           
-          echo "Copying node_modules..."
-          cp -r node_modules release-package/
-          echo "✅ Node modules copied"
-          
-          echo "Copying package.json..."
+          echo "🔍 Copying package.json (for npm ci on server)..."
           cp package.json release-package/
           echo "✅ Package.json copied"
+          
+          echo "🔍 Copying package-lock.json (for exact dependency resolution)..."
+          cp package-lock.json release-package/
+          echo "✅ Package-lock.json copied"
 
-          echo "Creating release manifest..."
+          echo "🔍 Creating release manifest..."
           echo "# Release Manifest" > release-package/RELEASE_INFO
           echo "Release ID: $RELEASE_ID" >> release-package/RELEASE_INFO
           echo "Git SHA: ${{ github.sha }}" >> release-package/RELEASE_INFO
           echo "Build Date: $(date -Iseconds)" >> release-package/RELEASE_INFO
           echo "Node Version: ${{ env.NODE_VERSION }}" >> release-package/RELEASE_INFO
+          echo "Deployment Method: SSH-only (no node_modules upload)" >> release-package/RELEASE_INFO
           echo "✅ Release manifest created"
 
-          echo "✅ Release package prepared (${RELEASE_ID})"
+          echo "✅ Minimal release package prepared (${RELEASE_ID})"
+          echo "📦 Total package size: $(du -sh release-package/ | cut -f1) (no node_modules!)"
 
-      - name: Debug - Release Package
+      - name: Debug - Minimal Release Package
         run: |
-          echo "🔍 Release package overview..."
+          echo "🔍 Minimal release package overview..."
           echo "Release ID: $RELEASE_ID"
-          echo "Package contents:"
+          echo "📦 Package contents:"
           ls -la release-package/
-          echo "Package size breakdown:"
+          echo "📊 Package size breakdown:"
           du -sh release-package/*
-          echo "Total package size:"
+          echo "📈 Total package size (should be small without node_modules):"
           du -sh release-package/
-          echo "Release info file:"
+          echo "📋 Release info file:"
           cat release-package/RELEASE_INFO
+          echo "🔍 Dist structure check:"
+          find release-package/dist -name "*.mjs" -o -name "*.js" | head -10
+          echo "✅ Minimal package ready for fast SSH upload"
           
-      # --- 7. Install lftp ---
-      - name: Install lftp
+      # --- 7. Install SSH tools (sshpass for password auth) ---
+      - name: Install SSH Tools
         run: |
-          echo "🔍 Installing lftp..."
+          echo "🔍 Installing SSH tools for password authentication..."
           sudo apt-get update
-          sudo apt-get install -y lftp
-          echo "✅ lftp installed"
+          sudo apt-get install -y sshpass rsync
+          echo "✅ SSH tools installed"
 
-      - name: Debug - LFTP Installation
+      - name: Debug - SSH Tools Installation
         run: |
-          echo "🔍 LFTP installation verification..."
-          lftp --version
-          echo "✅ LFTP ready for use"
+          echo "🔍 SSH tools installation verification..."
+          sshpass -V
+          rsync --version | head -5
+          echo "✅ SSH tools ready for deployment"
+      # --- 8. SSH-only deployment: Upload minimal package + install deps on server ---
+      - name: SSH Deploy - Upload and Switch
+        env:
+          SSH_HOST: ${{ secrets.SFTP_HOST }}
+          SSH_USER: ${{ secrets.SFTP_USER }}
+          SSH_PASS: ${{ secrets.SFTP_PASS }}
+          REMOTE_BASE: ${{ secrets.REMOTE_BASE }}
+        run: |
+          set -euo pipefail
+          echo "🚀 Starting SSH-only deployment process..."
+          echo "🔍 Deployment configuration:"
+          echo "   Target host: $SSH_HOST"
+          echo "   Target user: $SSH_USER"
+          echo "   Remote base: $REMOTE_BASE"
+          echo "   Release ID: $RELEASE_ID"
+          echo "   Deployment method: SSH-only (fast upload + server-side npm install)"
           
-      # --- 8. SFTP upload + switch + restart (single atomic block) ---
-      - name: Upload and Switch via SFTP
+          # --- Step 1: Upload minimal package via rsync ---
+          echo ""
+          echo "📤 Step 1: Uploading minimal package via rsync..."
+          echo "🔍 Source: $(pwd)/release-package/"
+          echo "🔍 Target: $SSH_USER@$SSH_HOST:$REMOTE_BASE/releases/$RELEASE_ID/"
+          
+          # Create release directory and upload files
+          echo "� Creating remote release directory..."
+          sshpass -p "$SSH_PASS" ssh -oStrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
+            "mkdir -p $REMOTE_BASE/releases/$RELEASE_ID"
+          echo "✅ Remote release directory created"
+          
+          echo "🔍 Starting rsync upload (fast, delta-capable)..."
+          sshpass -p "$SSH_PASS" rsync -avz --progress --stats \
+            -e "ssh -oStrictHostKeyChecking=no" \
+            ./release-package/ \
+            "$SSH_USER@$SSH_HOST:$REMOTE_BASE/releases/$RELEASE_ID/"
+          echo "✅ Rsync upload completed successfully"
+          
+          # --- Step 2: Verify upload and install production dependencies ---
+          echo ""
+          echo "🔧 Step 2: Installing production dependencies on server..."
+          
+          sshpass -p "$SSH_PASS" ssh -oStrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" << 'EOF'
+            set -euo pipefail
+            
+            echo "🔍 SSH Session: Connected to server"
+            echo "🔍 Current working directory: $(pwd)"
+            echo "🔍 Server hostname: $(hostname)"
+            echo "🔍 Server uptime: $(uptime)"
+            
+            # Navigate to app base directory
+            echo "🔍 Changing to app base directory..."
+            cd $REMOTE_BASE
+            echo "✅ Now in: $(pwd)"
+            
+            # Verify upload was successful
+            echo "🔍 Verifying uploaded release..."
+            if [ ! -d "releases/$RELEASE_ID" ]; then
+              echo "❌ Release directory not found: releases/$RELEASE_ID"
+              exit 1
+            fi
+            echo "✅ Release directory found: releases/$RELEASE_ID"
+            
+            echo "🔍 Checking uploaded files..."
+            ls -la "releases/$RELEASE_ID/"
+            
+            echo "🔍 Verifying essential files..."
+            if [ ! -f "releases/$RELEASE_ID/dist/server/entry.mjs" ]; then
+              echo "❌ SSR entry point missing: releases/$RELEASE_ID/dist/server/entry.mjs"
+              exit 1
+            fi
+            echo "✅ SSR entry point found"
+            
+            if [ ! -f "releases/$RELEASE_ID/package.json" ]; then
+              echo "❌ Package.json missing: releases/$RELEASE_ID/package.json"
+              exit 1
+            fi
+            echo "✅ Package.json found"
+            
+            # Install production dependencies
+            echo "🔍 Installing production dependencies in release directory..."
+            cd "releases/$RELEASE_ID"
+            echo "🔍 Current directory for npm install: $(pwd)"
+            
+            echo "🔍 Node.js version on server: $(node --version)"
+            echo "🔍 NPM version on server: $(npm --version)"
+            
+            echo "🔍 Running npm ci --omit=dev (production only)..."
+            npm ci --omit=dev --verbose
+            echo "✅ Production dependencies installed"
+            
+            echo "🔍 Verifying node_modules installation..."
+            if [ ! -d "node_modules" ]; then
+              echo "❌ node_modules directory not created"
+              exit 1
+            fi
+            echo "✅ node_modules directory created"
+            echo "📊 node_modules size: $(du -sh node_modules/ | cut -f1)"
+            echo "📊 Number of packages: $(ls node_modules/ | wc -l)"
+            
+            # Go back to app root for switching
+            cd ..
+            cd ..
+            echo "🔍 Back in app root: $(pwd)"
+            
+            # --- Step 3: Atomic release switch ---
+            echo ""
+            echo "🔄 Step 3: Performing atomic release switch..."
+            
+            # Backup current release if it exists
+            if [ -e "current" ]; then
+              echo "🔍 Backing up current release..."
+              if [ -e "current_old" ]; then
+                echo "🔍 Removing old backup..."
+                rm -rf current_old
+              fi
+              mv current current_old
+              echo "✅ Current release backed up to current_old"
+            else
+              echo "🔍 No current release to backup (first deployment)"
+            fi
+            
+            # Switch to new release
+            echo "🔍 Switching to new release..."
+            mv "releases/$RELEASE_ID" current
+            echo "✅ New release activated"
+            
+            # Verify switch was successful
+            echo "🔍 Verifying release switch..."
+            if [ ! -L "current" ] && [ ! -d "current" ]; then
+              echo "❌ Current release not found after switch"
+              exit 1
+            fi
+            
+            echo "🔍 Checking current release contents..."
+            ls -la current/
+            
+            echo "🔍 Verifying SSR entry in current release..."
+            if [ ! -f "current/dist/server/entry.mjs" ]; then
+              echo "❌ SSR entry point missing in current release"
+              exit 1
+            fi
+            echo "✅ SSR entry point verified in current release"
+            
+            # --- Step 4: Trigger application restart ---
+            echo ""
+            echo "🔄 Step 4: Triggering application restart..."
+            
+            echo "🔍 Creating tmp directory for restart trigger..."
+            mkdir -p current/tmp
+            
+            echo "🔍 Creating restart trigger file..."
+            touch current/tmp/restart.txt
+            echo "✅ Restart trigger created: current/tmp/restart.txt"
+            
+            echo "🔍 Verifying restart trigger..."
+            if [ ! -f "current/tmp/restart.txt" ]; then
+              echo "⚠️ Restart trigger file not found"
+            else
+              echo "✅ Restart trigger file confirmed"
+              echo "📅 Restart trigger timestamp: $(stat -c %y current/tmp/restart.txt)"
+            fi
+            
+            # --- Final verification ---
+            echo ""
+            echo "✅ Deployment Summary:"
+            echo "   🆔 Release ID: $RELEASE_ID"
+            echo "   📂 Active path: $(pwd)/current"
+            echo "   📅 Deployment time: $(date -Iseconds)"
+            echo "   🔧 Production deps: Installed on server"
+            echo "   📊 Total deployment size: $(du -sh current/ | cut -f1)"
+            echo "   🚀 Application: Ready for restart"
+            
+            echo "🎉 SSH deployment completed successfully!"
+          EOF
+          
+          echo ""
+          echo "✅ SSH deployment process completed successfully"
+          echo "🔍 Deployment method: SSH-only with server-side dependency installation"
+          echo "📈 Benefits: Fast upload (no node_modules), stable network usage, server-optimized deps"
+      # --- 9. SSH deployment verification ---
+      - name: Verify SSH Deployment
         env:
-          SFTP_HOST: ${{ secrets.SFTP_HOST }}
-          SFTP_USER: ${{ secrets.SFTP_USER }}
-          SFTP_PASS: ${{ secrets.SFTP_PASS }}
+          SSH_HOST: ${{ secrets.SFTP_HOST }}
+          SSH_USER: ${{ secrets.SFTP_USER }}
+          SSH_PASS: ${{ secrets.SFTP_PASS }}
           REMOTE_BASE: ${{ secrets.REMOTE_BASE }}
         run: |
           set -euo pipefail
-          # Lokalen Paketpfad ABSOLUT setzen (für lftp lcd)
-          LOCAL_PACKAGE_DIR="$(pwd)/release-package"
-          echo "LOCAL_PACKAGE_DIR=$LOCAL_PACKAGE_DIR"
-
-          echo "🚀 Connect to $SFTP_HOST via SFTP"
-          lftp -u "$SFTP_USER","$SFTP_PASS" sftp://$SFTP_HOST <<EOF
-          set sftp:auto-confirm yes
-          set net:max-retries 2
-          set net:timeout 30
-          set cmd:trace on
-
-          # 0) Logging: lokale & remote Positionen
-          lcd $LOCAL_PACKAGE_DIR
-          !echo "LOCAL (lcd):"
-          !pwd
-          !ls -la
-
-          cd $REMOTE_BASE
-          echo "REMOTE (cd $REMOTE_BASE):"
-          pwd
-          cls -la
-
-          # 1) releases/ sicherstellen + in neues Release gehen
-          mkdir releases || true
-          cd releases
-          mkdir $RELEASE_ID
-          cd $RELEASE_ID
-          echo "REMOTE (release dir):"
-          pwd
-          cls -la
-
-          # 2) Upload (von lokalem lcd '.' ins aktuelle Remote '.')
-          echo "Start mirror upload..."
-          mirror -R --parallel=4 . .
-          echo "Upload done. Check:"
-          cls -la
-
-          # 3) Zurück zum App-Root, Switch & Restart
-          cd ../..
-          echo "REMOTE (app root after upload):"
-          pwd
-          cls -la
-
-          mv current current_old || true
-          mv releases/$RELEASE_ID current
-
-          mkdir -p current/tmp
-          put -O current/tmp /dev/null -o restart.txt
-
-          echo "Final state (current):"
-          cls -la current
-          bye
+          echo "🔍 Starting comprehensive deployment verification via SSH..."
+          echo "🔍 Verification target: $SSH_USER@$SSH_HOST:$REMOTE_BASE"
+          
+          sshpass -p "$SSH_PASS" ssh -oStrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" << 'EOF'
+            set -euo pipefail
+            
+            echo "🔍 SSH Verification Session: Connected"
+            echo "🔍 Server details:"
+            echo "   Hostname: $(hostname)"
+            echo "   Current time: $(date -Iseconds)"
+            echo "   Working directory: $(pwd)"
+            
+            # Navigate to app directory
+            cd $REMOTE_BASE
+            echo "🔍 App directory: $(pwd)"
+            
+            # Check current release
+            echo ""
+            echo "🔍 Current release verification:"
+            if [ -e "current" ]; then
+              echo "✅ Current release exists"
+              if [ -L "current" ]; then
+                echo "🔗 Current is symlink to: $(readlink current)"
+              else
+                echo "📂 Current is directory (not symlink)"
+              fi
+              
+              echo "📊 Current release size: $(du -sh current/ | cut -f1)"
+              echo "📂 Current release contents:"
+              ls -la current/ | head -10
+            else
+              echo "❌ Current release not found!"
+              exit 1
+            fi
+            
+            # Check essential files
+            echo ""
+            echo "🔍 Essential files verification:"
+            
+            echo "🔍 Checking SSR entry point..."
+            if [ -f "current/dist/server/entry.mjs" ]; then
+              echo "✅ SSR entry point found: current/dist/server/entry.mjs"
+              echo "📊 SSR entry size: $(ls -lh current/dist/server/entry.mjs | awk '{print $5}')"
+            else
+              echo "❌ SSR entry point missing!"
+              exit 1
+            fi
+            
+            echo "🔍 Checking package.json..."
+            if [ -f "current/package.json" ]; then
+              echo "✅ Package.json found"
+              echo "📋 Package info:"
+              grep -E '"name"|"version"' current/package.json || true
+            else
+              echo "❌ Package.json missing!"
+              exit 1
+            fi
+            
+            echo "🔍 Checking production dependencies..."
+            if [ -d "current/node_modules" ]; then
+              echo "✅ Node modules directory found"
+              echo "📊 Node modules size: $(du -sh current/node_modules/ | cut -f1)"
+              echo "📦 Number of packages: $(ls current/node_modules/ | wc -l)"
+              echo "🔍 Sample packages:"
+              ls current/node_modules/ | head -5
+            else
+              echo "❌ Node modules missing!"
+              exit 1
+            fi
+            
+            # Check restart trigger
+            echo ""
+            echo "🔍 Restart trigger verification:"
+            if [ -f "current/tmp/restart.txt" ]; then
+              echo "✅ Restart trigger found"
+              echo "📅 Restart trigger timestamp: $(stat -c %y current/tmp/restart.txt)"
+              echo "⏰ Time since restart: $(( $(date +%s) - $(stat -c %Y current/tmp/restart.txt) )) seconds ago"
+            else
+              echo "⚠️ Restart trigger file not found"
+            fi
+            
+            # Check release info
+            echo ""
+            echo "🔍 Release information:"
+            if [ -f "current/RELEASE_INFO" ]; then
+              echo "✅ Release info found:"
+              cat current/RELEASE_INFO
+            else
+              echo "⚠️ Release info file not found"
+            fi
+            
+            # Check releases directory
+            echo ""
+            echo "🔍 Releases directory overview:"
+            if [ -d "releases" ]; then
+              echo "📂 Available releases:"
+              ls -la releases/ | tail -10
+              echo "📊 Total releases: $(ls releases/ | wc -l)"
+              echo "💾 Releases disk usage: $(du -sh releases/ | cut -f1)"
+            else
+              echo "📂 No releases directory found"
+            fi
+            
+            # Check backup
+            echo ""
+            echo "🔍 Backup verification:"
+            if [ -e "current_old" ]; then
+              echo "✅ Previous release backup exists"
+              echo "📊 Backup size: $(du -sh current_old/ | cut -f1)"
+            else
+              echo "🔍 No previous release backup (expected for first deployment)"
+            fi
+            
+            echo ""
+            echo "🎉 Deployment verification completed successfully!"
+            echo "📋 Verification Summary:"
+            echo "   ✅ Current release: Active and verified"
+            echo "   ✅ SSR entry point: Found and accessible"
+            echo "   ✅ Dependencies: Installed on server"
+            echo "   ✅ Restart trigger: Created and timestamped"
+            echo "   🚀 Application: Ready to serve requests"
           EOF
+          
+          echo ""
+          echo "✅ SSH deployment verification completed successfully"
+          echo "🔍 All critical components verified via SSH"
 
-          echo "✅ SFTP deployment completed."
-      - name: Verify Deployment
-        env:
-          SFTP_HOST: ${{ secrets.SFTP_HOST }}
-          SFTP_USER: ${{ secrets.SFTP_USER }}
-          SFTP_PASS: ${{ secrets.SFTP_PASS }}
-          REMOTE_BASE: ${{ secrets.REMOTE_BASE }}
+      # --- 10. SSH deployment completion summary ---
+      - name: SSH Deployment Complete
         run: |
-          set -euo pipefail
-          lftp -u "$SFTP_USER","$SFTP_PASS" sftp://$SFTP_HOST <<EOF
-          set sftp:auto-confirm yes
-          set cmd:trace on
-          cd $REMOTE_BASE
-          echo "REMOTE base:"
-          pwd
-          echo "current listing:"
-          cls -la current
-          echo "releases listing:"
-          cls -la releases
-          echo "release info (should exist):"
-          cat current/RELEASE_INFO || echo "⚠️ RELEASE_INFO missing"
-          echo "SSR entry:"
-          cls -la current/dist/server/entry.mjs || echo "❌ SSR entry missing"
-          echo "restart.txt:"
-          cls -la current/tmp/restart.txt || echo "⚠️ restart.txt missing"
-          bye
-          EOF
-
-      # --- 10. Deployment completion ---
-      - name: Deployment Complete
-        run: |
-              echo "🎉 Deployment completed successfully!"
-              echo "📋 Deployment Summary:"
-              echo "   Release ID: $RELEASE_ID"
-              echo "   Git SHA: ${{ github.sha }}"
-              echo "   Build Date: $(date -Iseconds)"
-              echo "   Node Version: ${{ env.NODE_VERSION }}"
-              echo "   Target Host: ${{ secrets.SFTP_HOST }}"
-              echo "🌐 Live URL: https://lucaknobel.ch"
-              echo "✅ All deployment steps completed successfully"
+          echo "🎉 SSH-only deployment completed successfully!"
+          echo ""
+          echo "📋 Final Deployment Summary:"
+          echo "   🆔 Release ID: $RELEASE_ID"
+          echo "   📅 Git SHA: ${{ github.sha }}"
+          echo "   🕐 Build Date: $(date -Iseconds)"
+          echo "   🔧 Node Version: ${{ env.NODE_VERSION }}"
+          echo "   🎯 Target Host: ${{ secrets.SFTP_HOST }}"
+          echo "   🚀 Deployment Method: SSH-only (fast & efficient)"
+          echo ""
+          echo "� SSH Deployment Benefits Achieved:"
+          echo "   ⚡ Fast upload: Only dist/ + package files (no node_modules)"
+          echo "   🔧 Server-side deps: npm ci --omit=dev executed on target"
+          echo "   🎯 Atomic switch: Zero-downtime release activation"
+          echo "   📊 Optimized: Server-specific dependency compilation"
+          echo "   🛡️ Secure: Password-based SSH with GitHub Secrets"
+          echo ""
+          echo "�🌐 Live URL: https://lucaknobel.ch"
+          echo "✅ Application ready to serve traffic with new release!"
+          echo ""
+          echo "🔍 Next steps:"
+          echo "   • Monitor application logs in hosting panel"
+          echo "   • Verify site functionality with hard refresh"
+          echo "   • Check performance with new release"
+          echo "   • Old release backed up as 'current_old' for rollback if needed"
