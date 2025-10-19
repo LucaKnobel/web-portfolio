@@ -277,13 +277,13 @@ jobs:
 
       # --- 10. Deployment completion ---
       - name: Deployment Complete
-          run: |
-            echo "🎉 Deployment completed successfully!"
-            echo "📋 Deployment Summary:"
-            echo "   Release ID: $RELEASE_ID"
-            echo "   Git SHA: ${{ github.sha }}"
-            echo "   Build Date: $(date -Iseconds)"
-            echo "   Node Version: ${{ env.NODE_VERSION }}"
-            echo "   Target Host: ${{ secrets.SFTP_HOST }}"
-            echo "🌐 Live URL: https://lucaknobel.ch"
-            echo "✅ All deployment steps completed successfully"
+        run: |
+              echo "🎉 Deployment completed successfully!"
+              echo "📋 Deployment Summary:"
+              echo "   Release ID: $RELEASE_ID"
+              echo "   Git SHA: ${{ github.sha }}"
+              echo "   Build Date: $(date -Iseconds)"
+              echo "   Node Version: ${{ env.NODE_VERSION }}"
+              echo "   Target Host: ${{ secrets.SFTP_HOST }}"
+              echo "🌐 Live URL: https://lucaknobel.ch"
+              echo "✅ All deployment steps completed successfully"
