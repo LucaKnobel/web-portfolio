@@ -262,8 +262,7 @@ jobs:
           
           echo "✅ SSH connection and authentication verified"
 
-      # Ersetze Step 8b mit TTY-freier Alternative:
-
+      
       # --- 8b. SSH without TTY (Infomaniak Compatible) ---  
       - name: Debug - SSH without TTY (Infomaniak Compatible)
         env:
