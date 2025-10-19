@@ -239,11 +239,7 @@ jobs:
           echo ""
           echo "🔧 Step 2: Installing production dependencies on server..."
           
-          # First: Quick preflight check
-          echo "🔍 Preflight: Checking server environment..."
-          sshpass -p "$SSH_PASS" ssh -oStrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
-            "command -v node; node -v; command -v npm; npm -v; test -d '$REMOTE_BASE'; ls -la '$REMOTE_BASE'"
-          echo "✅ Server environment check passed"
+         
           
           # Second: Check upload was successful
           echo "🔍 Preflight: Verifying upload..."
