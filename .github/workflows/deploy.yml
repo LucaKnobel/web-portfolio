@@ -229,7 +229,7 @@ jobs:
           echo ""
           echo "🔧 Step 2: Installing production dependencies on server..."
           
-         sshpass -p "$SSH_PASS" ssh -oStrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" <<EOF
+          sshpass -p "$SSH_PASS" ssh -oStrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" <<EOF
             REMOTE_BASE="$REMOTE_BASE"
             RELEASE_ID="$RELEASE_ID"
             set -euo pipefail
