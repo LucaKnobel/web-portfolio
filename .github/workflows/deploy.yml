@@ -199,8 +199,10 @@ jobs:
           rsync --version | head -5
           echo "✅ SSH tools ready for deployment"
 
-      # --- 8. SSH-only deployment: Upload + Deploy in one session ---
-      - name: SSH Deploy - Upload and Deploy in Single Session
+      # Ersetze Step 8 komplett:
+
+      # --- 8. SSH deployment: Stable upload + deploy ---
+      - name: SSH Deploy - Stable Upload and Deploy
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_USER: ${{ secrets.SSH_USER }}
@@ -208,83 +210,94 @@ jobs:
           REMOTE_BASE: ${{ secrets.REMOTE_BASE }}
         run: |
           set -euo pipefail
-          echo "🚀 Single SSH session: Upload + Deploy"
+          echo "🚀 SSH deployment with stable upload"
           echo "🔍 Target: $SSH_USER@$SSH_HOST:$REMOTE_BASE"
           echo "🔍 Release: $RELEASE_ID"
           
-          # Everything in ONE SSH session: create dir, upload via stdin, deploy
-          tar -czf - -C release-package . | sshpass -p "$SSH_PASS" ssh -tt -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
-            "export REMOTE_BASE='$REMOTE_BASE' RELEASE_ID='$RELEASE_ID'; bash -lc 'bash -s'" << 'EOF'
-            # Load Node.js environment
-            source ~/.bashrc 2>/dev/null || source ~/.profile 2>/dev/null || true
-            
-            # Strict error handling  
-            set -euo pipefail
-            set -x
-            
-            # Variables
-            BASE="$REMOTE_BASE"
-            REL="$BASE/releases/$RELEASE_ID"
-            CUR="$BASE/current"
-            
-            echo "🔍 SSH Session: Upload + Deploy starting"
-            echo "   BASE: $BASE"
-            echo "   REL: $REL" 
-            echo "   CUR: $CUR"
-            echo "   RELEASE_ID: $RELEASE_ID"
-            
-            # Step 1: Create directory and extract upload
-            echo "🔍 Creating release directory and extracting files..."
-            mkdir -p "$REL"
-            cd "$REL"
-            tar -xzf - 
-            echo "✅ Files extracted to: $REL"
-            
-            # Step 2: Verify upload
-            echo "🔍 Verifying upload..."
-            echo "Node: $(node -v 2>/dev/null || echo 'not-available')"
-            echo "NPM: $(npm -v 2>/dev/null || echo 'not-available')"
-            test -f "dist/server/entry.mjs" || { echo "❌ SSR entry missing"; exit 1; }
-            test -f "package.json" || { echo "❌ Package.json missing"; exit 1; }
-            echo "✅ Upload verified"
-            
-            # Step 3: Install dependencies
-            echo "🔍 Installing production dependencies..."
-            npm ci --omit=dev --no-audit --no-fund || { echo "❌ npm ci failed"; exit 1; }
-            test -d "node_modules" || { echo "❌ node_modules missing"; exit 1; }
-            echo "✅ Dependencies: $(ls node_modules/ | wc -l) packages"
-            
-            # Step 4: Atomic switch
-            echo "🔍 Atomic release switch..."
-            cd "$BASE"
-            
-            # Backup current
-            if [ -e "$CUR" ]; then
-              [ -e "current_old" ] && rm -rf "current_old"
-              mv "$CUR" "current_old"
-              echo "✅ Previous release backed up"
-            fi
-            
-            # Activate new
-            mv "$REL" "$CUR"
-            test -f "$CUR/dist/server/entry.mjs" || { echo "❌ Switch failed"; exit 1; }
-            echo "✅ New release active"
-            
-            # Step 5: Restart trigger
-            echo "🔍 Triggering Passenger restart..."
-            mkdir -p "$CUR/tmp"
-            date > "$CUR/tmp/restart.txt"
-            echo "✅ Restart triggered: $(date)"
-            
-            # Summary
-            echo "🎉 Deployment completed:"
-            echo "   Release: $RELEASE_ID"
-            echo "   Size: $(du -sh "$CUR" | cut -f1)"
-            echo "   Packages: $(ls "$CUR/node_modules" | wc -l)"
-            echo "   Status: Ready for Astro SSR"
+          # Step 1: Create release directory first
+          echo "📁 Creating release directory..."
+          sshpass -p "$SSH_PASS" ssh -tt -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
+            "bash -lc 'mkdir -p \"$REMOTE_BASE/releases/$RELEASE_ID\" && echo \"Directory created\"'"
+          
+          # Step 2: Upload via rsync (more stable than tar pipe)
+          echo "📤 Uploading release package..."
+          sshpass -p "$SSH_PASS" rsync -avz --progress \
+            -e "ssh -o StrictHostKeyChecking=no" \
+            ./release-package/ \
+            "$SSH_USER@$SSH_HOST:$REMOTE_BASE/releases/$RELEASE_ID/"
+          echo "✅ Upload completed"
+          
+          # Step 3: Deploy in SSH session (no upload, just deployment)
+          echo "🔧 Starting deployment operations..."
+          sshpass -p "$SSH_PASS" ssh -tt -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" << EOF
+          # Load Node.js environment
+          source ~/.bashrc 2>/dev/null || source ~/.profile 2>/dev/null || true
+          
+          # Strict error handling
+          set -euo pipefail
+          set -x
+          
+          # Variables (substitute at build time)
+          BASE="$REMOTE_BASE"
+          REL="\$BASE/releases/$RELEASE_ID"
+          CUR="\$BASE/current"
+          
+          echo "🔍 Deployment session started"
+          echo "   BASE: \$BASE"
+          echo "   REL: \$REL"
+          echo "   CUR: \$CUR"
+          echo "   RELEASE_ID: $RELEASE_ID"
+          
+          # Verify upload completed successfully
+          echo "🔍 Verifying upload..."
+          echo "Node: \$(node -v 2>/dev/null || echo 'not-available')"
+          echo "NPM: \$(npm -v 2>/dev/null || echo 'not-available')"
+          test -d "\$REL" || { echo "❌ Release directory missing"; exit 1; }
+          test -f "\$REL/dist/server/entry.mjs" || { echo "❌ SSR entry missing"; exit 1; }
+          test -f "\$REL/package.json" || { echo "❌ Package.json missing"; exit 1; }
+          echo "✅ Upload verified"
+          
+          # Install production dependencies
+          echo "🔍 Installing production dependencies..."
+          cd "\$REL"
+          npm ci --omit=dev --no-audit --no-fund || { echo "❌ npm ci failed"; exit 1; }
+          test -d "node_modules" || { echo "❌ node_modules missing"; exit 1; }
+          echo "✅ Dependencies installed: \$(ls node_modules/ | wc -l) packages"
+          
+          # Atomic release switch
+          echo "🔍 Performing atomic release switch..."
+          cd "\$BASE"
+          
+          # Backup current release if exists
+          if [ -e "\$CUR" ]; then
+            [ -e "current_old" ] && rm -rf "current_old"
+            mv "\$CUR" "current_old"
+            echo "✅ Previous release backed up"
+          else
+            echo "🔍 No previous release (first deployment)"
+          fi
+          
+          # Switch to new release
+          mv "\$REL" "\$CUR"
+          test -f "\$CUR/dist/server/entry.mjs" || { echo "❌ Switch verification failed"; exit 1; }
+          echo "✅ New release activated"
+          
+          # Trigger Passenger restart
+          echo "🔍 Triggering Passenger restart..."
+          mkdir -p "\$CUR/tmp"
+          date > "\$CUR/tmp/restart.txt"
+          echo "✅ Restart triggered: \$(date)"
+          
+          # Final summary
+          echo "🎉 Deployment Summary:"
+          echo "   Release: $RELEASE_ID"
+          echo "   Path: \$CUR"
+          echo "   Size: \$(du -sh \"\$CUR\" | cut -f1)"
+          echo "   Packages: \$(ls \"\$CUR/node_modules\" | wc -l)"
+          echo "   Time: \$(date -Iseconds)"
+          echo "   Status: Ready for Astro SSR traffic"
           EOF
           
-          echo "🎉 Single SSH session deployment completed!"
+          echo "🎉 SSH deployment completed successfully!"
           echo "🌐 Live: https://lucaknobel.ch"
-          echo "✅ Astro SSR application deployed"
-
+          echo "✅ Astro SSR application deployed and ready"
