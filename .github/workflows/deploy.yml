@@ -183,8 +183,18 @@ jobs:
           echo "🔍 Dist structure check:"
           find release-package/dist -name "*.mjs" -o -name "*.js" | head -10
           echo "✅ Minimal package ready for fast SSH upload"
+
+      # --- 7. Sanitize and expose REMOTE_BASE from secret (trim CR/last slash) ---
+      - name: Sanitize REMOTE_BASE
+        env:
+          REMOTE_BASE_SECRET: ${{ secrets.REMOTE_BASE }}
+        run: |
+          CLEAN="$(printf '%s' "$REMOTE_BASE_SECRET" | tr -d '\r')"
+          CLEAN="${CLEAN%/}"
+          echo "REMOTE_BASE=$CLEAN" >> $GITHUB_ENV
+          echo "🔍 REMOTE_BASE sanitized to: [$CLEAN]"
           
-      # --- 7. Install SSH tools (sshpass for password auth) ---
+      # --- 8. Install SSH tools (sshpass for password auth) ---
       - name: Install SSH Tools
         run: |
           echo "🔍 Installing SSH tools for password authentication..."
@@ -199,13 +209,12 @@ jobs:
           rsync --version | head -5
           echo "✅ SSH tools ready for deployment"
           
-      # --- 8. SSH-only deployment: Upload minimal package + install deps on server ---
+      # --- 9. SSH-only deployment: Upload minimal package + install deps on server ---
       - name: SSH Deploy - Upload and Switch
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_PASS: ${{ secrets.SSH_PASS }}
-          REMOTE_BASE: ${{ secrets.REMOTE_BASE }}
         run: |
           set -euo pipefail
           echo "🚀 Starting SSH-only deployment process..."
@@ -222,10 +231,9 @@ jobs:
           echo "🔍 Source: $(pwd)/release-package/"
           echo "🔍 Target: $SSH_USER@$SSH_HOST:$REMOTE_BASE/releases/$RELEASE_ID/"
           
-          # Create release directory and upload files
-          echo "🔍 Creating remote reease directory..."
-          sshpass -p "$SSH_PASS" ssh -oStrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
-            "mkdir -p $REMOTE_BASE/releases/$RELEASE_ID"
+          echo "🔍 Creating remote release directory..."
+          sshpass -p "$SSH_PASS" ssh -tt -oStrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
+            "bash -lc 'mkdir -p \"$REMOTE_BASE/releases/$RELEASE_ID\"'"
           echo "✅ Remote release directory created"
           
           echo "🔍 Starting rsync upload (fast, delta-capable)..."
@@ -239,262 +247,130 @@ jobs:
           echo ""
           echo "🔧 Step 2: Installing production dependencies on server..."
           
-          # First: Quick preflight check
+          # Preflight: environment and paths (login shell)
           echo "🔍 Preflight: Checking server environment..."
-          sshpass -p "$SSH_PASS" ssh -oStrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
-            "command -v node; node -v; command -v npm; npm -v; test -d '$REMOTE_BASE'; ls -la '$REMOTE_BASE'"
+          sshpass -p "$SSH_PASS" ssh -tt -oStrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
+            "bash -lc 'set -e; echo REMOTE_BASE=[$REMOTE_BASE]; command -v node || true; node -v || true; command -v npm || true; npm -v || true; test -d \"$REMOTE_BASE\"; ls -la \"$REMOTE_BASE\"; echo OK-env'"
           echo "✅ Server environment check passed"
           
-          # Second: Check upload was successful
           echo "🔍 Preflight: Verifying upload..."
-          sshpass -p "$SSH_PASS" ssh -oStrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
-            "test -d '$REMOTE_BASE/releases/$RELEASE_ID'; ls -la '$REMOTE_BASE/releases/$RELEASE_ID'"
+          sshpass -p "$SSH_PASS" ssh -tt -oStrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
+            "bash -lc 'set -e; test -d \"$REMOTE_BASE/releases/$RELEASE_ID\"; ls -la \"$REMOTE_BASE/releases/$RELEASE_ID\"; echo OK-upload'"
           echo "✅ Upload verification passed"
           
-          # Main deployment script with robust error handling
-          sshpass -p "$SSH_PASS" ssh -oStrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
-            "export REMOTE_BASE='$REMOTE_BASE' RELEASE_ID='$RELEASE_ID'; bash -s" << 'EOF'
-            # Set variables BEFORE pipefail
-            REMOTE_BASE="$REMOTE_BASE"
-            RELEASE_ID="$RELEASE_ID"
-            BASE="$REMOTE_BASE"
-            REL="$BASE/releases/$RELEASE_ID"
-            CUR="$BASE/current"
-            
-            # Enable strict error handling and debugging
-            set -euo pipefail
-            set -x
-            
-            echo "🔍 SSH Session: Connected to server"
-            echo "🔍 Variables:"
-            echo "   BASE: $BASE"
-            echo "   REL: $REL"  
-            echo "   CUR: $CUR"
-            echo "   RELEASE_ID: $RELEASE_ID"
-            
-            # Preflight checks with absolute paths
-            echo "🔍 Preflight checks..."
-            test -d "$BASE" || { echo "❌ Base directory missing: $BASE"; exit 1; }
-            test -d "$REL" || { echo "❌ Release directory missing: $REL"; exit 1; }
-            test -f "$REL/dist/server/entry.mjs" || { echo "❌ SSR entry missing: $REL/dist/server/entry.mjs"; exit 1; }
-            test -f "$REL/package.json" || { echo "❌ Package.json missing: $REL/package.json"; exit 1; }
-            echo "✅ All preflight checks passed"
-            
-            # Install production dependencies
-            echo "🔍 Installing production dependencies..."
-            cd "$REL"
-            echo "🔍 Current directory for npm install: $(pwd)"
-            
-            echo "🔍 Node.js version: $(node --version)"
-            echo "🔍 NPM version: $(npm --version)"
-            
-            npm ci --omit=dev --no-audit --no-fund || { echo "❌ npm ci failed"; exit 1; }
-            echo "✅ Production dependencies installed"
-            
-            echo "🔍 Verifying node_modules..."
-            test -d "node_modules" || { echo "❌ node_modules not created"; exit 1; }
-            echo "📊 node_modules size: $(du -sh node_modules/ | cut -f1)"
-            echo "📊 Number of packages: $(ls node_modules/ | wc -l)"
-            
-            # Atomic release switch with absolute paths
-            echo "🔄 Performing atomic release switch..."
-            cd "$BASE"
-            echo "🔍 Working in base directory: $(pwd)"
-            
-            # Backup current if it exists
-            if [ -e "$CUR" ]; then
-              echo "🔍 Backing up current release..."
-              if [ -e "$BASE/current_old" ]; then
-                rm -rf "$BASE/current_old"
-              fi
-              mv "$CUR" "$BASE/current_old"
-              echo "✅ Current release backed up"
-            else
-              echo "🔍 No current release to backup (first deployment)"
-            fi
-            
-            # Switch to new release
-            echo "🔍 Switching to new release..."
-            mv "$REL" "$CUR"
-            echo "✅ New release activated"
-            
-            # Verify switch was successful
-            echo "🔍 Verifying release switch..."
-            test -d "$CUR" || { echo "❌ Current directory not found after switch"; exit 1; }
-            test -f "$CUR/dist/server/entry.mjs" || { echo "❌ SSR entry missing in current"; exit 1; }
-            echo "✅ Release switch verified"
-            
-            # Trigger application restart
-            echo "🔄 Triggering application restart..."
-            mkdir -p "$CUR/tmp"
-            date > "$CUR/tmp/restart.txt"
-            test -f "$CUR/tmp/restart.txt" || { echo "❌ Restart trigger not created"; exit 1; }
-            echo "✅ Restart trigger created"
-            
-            # Final verification
-            echo "✅ Deployment Summary:"
-            echo "   🆔 Release ID: $RELEASE_ID"
-            echo "   📂 Active path: $CUR"
-            echo "   📅 Deployment time: $(date -Iseconds)"
-            echo "   📊 Total size: $(du -sh "$CUR" | cut -f1)"
-            echo "   📅 Restart trigger: $(stat -c %y "$CUR/tmp/restart.txt")"
-            
-            echo "🎉 SSH deployment completed successfully!"
-            EOF
+          # Main deployment script (login shell + strict mode)
+          sshpass -p "$SSH_PASS" ssh -tt -oStrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
+            "export REMOTE_BASE='$REMOTE_BASE' RELEASE_ID='$RELEASE_ID'; bash -lc 'bash -seu <<\"INNER\" 
+          BASE=\"\$REMOTE_BASE\"
+          REL=\"\$REMOTE_BASE/releases/\$RELEASE_ID\"
+          CUR=\"\$REMOTE_BASE/current\"
+
+          set -eux
+
+          # Preflight
+          test -d \"\$BASE\"
+          test -d \"\$REL\"
+          test -f \"\$REL/dist/server/entry.mjs\"
+          test -f \"\$REL/package.json\"
+
+          # Install prod deps
+          cd \"\$REL\"
+          echo Node: \$(command -v node || echo none) ; node -v || true
+          echo NPM: \$(command -v npm || echo none) ; npm -v || true
+          npm ci --omit=dev --no-audit --no-fund
+
+          # Switch atomically
+          cd \"\$BASE\"
+          if [ -e \"\$CUR\" ]; then
+            [ -e \"\$BASE/current_old\" ] && rm -rf \"\$BASE/current_old\"
+            mv \"\$CUR\" \"\$BASE/current_old\"
+          fi
+          mv \"\$REL\" \"\$CUR\"
+
+          # Restart trigger
+          mkdir -p \"\$CUR/tmp\"
+          date > \"\$CUR/tmp/restart.txt\"
+
+          # Verify
+          test -f \"\$CUR/dist/server/entry.mjs\"
+          du -sh \"\$CUR\" || true
+          echo DONE
+          INNER
+          '"
+                    
+                    echo ""
+                    echo "✅ SSH deployment process completed successfully"
+                    echo "🔍 Deployment method: SSH-only with server-side dependency installation"
+                    echo "📈 Benefits: Fast upload (no node_modules), stable network usage, server-optimized deps"
           
-          echo ""
-          echo "✅ SSH deployment process completed successfully"
-          echo "🔍 Deployment method: SSH-only with server-side dependency installation"
-          echo "📈 Benefits: Fast upload (no node_modules), stable network usage, server-optimized deps"
-          
-      # --- 9. SSH deployment verification ---
+      # --- 10. SSH deployment verification ---
       - name: Verify SSH Deployment
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_PASS: ${{ secrets.SSH_PASS }}
-          REMOTE_BASE: ${{ secrets.REMOTE_BASE }}
         run: |
           set -euo pipefail
           echo "🔍 Starting comprehensive deployment verification via SSH..."
           echo "🔍 Verification target: $SSH_USER@$SSH_HOST:$REMOTE_BASE"
           
-          sshpass -p "$SSH_PASS" ssh -oStrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
-            "export REMOTE_BASE='$REMOTE_BASE' RELEASE_ID='$RELEASE_ID'; bash -s" << 'EOF'
-            # Set variables BEFORE pipefail  
-            REMOTE_BASE="$REMOTE_BASE"
-            RELEASE_ID="$RELEASE_ID"
-            BASE="$REMOTE_BASE"
-            CUR="$BASE/current"
-            
-            set -euo pipefail
-            
-            echo "🔍 SSH Verification Session: Connected"
-            echo "🔍 Server details:"
-            echo "   Hostname: $(hostname)"
-            echo "   Current time: $(date -Iseconds)"
-            echo "   Working directory: $(pwd)"
-            echo "🔍 Variables:"
-            echo "   BASE: $BASE"
-            echo "   CUR: $CUR"
-            echo "   RELEASE_ID: $RELEASE_ID"
-            
-            # Navigate to app directory
-            cd "$BASE"
-            echo "🔍 App directory: $(pwd)"
-            
-            # Check current release
-            echo ""
-            echo "🔍 Current release verification:"
-            if [ -e "$CUR" ]; then
-              echo "✅ Current release exists"
-              if [ -L "$CUR" ]; then
-                echo "🔗 Current is symlink to: $(readlink "$CUR")"
-              else
-                echo "📂 Current is directory (not symlink)"
-              fi
-              
-              echo "📊 Current release size: $(du -sh "$CUR" | cut -f1)"
-              echo "📂 Current release contents:"
-              ls -la "$CUR/" | head -10
-            else
-              echo "❌ Current release not found!"
-              exit 1
-            fi
-            
-            # Check essential files
-            echo ""
-            echo "🔍 Essential files verification:"
-            
-            echo "🔍 Checking SSR entry point..."
-            if [ -f "$CUR/dist/server/entry.mjs" ]; then
-              echo "✅ SSR entry point found: $CUR/dist/server/entry.mjs"
-              echo "📊 SSR entry size: $(ls -lh "$CUR/dist/server/entry.mjs" | awk '{print $5}')"
-            else
-              echo "❌ SSR entry point missing!"
-              exit 1
-            fi
-            
-            echo "🔍 Checking package.json..."
-            if [ -f "$CUR/package.json" ]; then
-              echo "✅ Package.json found"
-              echo "📋 Package info:"
-              grep -E '"name"|"version"' "$CUR/package.json" || true
-            else
-              echo "❌ Package.json missing!"
-              exit 1
-            fi
-            
-            echo "🔍 Checking production dependencies..."
-            if [ -d "$CUR/node_modules" ]; then
-              echo "✅ Node modules directory found"
-              echo "📊 Node modules size: $(du -sh "$CUR/node_modules" | cut -f1)"
-              echo "📦 Number of packages: $(ls "$CUR/node_modules" | wc -l)"
-              echo "🔍 Sample packages:"
-              ls "$CUR/node_modules" | head -5
-            else
-              echo "❌ Node modules missing!"
-              exit 1
-            fi
-            
-            # Check restart trigger
-            echo ""
-            echo "🔍 Restart trigger verification:"
-            if [ -f "$CUR/tmp/restart.txt" ]; then
-              echo "✅ Restart trigger found"
-              echo "📅 Restart trigger timestamp: $(stat -c %y "$CUR/tmp/restart.txt")"
-              echo "⏰ Time since restart: $(( $(date +%s) - $(stat -c %Y "$CUR/tmp/restart.txt") )) seconds ago"
-            else
-              echo "⚠️ Restart trigger file not found"
-            fi
-            
-            # Check release info
-            echo ""
-            echo "🔍 Release information:"
-            if [ -f "$CUR/RELEASE_INFO" ]; then
-              echo "✅ Release info found:"
-              cat "$CUR/RELEASE_INFO"
-            else
-              echo "⚠️ Release info file not found"
-            fi
-            
-            # Check releases directory
-            echo ""
-            echo "🔍 Releases directory overview:"
-            if [ -d "$BASE/releases" ]; then
-              echo "📂 Available releases:"
-              ls -la "$BASE/releases/" | tail -10
-              echo "📊 Total releases: $(ls "$BASE/releases" | wc -l)"
-              echo "💾 Releases disk usage: $(du -sh "$BASE/releases" | cut -f1)"
-            else
-              echo "📂 No releases directory found"
-            fi
-            
-            # Check backup
-            echo ""
-            echo "🔍 Backup verification:"
-            if [ -e "$BASE/current_old" ]; then
-              echo "✅ Previous release backup exists"
-              echo "📊 Backup size: $(du -sh "$BASE/current_old" | cut -f1)"
-            else
-              echo "🔍 No previous release backup (expected for first deployment)"
-            fi
-            
-            echo ""
-            echo "🎉 Deployment verification completed successfully!"
-            echo "📋 Verification Summary:"
-            echo "   ✅ Current release: Active and verified"
-            echo "   ✅ SSR entry point: Found and accessible"
-            echo "   ✅ Dependencies: Installed on server"
-            echo "   ✅ Restart trigger: Created and timestamped"
-            echo "   🚀 Application: Ready to serve requests"
-          EOF
-          
-          echo ""
-          echo "✅ SSH deployment verification completed successfully"
-          echo "🔍 All critical components verified via SSH"
+          sshpass -p "$SSH_PASS" ssh -tt -oStrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
+            "export REMOTE_BASE='$REMOTE_BASE' RELEASE_ID='$RELEASE_ID'; bash -lc 'bash -seu <<\"INNER\"
+          BASE=\"\$REMOTE_BASE\"
+          CUR=\"\$BASE/current\"
 
-      # --- 10. SSH deployment completion summary ---
+          set -eu
+
+          echo \"🔍 SSH Verification Session: Connected\"
+          echo \"🔍 Hostname: \$(hostname)\"
+          echo \"🔍 Time: \$(date -Iseconds)\"
+          echo \"🔍 App dir: \$BASE\"
+
+          # Current release
+          if [ -e \"\$CUR\" ]; then
+            if [ -L \"\$CUR\" ]; then
+              echo \"🔗 current is symlink to: \$(readlink \"\$CUR\")\"
+            else
+              echo \"📂 current is a directory\"
+            fi
+            echo \"📊 size: \$(du -sh \"\$CUR\" | cut -f1)\"
+            ls -la \"\$CUR\" | head -10
+          else
+            echo \"❌ current not found\"; exit 1
+          fi
+
+          # Essentials
+          [ -f \"\$CUR/dist/server/entry.mjs\" ] || { echo \"❌ SSR entry missing\"; exit 1; }
+          [ -f \"\$CUR/package.json\" ] || { echo \"❌ package.json missing\"; exit 1; }
+          [ -d \"\$CUR/node_modules\" ] || { echo \"❌ node_modules missing\"; exit 1; }
+
+          # Restart trigger
+          if [ -f \"\$CUR/tmp/restart.txt\" ]; then
+            echo \"✅ restart.txt present: \$(stat -c %y \"\$CUR/tmp/restart.txt\")\"
+          else
+            echo \"⚠️ restart.txt missing\"
+          fi
+
+          # Release info
+          if [ -f \"\$CUR/RELEASE_INFO\" ]; then
+            echo \"✅ RELEASE_INFO:\"; tail -n +1 \"\$CUR/RELEASE_INFO\"
+          else
+            echo \"⚠️ RELEASE_INFO missing\"
+          fi
+
+          # Releases overview
+          if [ -d \"\$BASE/releases\" ]; then
+            echo \"📂 releases:\"; ls -la \"\$BASE/releases\" | tail -10
+            echo \"📊 count: \$(ls \"\$BASE/releases\" | wc -l)\"
+          fi
+          INNER
+          '"
+                    
+                    echo ""
+                    echo "✅ SSH deployment verification completed successfully"
+                    echo "🔍 All critical components verified via SSH"
+
+      # --- 11. SSH deployment completion summary ---
       - name: SSH Deployment Complete
         run: |
           echo "🎉 SSH-only deployment completed successfully!"
@@ -514,7 +390,7 @@ jobs:
           echo "   📊 Optimized: Server-specific dependency compilation"
           echo "   🛡️ Secure: Password-based SSH with GitHub Secrets"
           echo ""
-          echo "� Live URL: https://lucaknobel.ch"
+          echo "🌐 Live URL: https://lucaknobel.ch"
           echo "✅ Application ready to serve traffic with new release!"
           echo ""
           echo "🔍 Next steps:"
