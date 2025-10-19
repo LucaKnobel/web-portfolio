@@ -201,24 +201,66 @@ jobs:
 
       # Ersetze Step 8 mit diesen Debug-Steps:
 
-      # --- 8a. SSH Basic Connection Test ---
-      - name: Debug - SSH Basic Connection
+      # Ersetze Step 8a mit detailliertem Debug:
+
+      # --- 8a. SSH Credentials Debug ---
+      - name: Debug - SSH Credentials and Connection
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_PASS: ${{ secrets.SSH_PASS }}
         run: |
-          echo "🔍 Testing basic SSH connectivity..."
-          echo "Host: $SSH_HOST"
-          echo "User: $SSH_USER"
-          echo "Password length: ${#SSH_PASS}"
+          echo "🔍 SSH Connection Debug - Security-First Analysis"
           
-          # Basic connection test
-          sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" \
-            "echo 'SSH connection successful'; whoami; hostname" || { 
-            echo "❌ Basic SSH connection failed"; exit 1; 
-          }
-          echo "✅ Basic SSH works"
+          # Validate secrets are not empty (without exposing them)
+          echo "🔍 Validating GitHub Secrets..."
+          [ -n "$SSH_HOST" ] && echo "✅ SSH_HOST: Set (length: ${#SSH_HOST})" || echo "❌ SSH_HOST: Empty"
+          [ -n "$SSH_USER" ] && echo "✅ SSH_USER: Set (length: ${#SSH_USER})" || echo "❌ SSH_USER: Empty"
+          [ -n "$SSH_PASS" ] && echo "✅ SSH_PASS: Set (length: ${#SSH_PASS})" || echo "❌ SSH_PASS: Empty"
+          
+          # Check for common issues
+          echo "🔍 SSH_HOST format check..."
+          if [[ "$SSH_HOST" =~ ^ssh-.+\.infomaniak\.com$ ]]; then
+            echo "✅ SSH_HOST appears to be valid Infomaniak format"
+          else
+            echo "⚠️  SSH_HOST format unusual (expected: ssh-xxxxx.infomaniak.com)"
+          fi
+          
+          # Test network connectivity first
+          echo "🔍 Testing network connectivity to $SSH_HOST..."
+          if ping -c 1 -W 5 "$SSH_HOST" >/dev/null 2>&1; then
+            echo "✅ Host is reachable via ping"
+          else
+            echo "⚠️  Host not responding to ping (may be normal for SSH servers)"
+          fi
+          
+          # Test SSH port connectivity
+          echo "🔍 Testing SSH port connectivity..."
+          if timeout 10 bash -c "</dev/tcp/$SSH_HOST/22" 2>/dev/null; then
+            echo "✅ SSH port 22 is open"
+          else
+            echo "❌ SSH port 22 is not accessible"
+            echo "   → Check if SSH_HOST is correct"
+            echo "   → Check if Infomaniak SSH is enabled"
+            exit 1
+          fi
+          
+          # Test SSH with verbose output (but hide password)
+          echo "🔍 Testing SSH authentication..."
+          if sshpass -p "$SSH_PASS" ssh -v -o StrictHostKeyChecking=no -o ConnectTimeout=10 \
+            -o PreferredAuthentications=password -o PubkeyAuthentication=no \
+            "$SSH_USER@$SSH_HOST" "echo 'SSH_AUTH_SUCCESS'" 2>&1 | \
+            grep -q "SSH_AUTH_SUCCESS"; then
+            echo "✅ SSH authentication successful"
+          else
+            echo "❌ SSH authentication failed"
+            echo "   → Check SSH_USER and SSH_PASS in GitHub Secrets"
+            echo "   → Verify credentials with Infomaniak control panel"
+            echo "   → Ensure SSH access is enabled for your hosting account"
+            exit 1
+          fi
+          
+          echo "✅ SSH connection and authentication verified"
 
       # --- 8b. SSH with TTY Test ---  
       - name: Debug - SSH TTY and Login Shell
