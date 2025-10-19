@@ -82,31 +82,31 @@ jobs:
           SFTP_PASS: ${{ secrets.SFTP_PASS }}
           REMOTE_BASE: ${{ secrets.REMOTE_BASE }}
         run: |
-          set -euo pipefail
-          echo "🚀 Connecting to $SFTP_HOST ..."
-          lftp -u "$SFTP_USER","$SFTP_PASS" sftp://$SFTP_HOST <<EOF
-          set sftp:auto-confirm yes
-          set net:max-retries 2
-          set net:timeout 30
+              # Navigiere ins App-Verzeichnis (ab Login-Root!)
+              cd sites/lucaknobel.ch/app || { echo "❌ base path missing"; bye; }
 
-          # 1) Neues Release-Verzeichnis
-          mkdir -p $REMOTE_BASE/releases/$RELEASE_ID
+              # 1) sicherstellen, dass releases/ existiert
+              mkdir releases || true
+              cd releases
 
-          # 2) Upload (dist, node_modules, package.json)
-          mirror -R --delete --parallel=4 release-package $REMOTE_BASE/releases/$RELEASE_ID
+              # 2) neues Release-Verzeichnis anlegen
+              mkdir $RELEASE_ID
+              cd $RELEASE_ID
 
-          # 3) Atomar umschalten
-          cd $REMOTE_BASE
-          mv current current_old || true
-          mv releases/$RELEASE_ID current
+              # 3) Dateien hochladen (aus dem GitHub Runner)
+              mirror -R --delete --parallel=4 ../../release-package .
 
-          # 4) Restart triggern
-          mkdir -p current/tmp
-          put -O current/tmp /dev/null -o restart.txt
+              # 4) zurück ins App-Verzeichnis
+              cd ../..
 
-          bye
-          EOF
-          echo "✅ Upload and switch done."
+              # 5) Switch + Restart
+              mv current current_old || true
+              mv releases/$RELEASE_ID current
+
+              mkdir -p current/tmp
+              put -O current/tmp /dev/null -o restart.txt
+
+              bye
 
       # --- 9. Deployment-Validierung ---
       - name: Verify Deployment
