@@ -14,67 +14,177 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # --- 1. Code holen ---
+      # --- 1. Get source code ---
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
-      # --- 2. Node Umgebung vorbereiten ---
+      - name: Debug - Repository Info
+        run: |
+          echo "🔍 Repository checkout completed"
+          echo "Working directory: $(pwd)"
+          echo "Git commit: ${{ github.sha }}"
+          echo "Git ref: ${{ github.ref }}"
+          echo "Files in root:"
+          ls -la
+          
+      # --- 2. Prepare Node environment ---
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
-      # --- 3. Abhängigkeiten installieren & Build ---
+      - name: Debug - Node Environment
+        run: |
+          echo "🔍 Node.js environment setup completed"
+          echo "Node version: $(node --version)"
+          echo "NPM version: $(npm --version)"
+          echo "NPM cache location: $(npm config get cache)"
+          
+      # --- 3. Install dependencies & build ---
       - name: Install & Build (SSR)
         run: |
+          echo "🔍 Starting dependency installation..."
           npm ci
+          echo "✅ Dependencies installed"
+          
+          echo "🔍 Running TypeScript type check..."
           npm run typecheck
+          echo "✅ Type check completed"
+          
+          echo "🔍 Starting production build..."
           npm run build
+          echo "✅ Build completed"
 
-      # --- 4. Build prüfen ---
+      - name: Debug - Build Process
+        run: |
+          echo "🔍 Build process completed, checking output..."
+          echo "Dist directory contents:"
+          ls -la dist/
+          echo "Server directory contents:"
+          ls -la dist/server/ || echo "No server directory"
+          echo "Client directory contents:"
+          ls -la dist/client/ || echo "No client directory"
+          
+      # --- 4. Validate build output ---
       - name: Validate Build Output
         run: |
+          echo "🔍 Validating build output..."
+          
+          echo "Checking SSR entry point..."
           if [ ! -f "dist/server/entry.mjs" ]; then
-            echo "❌ SSR entry point missing"
+            echo "❌ SSR entry point missing: dist/server/entry.mjs"
             exit 1
           fi
+          echo "✅ SSR entry point found: dist/server/entry.mjs"
+          
+          echo "Checking client assets..."
           if [ ! -d "dist/client" ]; then
-            echo "❌ Client assets missing"
+            echo "❌ Client assets missing: dist/client"
             exit 1
           fi
+          echo "✅ Client assets found: dist/client"
+          
           echo "✅ Build validation successful"
 
-      # --- 5. Nur Produktions-Abhängigkeiten behalten ---
+      - name: Debug - Build Validation
+        run: |
+          echo "🔍 Build validation completed, showing file sizes..."
+          echo "SSR entry point size:"
+          ls -lh dist/server/entry.mjs
+          echo "Client assets overview:"
+          du -sh dist/client/*
+          echo "Total dist size:"
+          du -sh dist/
+          
+      # --- 5. Keep only production dependencies ---
       - name: Prepare Production Dependencies
         run: |
+          echo "🔍 Preparing production dependencies..."
+          echo "Before pruning - node_modules size:"
+          du -sh node_modules/
+          
           npm prune --production
-          [ -d node_modules ] || { echo "❌ node_modules missing"; exit 1; }
+          echo "✅ Development dependencies removed"
+          
+          echo "After pruning - node_modules size:"
+          du -sh node_modules/
+          
+          [ -d node_modules ] || { echo "❌ node_modules missing after prune"; exit 1; }
+          echo "✅ Production dependencies ready"
 
-      # --- 6. Release-Paket erstellen ---
+      - name: Debug - Dependencies
+        run: |
+          echo "🔍 Production dependencies overview..."
+          echo "Number of packages:"
+          ls node_modules/ | wc -l
+          echo "Top 10 largest packages:"
+          du -sh node_modules/* | sort -hr | head -10
+          
+      # --- 6. Create release package ---
       - name: Create Release Package
         run: |
+          echo "🔍 Creating release package..."
+          
           RELEASE_ID="${{ github.run_id }}_$(echo '${{ github.sha }}' | cut -c1-8)"
+          echo "Generated Release ID: ${RELEASE_ID}"
           echo "RELEASE_ID=${RELEASE_ID}" >> $GITHUB_ENV
 
+          echo "Creating release-package directory..."
           mkdir -p release-package
-          cp -r dist node_modules package.json release-package/
+          
+          echo "Copying dist directory..."
+          cp -r dist release-package/
+          echo "✅ Dist copied"
+          
+          echo "Copying node_modules..."
+          cp -r node_modules release-package/
+          echo "✅ Node modules copied"
+          
+          echo "Copying package.json..."
+          cp package.json release-package/
+          echo "✅ Package.json copied"
 
+          echo "Creating release manifest..."
           echo "# Release Manifest" > release-package/RELEASE_INFO
           echo "Release ID: $RELEASE_ID" >> release-package/RELEASE_INFO
           echo "Git SHA: ${{ github.sha }}" >> release-package/RELEASE_INFO
           echo "Build Date: $(date -Iseconds)" >> release-package/RELEASE_INFO
           echo "Node Version: ${{ env.NODE_VERSION }}" >> release-package/RELEASE_INFO
+          echo "✅ Release manifest created"
 
           echo "✅ Release package prepared (${RELEASE_ID})"
 
-      # --- 7. lftp installieren ---
+      - name: Debug - Release Package
+        run: |
+          echo "🔍 Release package overview..."
+          echo "Release ID: $RELEASE_ID"
+          echo "Package contents:"
+          ls -la release-package/
+          echo "Package size breakdown:"
+          du -sh release-package/*
+          echo "Total package size:"
+          du -sh release-package/
+          echo "Release info file:"
+          cat release-package/RELEASE_INFO
+          
+      # --- 7. Install lftp ---
       - name: Install lftp
-        run: sudo apt-get update && sudo apt-get install -y lftp
+        run: |
+          echo "🔍 Installing lftp..."
+          sudo apt-get update
+          sudo apt-get install -y lftp
+          echo "✅ lftp installed"
 
-      # --- 8. SFTP-Upload + Switch + Restart (ein einziger Block) ---
+      - name: Debug - LFTP Installation
+        run: |
+          echo "🔍 LFTP installation verification..."
+          lftp --version
+          echo "✅ LFTP ready for use"
+          
+      # --- 8. SFTP upload + switch + restart (single atomic block) ---
       - name: Upload and Switch via SFTP
         env:
           SFTP_HOST: ${{ secrets.SFTP_HOST }}
@@ -82,42 +192,62 @@ jobs:
           SFTP_PASS: ${{ secrets.SFTP_PASS }}
           REMOTE_BASE: ${{ secrets.REMOTE_BASE }}
         run: |
-              set -euo pipefail
-              echo "🚀 Connecting to $SFTP_HOST ..."
-              lftp -u "$SFTP_USER","$SFTP_PASS" sftp://$SFTP_HOST <<EOF
-              set sftp:auto-confirm yes
-              set net:max-retries 2
-              set net:timeout 30
+          set -euo pipefail
+          echo "🔍 Starting SFTP deployment process..."
+          echo "Target host: $SFTP_HOST"
+          echo "Target user: $SFTP_USER"
+          echo "Remote base: $REMOTE_BASE"
+          echo "Release ID: $RELEASE_ID"
+          
+          echo "🚀 Connecting to $SFTP_HOST ..."
+          lftp -u "$SFTP_USER","$SFTP_PASS" sftp://$SFTP_HOST <<EOF
+          set sftp:auto-confirm yes
+          set net:max-retries 2
+          set net:timeout 30
 
-              # --- auf Server arbeiten ---
-              cd $REMOTE_BASE || { echo "❌ base path missing"; bye; }
+          # --- Work on server ---
+          echo "🔍 Changing to remote base directory..."
+          cd $REMOTE_BASE || { echo "❌ Base path missing: $REMOTE_BASE"; bye; }
 
-              # 1) sicherstellen, dass releases/ existiert
-              mkdir releases || true
+          # 1) Ensure releases directory exists
+          echo "🔍 Ensuring releases directory exists..."
+          mkdir releases || true
+          echo "✅ Releases directory ready"
 
-              # 2) neues Release anlegen
-              mkdir releases/$RELEASE_ID
-              cd releases/$RELEASE_ID
+          # 2) Create new release directory
+          echo "🔍 Creating new release directory: $RELEASE_ID"
+          mkdir releases/$RELEASE_ID
+          cd releases/$RELEASE_ID
+          echo "✅ Release directory created"
 
-              # 3) Dateien hochladen
-              mirror -R --delete --parallel=4 ../../release-package .
+          # 3) Upload files
+          echo "🔍 Starting file upload (mirror with parallel=4)..."
+          mirror -R --delete --parallel=4 ../../release-package .
+          echo "✅ Files uploaded successfully"
 
-              # 4) zurück ins App-Verzeichnis
-              cd ../..
+          # 4) Go back to app directory
+          echo "🔍 Returning to app directory..."
+          cd ../..
+          pwd
+          echo "✅ Back in app directory"
 
-              # 5) Atomar umschalten
-              mv current current_old || true
-              mv releases/$RELEASE_ID current
+          # 5) Atomic switch
+          echo "🔍 Starting atomic release switch..."
+          mv current current_old || true
+          echo "✅ Old release backed up (if existed)"
+          
+          mv releases/$RELEASE_ID current
+          echo "✅ New release activated"
 
-              # 6) Restart triggern
-              mkdir -p current/tmp
-              put -O current/tmp /dev/null -o restart.txt
+          # 6) Trigger restart
+          echo "🔍 Triggering application restart..."
+          mkdir -p current/tmp
+          put -O current/tmp /dev/null -o restart.txt
+          echo "✅ Restart triggered"
 
-              bye
-              EOF
-              echo "✅ Upload and switch done."
-
-      # --- 9. Deployment-Validierung ---
+          bye
+          EOF
+          echo "✅ SFTP deployment completed successfully"      # --- 9. Deployment verification ---
       - name: Verify Deployment
         env:
           SFTP_HOST: ${{ secrets.SFTP_HOST }}
@@ -126,21 +256,41 @@ jobs:
           REMOTE_BASE: ${{ secrets.REMOTE_BASE }}
         run: |
           set -euo pipefail
-          echo "🔍 Checking deployment ..."
+          echo "🔍 Starting deployment verification..."
+          echo "Connecting to $SFTP_HOST for verification..."
+          
           lftp -u "$SFTP_USER","$SFTP_PASS" sftp://$SFTP_HOST <<EOF
           set sftp:auto-confirm yes
           cd $REMOTE_BASE
-          echo "Active target:"
+          
+          echo "🔍 Checking active deployment target..."
           ls -l current
-          echo "Releases on server:"
+          echo "✅ Active deployment verified"
+          
+          echo "🔍 Listing all releases on server..."
           ls -l releases
+          echo "✅ Release inventory complete"
+          
+          echo "🔍 Checking restart trigger file..."
+          ls -l current/tmp/restart.txt || echo "⚠️ Restart file not found"
+          
+          echo "🔍 Verifying essential files in current release..."
+          ls -l current/dist/server/entry.mjs || echo "❌ SSR entry missing"
+          ls -l current/package.json || echo "❌ Package.json missing"
+          
           bye
           EOF
-          echo "✅ Deployment verification finished"
+          echo "✅ Deployment verification completed"
 
-      # --- 10. Abschluss ---
-      - name: Done
+      # --- 10. Deployment completion ---
+      - name: Deployment Complete
         run: |
-          echo "✅ Deployment completed successfully!"
-          echo "Release ID: $RELEASE_ID"
-          echo "URL: https://lucaknobel.ch"
+          echo "🎉 Deployment completed successfully!"
+          echo "📋 Deployment Summary:"
+          echo "   Release ID: $RELEASE_ID"
+          echo "   Git SHA: ${{ github.sha }}"
+          echo "   Build Date: $(date -Iseconds)"
+          echo "   Node Version: ${{ env.NODE_VERSION }}"
+          echo "   Target Host: ${{ secrets.SFTP_HOST }}"
+          echo "🌐 Live URL: https://lucaknobel.ch"
+          echo "✅ All deployment steps completed successfully"
