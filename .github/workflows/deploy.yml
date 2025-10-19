@@ -1,0 +1,213 @@
+name: Deploy to Infomaniak
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: 22
+
+jobs:
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: |
+          npm ci --production=false
+          
+      - name: Run Type Check
+        run: |
+          npm run typecheck
+          
+      - name: Build Application (SSR)
+        run: |
+          npm run build
+          
+      - name: Validate Build Output
+        run: |
+          # Security: Verify SSR build artifacts
+          if [ ! -f "dist/server/entry.mjs" ]; then
+            echo "SSR entry point missing"
+            exit 1
+          fi
+          
+          if [ ! -d "dist/client" ]; then
+            echo "Client assets missing"
+            exit 1
+          fi
+          
+          echo "Build validation successful"
+
+      - name: Prepare Production Dependencies
+        run: |
+          # Keep only production dependencies
+          npm prune --production
+          
+          # Verify critical dependencies remain
+          if [ ! -d "node_modules" ]; then
+            echo "Production dependencies missing"
+            exit 1
+          fi
+
+      - name: Create Release Package
+        run: |
+          # Generate unique release identifier
+          RELEASE_ID="${{ github.run_id }}_$(echo '${{ github.sha }}' | cut -c1-8)"
+          echo "RELEASE_ID=${RELEASE_ID}" >> $GITHUB_ENV
+          
+          # Create deployment package
+          mkdir -p release-package
+          
+          # Copy essential files only (security: no .env, no .git)
+          cp -r dist/ release-package/
+          cp -r node_modules/ release-package/
+          cp package.json release-package/
+          
+          # Create package manifest
+          echo "# Release Manifest" > release-package/RELEASE_INFO
+          echo "Release ID: ${RELEASE_ID}" >> release-package/RELEASE_INFO
+          echo "Git SHA: ${{ github.sha }}" >> release-package/RELEASE_INFO
+          echo "Build Date: $(date -Iseconds)" >> release-package/RELEASE_INFO
+          echo "Node Version: ${{ env.NODE_VERSION }}" >> release-package/RELEASE_INFO
+          
+          echo "Release package created: ${RELEASE_ID}"
+
+      - name: Deploy via SFTP
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+        with:
+          username: ${{ secrets.SFTP_USER }}
+          server: ${{ secrets.SFTP_HOST }}
+          password: ${{ secrets.SFTP_PASS }}
+          local_path: './release-package/*'
+          remote_path: '${{ secrets.REMOTE_BASE }}/releases/${{ env.RELEASE_ID }}'
+          sftp_only: true
+          delete_remote_files: false
+
+      - name: Atomic Release Switch
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SFTP_HOST }}
+          username: ${{ secrets.SFTP_USER }}
+          password: ${{ secrets.SFTP_PASS }}
+          script: |
+            set -e
+            
+            # Navigate to app directory
+            cd ${{ secrets.REMOTE_BASE }}
+            
+            # Verify new release exists
+            if [ ! -d "releases/${{ env.RELEASE_ID }}" ]; then
+              echo "New release directory not found"
+              exit 1
+            fi
+            
+            # Verify new release has required files
+            if [ ! -f "releases/${{ env.RELEASE_ID }}/dist/server/entry.mjs" ]; then
+              echo "New release missing entry point"
+              exit 1
+            fi
+            
+            echo "New release validated: ${{ env.RELEASE_ID }}"
+            
+            # Backup current release (if exists)
+            if [ -e "current" ]; then
+              echo "Backing up current release..."
+              if [ -e "current_old" ]; then
+                rm -rf current_old
+              fi
+              mv current current_old
+              echo "Current release backed up to current_old"
+            fi
+            
+            # Atomic switch to new release
+            echo "Switching to new release..."
+            ln -sfn "releases/${{ env.RELEASE_ID }}" current
+            
+            # Verify symlink
+            if [ ! -L "current" ] || [ ! -e "current" ]; then
+              echo "Symlink creation failed"
+              # Rollback if possible
+              if [ -e "current_old" ]; then
+                mv current_old current
+                echo "Rolled back to previous release"
+              fi
+              exit 1
+            fi
+            
+            echo "Symlink created successfully"
+            
+            # Create restart trigger (Passenger/Node restart)
+            mkdir -p current/tmp
+            touch current/tmp/restart.txt
+            echo "Restart triggered"
+            
+            # Display release info
+            echo "Deployment Summary:"
+            echo "   Release ID: ${{ env.RELEASE_ID }}"
+            echo "   Active Path: $(readlink current)"
+            echo "   Timestamp: $(date -Iseconds)"
+            
+            echo "Deployment completed successfully"
+
+      - name: Verify Deployment
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SFTP_HOST }}
+          username: ${{ secrets.SFTP_USER }}
+          password: ${{ secrets.SFTP_PASS }}
+          script: |
+            cd ${{ secrets.REMOTE_BASE }}
+            
+            # Verify symlink points to correct release
+            CURRENT_TARGET=$(readlink current)
+            EXPECTED_TARGET="releases/${{ env.RELEASE_ID }}"
+            
+            if [ "$CURRENT_TARGET" = "$EXPECTED_TARGET" ]; then
+              echo "Symlink verification successful"
+              echo "   Current: $CURRENT_TARGET"
+            else
+              echo "Symlink verification failed"
+              echo "   Expected: $EXPECTED_TARGET"
+              echo "   Actual: $CURRENT_TARGET"
+              exit 1
+            fi
+            
+            # Check if restart was triggered
+            if [ -f "current/tmp/restart.txt" ]; then
+              echo "estart trigger confirmed"
+            else
+              echo "Restart trigger not found"
+            fi
+            
+            # Display release count (for monitoring)
+            RELEASE_COUNT=$(find releases/ -maxdepth 1 -type d -name "*_*" | wc -l)
+            echo "Total releases: $RELEASE_COUNT"
+
+      - name: Deployment Success Notification
+        if: success()
+        run: |
+          echo "Deployment completed successfully!"
+          echo "Release ID: ${{ env.RELEASE_ID }}"
+          echo "Git SHA: ${{ github.sha }}"
+          echo "Deployed to: https://lucaknobel.ch"
+
+      - name: Deployment Failure Notification
+        if: failure()
+        run: |
+          echo "Deployment failed!"
+          echo "Check the logs above for details."
+          echo "Previous release should still be active."
