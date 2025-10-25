@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "node --env-file=.env.development ./node_modules/.bin/astro dev",
     "build": "astro build",
-    "preview": "node --env-file=.env.production  ./node_modules/.bin/astro preview",
+    "preview": "node --env-file=.env.development ./node_modules/.bin/astro preview",
     "start": "node --env-file=/srv/customer/sites/lucaknobel.ch/app/.env.production ./dist/server/entry.mjs",
     "astro": "astro",
     "test": "vitest",
