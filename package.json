@@ -15,14 +15,13 @@
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "typecheck": "astro check",
-    "lint": "echo 'Add ESLint/Prettier here'",
-    "deploy:local": "bash scripts/deploy.sh"
+    "lint": "echo 'Add ESLint/Prettier here'"
   },
   "dependencies": {
-    "@astrojs/check": "^0.9.4",
-    "@astrojs/node": "9.4.5",
+    "@astrojs/check": "^0.9.5",
+    "@astrojs/node": "^9.5.0",
     "@astrojs/vue": "^5.1.1",
-    "astro": "^5.13.5",
+    "astro": "^5.15.1",
     "astro-icon": "^1.1.5",
     "better-sqlite3": "^12.4.1",
     "drizzle-orm": "^0.44.6",

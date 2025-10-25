@@ -9,6 +9,24 @@ export default defineConfig({
     mode: "standalone"
   }),
 
+  site: "https://lucaknobel.ch",
+
+  security: {
+    checkOrigin: true,
+    allowedDomains: [
+      {
+        hostname: "lucaknobel.ch",
+        protocol: "https:"
+      },
+      {
+        hostname: "www.lucaknobel.ch",
+        protocol: "https:"
+      }
+    ]
+  },
+
+  compressHTML: true,
+
   // Vitest configuration
   test: {
     globals: true,
