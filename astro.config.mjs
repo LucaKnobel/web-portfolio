@@ -4,9 +4,10 @@ import node from "@astrojs/node";
 import vue from "@astrojs/vue";
 
 export default defineConfig({
+  /* CSP expermental feature doesn't work, using custom middleware instead */
   output: "server",
   adapter: node({
-    mode: "standalone"
+    mode: "standalone",
   }),
 
   site: "https://lucaknobel.ch",
@@ -23,23 +24,6 @@ export default defineConfig({
         protocol: "https:"
       }
     ]
-  },
-
-  experimental: {
-    csp: {
-      directives: [
-        "default-src 'self'",
-        "img-src 'self' https: data:",
-        "font-src 'self'",
-        "connect-src 'self' https://api.iconify.design https://api.unisvg.com https://api.simplesvg.com",
-        "frame-ancestors 'none'",
-        "base-uri 'self'",
-        "form-action 'self'"
-        // DO NOT add style-src or script-src here!
-        // Inline style attributes (e.g. style="...") require 'unsafe-inline' automatically in Astro SSR CSP.
-        // Astro will inject hashes for <style> and <script> tags, but not for style attributes.
-      ]
-    }
   },
 
   compressHTML: true,
