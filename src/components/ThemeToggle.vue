@@ -5,10 +5,10 @@
                 <!-- Show icons only after hydration to prevent flash -->
                 <template v-if="isHydrated">
                     <!-- Sun Icon -->
-                    <Icon v-if="!isDark" key="sun" icon="mdi:white-balance-sunny" class="theme-icon" />
+                    <Icon v-if="!isDark" key="sun" :icon="sunIcon" class="theme-icon" />
 
                     <!-- Moon Icon -->
-                    <Icon v-else key="moon" icon="mdi:brightness-3" class="theme-icon" />
+                    <Icon v-else key="moon" :icon="moonIcon" class="theme-icon" />
                 </template>
 
                 <!-- Placeholder during hydration -->
@@ -21,6 +21,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue"
 import { Icon } from "@iconify/vue"
+import sunIcon from "@iconify-icons/mdi/white-balance-sunny"
+import moonIcon from "@iconify-icons/mdi/brightness-3"
 import { useClientTranslations } from "@/i18n/utils"
 
 type Theme = "light" | "dark";  

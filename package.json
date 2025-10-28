@@ -21,6 +21,9 @@
     "@astrojs/check": "^0.9.5",
     "@astrojs/node": "^9.5.0",
     "@astrojs/vue": "^5.1.1",
+    "@iconify-icons/mdi": "^1.2.48",
+    "@iconify-json/mdi": "^1.2.3",
+    "@iconify/vue": "^5.0.0",
     "astro": "^5.15.1",
     "astro-icon": "^1.1.5",
     "better-sqlite3": "^12.4.1",
@@ -30,8 +33,6 @@
     "vue": "^3.5.22"
   },
   "devDependencies": {
-    "@iconify-json/mdi": "^1.2.3",
-    "@iconify/vue": "^5.0.0",
     "@types/better-sqlite3": "^7.6.13",
     "@types/nodemailer": "^7.0.2",
     "drizzle-kit": "^0.31.5",

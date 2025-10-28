@@ -3,7 +3,7 @@
         <!-- Mobile Menu Toggle Button -->
         <button class="mobile-menu-toggle" @click="toggleMenu" :aria-label="t('aria.openMenu')" :aria-expanded="isOpen"
             type="button">
-            <Icon :icon="isOpen ? 'mdi:close' : 'mdi:menu'" class="burger-icon" />
+            <Icon :icon="isOpen ? closeIcon : menuIcon" class="burger-icon" />
         </button>
 
         <!-- Mobile Menu Modal Overlay -->
@@ -18,13 +18,13 @@
                             <ThemeToggle />
                             <button class="modal-close" @click="closeMenu" :aria-label="t('aria.closeMenu')"
                                 type="button">
-                                <Icon icon="mdi:close" class="close-icon" />
+                                <Icon :icon="closeIcon" class="close-icon" />
                             </button>
                         </div>
                         <!-- Show only close button until first opened -->
                         <button v-else class="modal-close" @click="closeMenu" :aria-label="t('aria.closeMenu')"
                             type="button">
-                            <Icon icon="mdi:close" class="close-icon" />
+                            <Icon :icon="closeIcon" class="close-icon" />
                         </button>
                     </div>
 
@@ -49,6 +49,8 @@
 import { ref, onMounted, onUnmounted } from "vue"
 import { navigate } from "astro:transitions/client";
 import { Icon } from "@iconify/vue"
+import menuIcon from "@iconify-icons/mdi/menu"
+import closeIcon from "@iconify-icons/mdi/close"
 import ThemeToggle from "./ThemeToggle.vue"
 import LanguageSelect from "./LanguageSelect.vue"
 import { useClientTranslations } from "@/i18n/utils.ts"
