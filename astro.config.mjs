@@ -4,7 +4,7 @@ import node from "@astrojs/node";
 import vue from "@astrojs/vue";
 
 export default defineConfig({
-  /* CSP expermental feature doesn't work, using custom middleware instead */
+  /* CSP experimental feature from Astro doesn't work, using custom middleware instead */
   output: "server",
   adapter: node({
     mode: "standalone",
@@ -24,6 +24,14 @@ export default defineConfig({
         protocol: "https:"
       }
     ]
+  },
+
+ /*  build: {
+    inlineStylesheets: `never`,
+  },
+ */
+  markdown: {
+    syntaxHighlight: "prism"
   },
 
   compressHTML: true,

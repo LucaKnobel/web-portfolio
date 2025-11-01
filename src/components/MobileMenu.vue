@@ -3,7 +3,7 @@
         <!-- Mobile Menu Toggle Button -->
         <button class="mobile-menu-toggle" @click="toggleMenu" :aria-label="t('aria.openMenu')" :aria-expanded="isOpen"
             type="button">
-            <Icon :icon="isOpen ? closeIcon : menuIcon" class="burger-icon" />
+            <Icon :icon="isOpen ? closeIcon : menuIcon" class="burger-icon"  />
         </button>
 
         <!-- Mobile Menu Modal Overlay -->
