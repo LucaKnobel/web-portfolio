@@ -39,7 +39,7 @@ describe('ContactRateLimitService', () => {
             mockDb.select.mockReturnValue({
                 from: vi.fn().mockReturnValue({
                     where: vi.fn().mockReturnValue({
-                        get: vi.fn().mockResolvedValue({ count: 5 })
+                        get: vi.fn().mockReturnValue({ count: 5 })
                     })
                 })
             });
@@ -55,7 +55,7 @@ describe('ContactRateLimitService', () => {
             mockDb.select.mockReturnValue({
                 from: vi.fn().mockReturnValue({
                     where: vi.fn().mockReturnValue({
-                        get: vi.fn().mockResolvedValue({ count: 10 })
+                        get: vi.fn().mockReturnValue({ count: 10 })
                     })
                 })
             });
@@ -70,7 +70,7 @@ describe('ContactRateLimitService', () => {
             mockDb.select.mockReturnValue({
                 from: vi.fn().mockReturnValue({
                     where: vi.fn().mockReturnValue({
-                        get: vi.fn().mockResolvedValue({ count: 15 })
+                        get: vi.fn().mockReturnValue({ count: 15 })
                     })
                 })
             });
@@ -85,7 +85,7 @@ describe('ContactRateLimitService', () => {
             mockDb.select.mockReturnValue({
                 from: vi.fn().mockReturnValue({
                     where: vi.fn().mockReturnValue({
-                        get: vi.fn().mockResolvedValue(undefined)
+                        get: vi.fn().mockReturnValue(undefined)
                     })
                 })
             });
@@ -100,7 +100,7 @@ describe('ContactRateLimitService', () => {
             mockDb.select.mockReturnValue({
                 from: vi.fn().mockReturnValue({
                     where: vi.fn().mockReturnValue({
-                        get: vi.fn().mockRejectedValue(new Error('DB error'))
+                        get: vi.fn(() => { throw new Error('DB error'); })
                     })
                 })
             });
@@ -117,13 +117,15 @@ describe('ContactRateLimitService', () => {
             mockDb.select.mockReturnValue({
                 from: vi.fn().mockReturnValue({
                     where: vi.fn().mockReturnValue({
-                        get: vi.fn().mockResolvedValue(undefined)
+                        get: vi.fn().mockReturnValue(undefined)
                     })
                 })
             });
 
             mockDb.insert.mockReturnValue({
-                values: vi.fn().mockResolvedValue(undefined)
+                values: vi.fn().mockReturnValue({
+                    run: vi.fn()
+                })
             });
 
             await service.incrementCount('2025-10-11');
@@ -135,14 +137,16 @@ describe('ContactRateLimitService', () => {
             mockDb.select.mockReturnValue({
                 from: vi.fn().mockReturnValue({
                     where: vi.fn().mockReturnValue({
-                        get: vi.fn().mockResolvedValue({ date: '2025-10-11', count: 5 })
+                        get: vi.fn().mockReturnValue({ date: '2025-10-11', count: 5 })
                     })
                 })
             });
 
             mockDb.update.mockReturnValue({
                 set: vi.fn().mockReturnValue({
-                    where: vi.fn().mockResolvedValue(undefined)
+                    where: vi.fn().mockReturnValue({
+                        run: vi.fn()
+                    })
                 })
             });
 
@@ -155,7 +159,7 @@ describe('ContactRateLimitService', () => {
             mockDb.select.mockReturnValue({
                 from: vi.fn().mockReturnValue({
                     where: vi.fn().mockReturnValue({
-                        get: vi.fn().mockRejectedValue(new Error('DB error'))
+                        get: vi.fn(() => { throw new Error('DB error'); })
                     })
                 })
             });

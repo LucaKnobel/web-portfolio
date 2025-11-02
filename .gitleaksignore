@@ -1,0 +1,10 @@
+# Gitleaks Ignore File
+# Format: file:line (oder nur file für ganze Datei)
+# Dokumentation: https://github.com/gitleaks/gitleaks#gitleaksignore
+
+# Beispiel: Test-Dateien mit Fake-Credentials
+# tests/fixtures/fake-credentials.ts:10
+# tests/email.test.ts:25
+
+# Beispiel: Öffentliche Test-Tokens (keine echten Secrets)
+# src/tests/mock-data.ts
