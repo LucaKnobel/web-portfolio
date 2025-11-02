@@ -26,10 +26,6 @@ export default defineConfig({
     ]
   },
 
- /*  build: {
-    inlineStylesheets: `never`,
-  },
- */
   markdown: {
     syntaxHighlight: "prism"
   },
