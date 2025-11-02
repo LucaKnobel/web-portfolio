@@ -109,67 +109,15 @@ Semgrep policies include rules for:
 
 ### Automated Security Pipeline
 
-Modular GitHub Actions workflows run on every push/PR to `main`.
+Security checks run automatically on **every Pull Request to `main`** branch. All checks must pass before merge is allowed.
 
-#### Workflows
+**Three parallel workflows:**
 
-**1. Tests** (`.github/workflows/tests.yml`)
-- Trigger: Push/PR to `main`
-- Execution: `npm ci && npm run test:run`
-- Duration: ~30s
+1. **Tests** - Unit tests + TypeScript validation (~30s)
+2. **Semgrep** - SAST code analysis with org policies (~1-2min)
+3. **Trivy** - Vulnerability + secret + misconfiguration scan (~1min)
 
-**2. Semgrep** (`.github/workflows/semgrep.yml`)
-- Trigger: Push/PR to `main`
-- Container: `semgrep/semgrep`
-- Command: `semgrep ci` (uses org policies from Semgrep Cloud)
-- Token: `secrets.SEMGREP_APP_TOKEN`
-- Duration: ~1-2min
+**Total time:** ~2-3 minutes (runs in parallel)
 
-**3. Trivy** (`.github/workflows/trivy.yml`)
-- Trigger: Push/PR to `main`
-- Scanners: `vuln,secret,misconfig`
-- Severity: `CRITICAL,HIGH,MEDIUM`
-- Exit code: 1 on findings (blocks merge)
-- Duration: ~1min
+**Cost optimization:** Workflows only trigger on PRs targeting `main`, not on internal development branches.
 
-**4. Security Gate** (`.github/workflows/security-gate.yml`)
-- Trigger: After Tests, Semgrep, Trivy complete
-- Purpose: Final verification checkpoint
-
-#### Branch Protection Setup
-
-**Settings → Branches → Add rule** for `main`:
-
-```yaml
-✅ Require pull request before merging
-✅ Require status checks to pass before merging:
-   - Unit Tests
-   - SAST Scan
-   - Security Scan
-✅ Do not allow bypassing
-```
-
-All three workflows must pass before merge is allowed.
-
-#### Local Pre-Commit Checks
-
-Enable Git hooks:
-```bash
-git config core.hooksPath .githooks
-```
-
-Hook runs: Tests → TypeScript Check → (optional) Gitleaks
-
----
-
-### Security Scan Overview
-
-| Tool | Coverage | Trigger | Duration |
-|------|----------|---------|----------|
-| Vitest | Unit tests, XSS prevention | Push/PR | ~30s |
-| Semgrep | SAST, OWASP Top 10 | Push/PR | ~1-2min |
-| Trivy | CVE, Secrets, Misconfig | Push/PR | ~1min |
-
-Total duration on PR: **~2-3min (parallel execution)**
-
----

@@ -1,3 +1,14 @@
+---
+title: "Web Portfolio"
+description: "Modern SSR portfolio with Astro 5, Vue Islands, and TypeScript. Optimized for performance and security best practices with automated scans."
+date: "2025-11"
+lang: "en"
+tags: ["Astro", "Vue", "TypeScript", "SSR", "SQLite", "DevSecOps", "Nodemailer"]
+cover: "../images/web-portfolio/cover.png"
+url: "https://github.com/LucaKnobel/web-portfolio"
+
+---
+
 # Web Portfolio
 
 ## Project at a Glance
@@ -131,14 +142,3 @@ The project shows that performance and security are not opposites and that moder
 
 
 
-## Reporting Security Issues
-
-If you discover a security vulnerability in this project, please report it to:
-**web-portfolio@lucaknobel.ch**
-
----
-
-## License
-
-Apache License 2.0 © 2025 Luca Knobel  
-See [LICENSE](./LICENSE) and [NOTICE](./NOTICE). 
