@@ -135,9 +135,9 @@ export class MockRateLimitService implements RateLimitService {
 
 // Factory function
 export const getRateLimitService = (): RateLimitService => {
-    const isTest = import.meta.env.NODE_ENV === 'test';
+    const isDevelopment = process.env.NODE_ENV !== "production";
 
-    if (isTest) {
+    if (isDevelopment) {
         return new MockRateLimitService();
     }
 

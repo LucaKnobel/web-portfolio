@@ -1,7 +1,50 @@
 import type { APIContext } from "astro";
 import crypto from "node:crypto";
 
-const makeNonce = () => crypto.randomBytes(16).toString("base64");  
+const makeNonce = () => crypto.randomBytes(16).toString("base64");
+
+/**
+ * Builds CSP policy string with optional nonce for HTML responses
+ */
+const buildCSPPolicy = (nonce?: string): string => {
+  const scriptSrc = nonce 
+    ? `'self' 'nonce-${nonce}' 'report-sample'`
+    : "'self' 'report-sample'";
+  
+  const styleSrc = nonce
+    ? `'self' 'nonce-${nonce}' 'report-sample'`
+    : "'self' 'report-sample'";
+
+  return [
+    "default-src 'self'",
+    `script-src ${scriptSrc}`,
+    "script-src-attr 'none'",
+    `style-src ${styleSrc}`,
+    "style-src-attr 'none'",
+    "img-src 'self' data:",
+    "font-src 'self' data:",
+    "connect-src 'self'",
+    "media-src 'self'",
+    "worker-src 'self' blob:",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "manifest-src 'self'",
+    "frame-ancestors 'none'",
+    "upgrade-insecure-requests"
+  ].join("; ");
+};
+
+/**
+ * Sets additional security headers on response
+ */
+const setSecurityHeaders = (headers: Headers): void => {
+  headers.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
+  headers.set("X-Content-Type-Options", "nosniff");
+  headers.set("X-Frame-Options", "DENY");
+  headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  headers.set("Permissions-Policy", "geolocation=(), microphone=(), camera=(), payment=()");
+};
 
 export const csp = async (_: APIContext, next: (r?: string | URL | Request) => Promise<Response>) => {
   if (process.env.NODE_ENV !== "production") {
@@ -9,35 +52,19 @@ export const csp = async (_: APIContext, next: (r?: string | URL | Request) => P
   }
 
   const res = await next();
-
   const ct = res.headers.get("content-type") || "";
+
   if (!ct.startsWith("text/html")) {
-    /* Non-HTML: Set only headers (e.g. JSON, CSS, JS) */
-    const policy = [
-      "default-src 'self'",
-      "script-src 'self' 'report-sample'",
-      "script-src-attr 'none'",
-      "style-src 'self' 'report-sample'",
-      "img-src 'self' data:",
-      "font-src 'self' data:",
-      "connect-src 'self'",
-      "worker-src 'self' blob:",
-      "object-src 'none'",
-      "base-uri 'self'",
-      "form-action 'self'",
-      "manifest-src 'self'",
-      "frame-ancestors 'none'",
-      "upgrade-insecure-requests",
-    ].join("; ");
-    res.headers.set("Content-Security-Policy", policy);
+    /* Non-HTML: Set CSP without nonce */
+    res.headers.set("Content-Security-Policy", buildCSPPolicy());
+    setSecurityHeaders(res.headers);
     return res;
   }
 
-  /* create nonce for html */
+  /* HTML: Generate nonce and inject into script/style tags */
   const nonce = makeNonce();
   const html = await res.text();
 
-  /* carefully only touch tags without existing nonce attribute */
   const withScriptNonce = html.replace(
     /<script(?![^>]*\bnonce=)/gi,
     `<script nonce="${nonce}"`
@@ -57,26 +84,8 @@ export const csp = async (_: APIContext, next: (r?: string | URL | Request) => P
     headers: res.headers,
   });
 
-  const policy = [
-    "default-src 'self'",
-    `script-src 'self' 'nonce-${nonce}' 'report-sample'`,
-    "script-src-attr 'none'",
-    `style-src 'self' 'nonce-${nonce}' 'report-sample'`,
-    "img-src 'self' data:",
-    "font-src 'self' data:",
-    "connect-src 'self'",
-    "media-src 'self'",
-    "worker-src 'self' blob:",
-    "object-src 'none'",
-    "base-uri 'self'",
-    "form-action 'self'",
-    "manifest-src 'self'",
-    "frame-ancestors 'none'",
-    "upgrade-insecure-requests"
-  ].join("; ");
-
-  body.headers.set("Content-Security-Policy", policy);
+  body.headers.set("Content-Security-Policy", buildCSPPolicy(nonce));
+  setSecurityHeaders(body.headers);
+  
   return body;
 };
-
-

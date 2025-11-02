@@ -8,7 +8,7 @@ export interface EmailService {
 
 /**
  * Production Email Service
- * Uses real SMTP for production emails
+ * Uses real SMTP configured via environment variables
  */
 export class ProductionEmailService implements EmailService {
     async sendEmail(data: EmailData): Promise<EmailResult> {
@@ -27,7 +27,6 @@ export class ProductionEmailService implements EmailService {
 export class DevelopmentEmailService implements EmailService {
     async sendEmail(data: EmailData): Promise<EmailResult> {
         try {
-            // Ethereal Email for development SMTP testing
             const testAccount = await nodemailer.createTestAccount();
 
             const transporter = nodemailer.createTransport({
@@ -76,54 +75,11 @@ export class DevelopmentEmailService implements EmailService {
 }
 
 /**
- * Mock Email Service for testing
- */
-export class MockEmailService implements EmailService {
-    private sentEmails: EmailData[] = [];
-    private shouldFail = false;
-
-    async sendEmail(data: EmailData): Promise<EmailResult> {
-        if (this.shouldFail) {
-            return { success: false, error: 'Mock failure' };
-        }
-
-        this.sentEmails.push(data);
-        console.log("[MOCK] Email recorded:", data.subject);
-
-        // Simulate async delay
-        await new Promise(resolve => setTimeout(resolve, 10));
-        return { success: true, messageId: `mock-${Date.now()}` };
-    }
-
-    async validateConfig(): Promise<boolean> {
-        return !this.shouldFail;
-    }
-
-    // Test helpers
-    getSentEmails(): EmailData[] {
-        return [...this.sentEmails];
-    }
-
-    reset(): void {
-        this.sentEmails = [];
-        this.shouldFail = false;
-    }
-
-    setFailure(shouldFail: boolean): void {
-        this.shouldFail = shouldFail;
-    }
-}
-
-/**
- * Factory function - returns the appropriate service based on environment
+ * Factory: Returns appropriate service based on environment
+ * Only DEV (Ethereal) or PROD (real SMTP) - tests import MockEmailService directly
  */
 export const getEmailService = (): EmailService => {
-    const isDevelopment = import.meta.env.DEV;
-    const isTest = import.meta.env.NODE_ENV === 'test';
-
-    if (isTest) {
-        return new MockEmailService();
-    }
+    const isDevelopment = process.env.NODE_ENV !== "production";
 
     if (isDevelopment) {
         console.log("Using Ethereal Email Service for development");
@@ -132,3 +88,6 @@ export const getEmailService = (): EmailService => {
 
     return new ProductionEmailService();
 };
+
+/* Re-export types for convenience */
+export type { EmailData, EmailResult } from "../utils/email.js";
