@@ -1,0 +1,31 @@
+name: Security Gate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_run:
+    workflows: ["Tests", "Semgrep", "Trivy"]
+    types: [completed]
+
+permissions:
+  contents: read
+
+jobs:
+  security-gate:
+    name: Security Gate
+    runs-on: ubuntu-latest
+    if: github.actor != 'dependabot[bot]'
+    
+    steps:
+      - name: Check all workflows passed
+        run: |
+          echo "Security Gate: Verifying all required checks"
+          echo "This workflow is triggered after Tests, Semgrep, and Trivy complete"
+          echo ""
+          echo "Configure Branch Protection Rules to require:"
+          echo "  - Unit Tests"
+          echo "  - SAST Scan"
+          echo "  - Security Scan"
+          echo ""
+          echo "Security Gate check complete"

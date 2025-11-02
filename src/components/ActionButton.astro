@@ -14,10 +14,8 @@ export interface Props {
     class?: string;
     /** Aria label for accessibility (auto-generated if not provided) */
     ariaLabel?: string;
-    /** Custom width (e.g. '220px', '100%') [required außer bei variant-link] */
-    width?: string;
-    /** Custom height (e.g. '40px', '3rem') [required ausser bei variant-link] */
-    height?: string;
+    /** Button size: xs, s, m, l, xl, square */
+    size?: "xs" | "s" | "m" | "l" | "xl" | "square";
 }
 
 const {
@@ -27,8 +25,7 @@ const {
     variant = "secondary",
     class: customClass = "",
     ariaLabel,
-    width,
-    height,
+    size = "m",
 } = Astro.props;
 
 /* Detect if link is external */
@@ -42,12 +39,16 @@ const hasText = !!text;
 const hasIcon = !!icon;
 const isIconOnly = hasIcon && !hasText;
 
+/* Size mapping for CSS classes */
+const sizeClass = `btn-size-${size}`;
+
 /* Build CSS classes */
 const classes = [
     "action-button",
     `variant-${variant}`,
     isIconOnly ? "icon-only" : "",
     customClass,
+    sizeClass,
 ]
     .filter(Boolean)
     .join(" ");
@@ -59,9 +60,6 @@ const classes = [
     aria-label={computedAriaLabel}
     target={isExternal ? "_blank" : undefined}
     rel={isExternal ? "noopener noreferrer" : undefined}
-    style={{
-        ...(variant !== "link" ? { '--action-btn-width': width, '--action-btn-height': height } : {}),
-    }}
 >
     {hasIcon && <Icon name={icon} class="button-icon" />}
     {hasText && <span class="button-text">{text}</span>}
@@ -74,8 +72,6 @@ const classes = [
         justify-content: center;
         gap: var(--space-1);
         box-sizing: border-box;
-        width: var(--action-btn-width);
-        height: var(--action-btn-height);
         border: var(--border-hairline) solid var(--color-border-hairline);
         border-radius: var(--button-radius);
         background: transparent;
@@ -85,6 +81,14 @@ const classes = [
         cursor: pointer;
         transition: all var(--dur-2) var(--ease-standard);
     }
+
+    /* Size classes */
+        .btn-size-xs { width: 100px; height: var(--control-h-sm); }
+        .btn-size-s { width: 120px; height: var(--control-h-md); }
+        .btn-size-m { width: 150px; height: var(--control-h-lg); }
+        .btn-size-l { width: 180px; height: var(--control-h-xl); }
+        .btn-size-xl { width: 220px; height: var(--control-h-xxl); }
+        .btn-size-square { width: var(--touch-target-min); height: var(--touch-target-min); }
 
     /* Primary */
     .variant-primary {

@@ -39,7 +39,7 @@ export class ContactRateLimitService implements RateLimitService {
      */
     async checkLimit(date: string): Promise<RateLimitResult> {
         try {
-            const currentRecord = await db.select({ count: rateLimits.count })
+            const currentRecord = db.select({ count: rateLimits.count })
                 .from(rateLimits)
                 .where(eq(rateLimits.date, date))
                 .get();
@@ -71,20 +71,22 @@ export class ContactRateLimitService implements RateLimitService {
     async incrementCount(date: string): Promise<void> {
         try {
             // Check if record exists
-            const existingRecord = await db.select()
+            const existingRecord = db.select()
                 .from(rateLimits)
                 .where(eq(rateLimits.date, date))
                 .get();
 
             if (existingRecord) {
                 // Update existing record
-                await db.update(rateLimits)
+                db.update(rateLimits)
                     .set({ count: existingRecord.count + 1 })
-                    .where(eq(rateLimits.date, date));
+                    .where(eq(rateLimits.date, date))
+                    .run();
             } else {
                 // Insert new record
-                await db.insert(rateLimits)
-                    .values({ date, count: 1 });
+                db.insert(rateLimits)
+                    .values({ date, count: 1 })
+                    .run();
             }
 
             console.log(`Rate limit counter updated for ${date}`);
@@ -135,9 +137,9 @@ export class MockRateLimitService implements RateLimitService {
 
 // Factory function
 export const getRateLimitService = (): RateLimitService => {
-    const isTest = import.meta.env.NODE_ENV === 'test';
+    const isDevelopment = process.env.NODE_ENV !== "production";
 
-    if (isTest) {
+    if (isDevelopment) {
         return new MockRateLimitService();
     }
 

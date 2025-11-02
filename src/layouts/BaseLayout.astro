@@ -2,10 +2,11 @@
 import "@/styles/tokens.css";
 import "@/styles/global.css";
 import "@/styles/primitives.css";
+import "@/styles/prism-theme.css";
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 import Footer from "@/components/Footer.astro";
 import Header from "@/components/Header.astro";
-import { ClientRouter } from "astro:transitions";
+/* import { ClientRouter } from "astro:transitions"; */
 import portrait from "@/assets/portrait-photo.jpg";
 
 export interface BaseLayoutProps {
@@ -72,7 +73,7 @@ const theme = Astro.cookies.get("theme")?.value ?? "light";
                 {alternateLinks.map((link: LanguageString) => (
                     <link rel="alternate" hreflang={link.hreflang} href={link.href} />
                 ))}
-                <ClientRouter />
+                <!-- <ClientRouter /> --> <!-- client router doesn't work with current csp solution -->
     </head>
     <body>
         <Header lang={lang} t={t} />

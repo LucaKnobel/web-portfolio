@@ -47,6 +47,7 @@
     --color-surface-2: var(--neutral-25);
     --color-surface-3: var(--neutral-40);
 
+
     /* Text */
     --color-muted: var(--neutral-600);
     --color-text: var(--neutral-900);
@@ -178,6 +179,8 @@
     --scale-disabled: 0.95;
 
     /* A11Y & TOUCH */
+    --control-h-xxl: 64px;
+    --control-h-xl: 56px;
     --control-h-lg: 48px;
     --control-h-md: 40px;
     --control-h-sm: 32px;

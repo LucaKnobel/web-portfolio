@@ -1,0 +1,40 @@
+#!/bin/bash
+# Git Pre-Commit Hook - Fast local security checks
+# Installation: git config core.hooksPath .githooks
+
+set -e
+
+echo "### Pre-commit checks... "
+
+# 1. Tests (required)
+npm run test:run > /dev/null 2>&1 || {
+    echo "### Tests failed"
+    exit 1
+}
+echo "### Tests passed"
+
+# 2. TypeScript (required)
+npm run typecheck > /dev/null 2>&1 || {
+    echo "### TypeScript errors"
+    exit 1
+}
+echo "### TypeScript OK"
+
+# 3. Semgrep SAST (optional) - only checks YOUR code
+if command -v semgrep &> /dev/null; then
+    echo "### Running Semgrep scan..."
+    semgrep ci --code || {
+        echo "### Semgrep found security issues in your code"
+        exit 1
+    }
+    echo "### Semgrep passed"
+else
+    echo "### Semgrep not installed (optional)"
+fi
+
+# Note: Trivy dependency scan runs in CI only
+# (Can't fix CVEs immediately, so no point blocking commits)
+
+echo "### Ready to commit"
+exit 0
+

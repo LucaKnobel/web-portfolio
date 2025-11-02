@@ -4,12 +4,35 @@ import node from "@astrojs/node";
 import vue from "@astrojs/vue";
 
 export default defineConfig({
+  /* CSP experimental feature from Astro doesn't work, using custom middleware instead */
   output: "server",
   adapter: node({
-    mode: "standalone"
+    mode: "standalone",
   }),
 
-  // Vitest configuration
+  site: "https://lucaknobel.ch",
+
+  security: {
+    checkOrigin: true,
+    allowedDomains: [
+      {
+        hostname: "lucaknobel.ch",
+        protocol: "https:"
+      },
+      {
+        hostname: "www.lucaknobel.ch",
+        protocol: "https:"
+      }
+    ]
+  },
+
+  markdown: {
+    syntaxHighlight: "prism"
+  },
+
+  compressHTML: true,
+
+  /* Vitest configuration */
   test: {
     globals: true,
     environment: "node",

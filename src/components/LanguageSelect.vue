@@ -2,7 +2,7 @@
     <div class="language-select" ref="languageSelectRef">
         <button class="language-toggle" @click="toggleDropdown" :aria-label="t('aria.languageSelect')"
             :aria-expanded="isOpen" type="button">
-            <Icon icon="mdi:translate" class="language-icon" />
+            <Icon :icon="translateIcon" class="language-icon" />
         </button>
 
         <Transition name="dropdown">
@@ -20,6 +20,7 @@
 <script setup lang="ts">
 import { ref, computed } from "vue"
 import { Icon } from "@iconify/vue"
+import translateIcon from "@iconify-icons/mdi/translate"
 import { languages as languageConfig } from "@/i18n/ui"
 import { useClientTranslations } from "@/i18n/utils"
 import { useDropdown, useClickOutside } from "@/composables/useDropdown"
