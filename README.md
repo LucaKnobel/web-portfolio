@@ -131,3 +131,14 @@ The project shows that performance and security are not opposites and that moder
 
 
 
+## Reporting Security Issues
+
+If you discover a security vulnerability in this project, please report it to:
+**web-portfolio@lucaknobel.ch**
+
+---
+
+## License
+
+Apache License 2.0 © 2025 Luca Knobel  
+See [LICENSE](./LICENSE) and [NOTICE](./NOTICE). 
