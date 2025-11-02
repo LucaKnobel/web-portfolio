@@ -214,6 +214,175 @@ describe('Email Utilities', () => {
                 }
             });
         });
+
+        it('should escape HTML special characters to prevent XSS', async () => {
+            mockTransporter.sendMail.mockResolvedValue({ messageId: 'test-123' });
+
+            const xssData: email.EmailData = {
+                firstName: '<script>alert("XSS")</script>',
+                lastName: '<img src=x onerror=alert(1)>',
+                email: 'test@example.com',
+                subject: '<iframe src="evil.com"></iframe>',
+                message: '<svg onload=alert("XSS")>',
+                company: 'Company & "Quote"',
+                phone: "'+alert('XSS')+'"
+            };
+
+            await email.sendContactEmail(xssData);
+
+            const call = mockTransporter.sendMail.mock.calls[0]?.[0];
+            expect(call).toBeDefined();
+            if (!call) return;
+            
+            // Check that dangerous characters are escaped in HTML
+            expect(call.html).not.toContain('<script>');
+            expect(call.html).not.toContain('<img');
+            expect(call.html).not.toContain('<iframe');
+            expect(call.html).not.toContain('<svg');
+            expect(call.html).toContain('&lt;script&gt;');
+            expect(call.html).toContain('&lt;img');
+            expect(call.html).toContain('&lt;iframe');
+            expect(call.html).toContain('&lt;svg');
+            expect(call.html).toContain('&amp;');
+            expect(call.html).toContain('&quot;');
+            expect(call.html).toContain('&#039;');
+        });
+
+        it('should escape ampersands in all fields', async () => {
+            mockTransporter.sendMail.mockResolvedValue({ messageId: 'test-123' });
+
+            const dataWithAmpersands: email.EmailData = {
+                firstName: 'Tom & Jerry',
+                lastName: 'Smith & Co',
+                email: 'test@example.com',
+                subject: 'Q&A Session',
+                message: 'A & B & C',
+                company: 'Marks & Spencer',
+                phone: 'ext. 123 & 456'
+            };
+
+            await email.sendContactEmail(dataWithAmpersands);
+
+            const call = mockTransporter.sendMail.mock.calls[0]?.[0];
+            expect(call).toBeDefined();
+            if (!call) return;
+            
+            expect(call.html).toContain('Tom &amp; Jerry');
+            expect(call.html).toContain('Smith &amp; Co');
+            expect(call.html).toContain('Q&amp;A Session');
+            expect(call.html).toContain('A &amp; B &amp; C');
+            expect(call.html).toContain('Marks &amp; Spencer');
+            expect(call.html).toContain('ext. 123 &amp; 456');
+        });
+
+        it('should escape angle brackets to prevent tag injection', async () => {
+            mockTransporter.sendMail.mockResolvedValue({ messageId: 'test-123' });
+
+            const dataWithBrackets: email.EmailData = {
+                firstName: 'John<tag>',
+                lastName: '</tag>Doe',
+                email: 'test@example.com',
+                subject: 'Price: 10 < 20 > 5',
+                message: 'Formula: a < b and c > d'
+            };
+
+            await email.sendContactEmail(dataWithBrackets);
+
+            const call = mockTransporter.sendMail.mock.calls[0]?.[0];
+            expect(call).toBeDefined();
+            if (!call) return;
+            
+            expect(call.html).toContain('John&lt;tag&gt;');
+            expect(call.html).toContain('&lt;/tag&gt;Doe');
+            expect(call.html).toContain('10 &lt; 20 &gt; 5');
+            expect(call.html).toContain('a &lt; b and c &gt; d');
+        });
+
+        it('should escape quotes to prevent attribute injection', async () => {
+            mockTransporter.sendMail.mockResolvedValue({ messageId: 'test-123' });
+
+            const dataWithQuotes: email.EmailData = {
+                firstName: 'John"test"',
+                lastName: "O'Brien",
+                email: 'test@example.com',
+                subject: 'Say "Hello"',
+                message: "It's a \"quote\" test",
+                company: '"Company" Inc.',
+                phone: "555'1234"
+            };
+
+            await email.sendContactEmail(dataWithQuotes);
+
+            const call = mockTransporter.sendMail.mock.calls[0]?.[0];
+            expect(call).toBeDefined();
+            if (!call) return;
+            
+            expect(call.html).toContain('John&quot;test&quot;');
+            expect(call.html).toContain('O&#039;Brien');
+            expect(call.html).toContain('Say &quot;Hello&quot;');
+            expect(call.html).toContain('It&#039;s a &quot;quote&quot; test');
+            expect(call.html).toContain('&quot;Company&quot; Inc.');
+            expect(call.html).toContain('555&#039;1234');
+        });
+
+        it('should handle mixed dangerous characters correctly', async () => {
+            mockTransporter.sendMail.mockResolvedValue({ messageId: 'test-123' });
+
+            const complexXSSData: email.EmailData = {
+                firstName: '<script>alert("test")</script>',
+                lastName: '"><img src=x onerror=alert(1)>',
+                email: 'test@example.com',
+                subject: "'; DROP TABLE users; --",
+                message: '<body onload=alert("XSS")> & \'test\' "quote"'
+            };
+
+            await email.sendContactEmail(complexXSSData);
+
+            const call = mockTransporter.sendMail.mock.calls[0]?.[0];
+            expect(call).toBeDefined();
+            if (!call) return;
+            
+            // Verify no unescaped dangerous tags in HTML
+            expect(call.html).not.toContain('<script>');
+            expect(call.html).not.toContain('</script>');
+            expect(call.html).not.toContain('<img src=x');
+            expect(call.html).not.toContain('<body onload');
+            
+            // Verify proper escaping
+            expect(call.html).toContain('&lt;script&gt;');
+            expect(call.html).toContain('&lt;/script&gt;');
+            expect(call.html).toContain('&lt;img');
+            expect(call.html).toContain('&lt;body');
+            expect(call.html).toContain('&amp;');
+            expect(call.html).toContain('&#039;');
+            expect(call.html).toContain('&quot;');
+        });
+
+        it('should not escape text version of email', async () => {
+            mockTransporter.sendMail.mockResolvedValue({ messageId: 'test-123' });
+
+            const dataWithSpecialChars: email.EmailData = {
+                firstName: 'Test<>&"\'',
+                lastName: 'User',
+                email: 'test@example.com',
+                subject: 'Special chars: <>&"\'',
+                message: 'Message with <>&"\''
+            };
+
+            await email.sendContactEmail(dataWithSpecialChars);
+
+            const call = mockTransporter.sendMail.mock.calls[0]?.[0];
+            expect(call).toBeDefined();
+            if (!call) return;
+            
+            // Text version should contain original characters (no HTML escaping needed)
+            expect(call.text).toContain('Test<>&"\'');
+            expect(call.text).toContain('Special chars: <>&"\'');
+            expect(call.text).toContain('Message with <>&"\'');
+            
+            // HTML version should be escaped
+            expect(call.html).toContain('Test&lt;&gt;&amp;&quot;&#039;');
+        });
     });
 
     describe('validateEmailConfig', () => {
