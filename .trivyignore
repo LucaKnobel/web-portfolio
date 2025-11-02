@@ -1,0 +1,8 @@
+# Trivy Ignore File
+# Format: CVE-ID or Package-Name with justification
+
+# GHSA-67mh-4wv8-2f99 - esbuild dev server vulnerability (CWE-346)
+# Only affects drizzle-kit (dev-only migration tool), never runs in production
+# Severity: moderate, fix requires breaking changes to drizzle-kit
+# Safe to ignore: Development-only tool, not exposed in production builds
+GHSA-67mh-4wv8-2f99

@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "node --env-file=.env.development ./node_modules/.bin/astro dev",
     "build": "astro build",
-    "preview": "node --env-file=.env.production  ./node_modules/.bin/astro preview",
+    "preview": "node --env-file=.env.development ./node_modules/.bin/astro preview",
     "start": "node --env-file=/srv/customer/sites/lucaknobel.ch/app/.env.production ./dist/server/entry.mjs",
     "astro": "astro",
     "test": "vitest",
@@ -15,14 +15,16 @@
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "typecheck": "astro check",
-    "lint": "echo 'Add ESLint/Prettier here'",
-    "deploy:local": "bash scripts/deploy.sh"
+    "lint": "echo 'Add ESLint/Prettier here'"
   },
   "dependencies": {
-    "@astrojs/check": "^0.9.4",
-    "@astrojs/node": "^9.4.4",
-    "@astrojs/vue": "^5.1.1",
-    "astro": "^5.13.5",
+    "@astrojs/check": "^0.9.5",
+    "@astrojs/node": "^9.5.0",
+    "@astrojs/vue": "^5.1.2",
+    "@iconify-icons/mdi": "^1.2.48",
+    "@iconify-json/mdi": "^1.2.3",
+    "@iconify/vue": "^5.0.0",
+    "astro": "^5.15.3",
     "astro-icon": "^1.1.5",
     "better-sqlite3": "^12.4.1",
     "drizzle-orm": "^0.44.6",
@@ -31,8 +33,6 @@
     "vue": "^3.5.22"
   },
   "devDependencies": {
-    "@iconify-json/mdi": "^1.2.3",
-    "@iconify/vue": "^5.0.0",
     "@types/better-sqlite3": "^7.6.13",
     "@types/nodemailer": "^7.0.2",
     "drizzle-kit": "^0.31.5",

@@ -1,0 +1,71 @@
+# Semgrep Custom Rules & Overrides
+# Dokumentation: https://semgrep.dev/docs/writing-rules/rule-syntax/
+
+rules:
+  # Beispiel: Custom Security Rule für Astro/Vue
+  - id: astro-no-dangerouslysetinnerhtml
+    patterns:
+      - pattern: set:html={...}
+      - pattern: v-html="..."
+    message: "Verwendung von dangerouslySetInnerHTML/v-html kann zu XSS führen"
+    severity: ERROR
+    languages: [typescript, javascript]
+    metadata:
+      category: security
+      cwe: "CWE-79: Cross-site Scripting (XSS)"
+      owasp: "A03:2021 - Injection"
+
+  # Beispiel: Warn bei fehlender Input-Validierung
+  - id: require-input-validation
+    patterns:
+      - pattern: |
+          router.post($PATH, async ($REQ, $RES) => {
+            ...
+            $DB.insert(...)
+            ...
+          })
+      - pattern-not: |
+          router.post($PATH, async ($REQ, $RES) => {
+            ...
+            $VALIDATOR.parse(...)
+            ...
+            $DB.insert(...)
+            ...
+          })
+    message: "POST Handler sollte Input-Validierung verwenden (z.B. Zod)"
+    severity: WARNING
+    languages: [typescript, javascript]
+    metadata:
+      category: security
+      cwe: "CWE-20: Improper Input Validation"
+
+  # Beispiel: Keine Secrets im Code
+  - id: no-hardcoded-secrets
+    patterns:
+      - pattern: |
+          const $VAR = "sk_live_..."
+      - pattern: |
+          const $VAR = "ghp_..."
+      - pattern: |
+          const $VAR = "AKIA..."
+    message: "Hardcoded Secret erkannt. Verwende Umgebungsvariablen!"
+    severity: ERROR
+    languages: [typescript, javascript]
+    metadata:
+      category: security
+      cwe: "CWE-798: Use of Hard-coded Credentials"
+
+  # Beispiel: SQL Injection Prevention
+  - id: sql-injection-prevention
+    patterns:
+      - pattern: |
+          db.execute(`SELECT * FROM users WHERE id = ${$VAR}`)
+      - pattern: |
+          db.query("... " + $VAR + " ...")
+    message: "Potenzielle SQL Injection. Verwende Prepared Statements!"
+    severity: ERROR
+    languages: [typescript, javascript]
+    metadata:
+      category: security
+      cwe: "CWE-89: SQL Injection"
+      owasp: "A03:2021 - Injection"

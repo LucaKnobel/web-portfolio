@@ -40,7 +40,19 @@ const createTransporter = () => {
 }
 
 /**
- * Formats email content
+ * Escapes HTML to prevent XSS in email templates
+ */
+const escapeHtml = (text: string): string => {
+    return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+};
+
+/**
+ * Formats email content with XSS protection
  */
 const formatEmailContent = (data: EmailData): { html: string; text: string } => {
 
@@ -60,21 +72,30 @@ const formatEmailContent = (data: EmailData): { html: string; text: string } => 
         This email was sent via the contact form on lucaknobel.ch
         `.trim();
 
+    /* Escape all user input to prevent XSS */
+    const escapedFirstName = escapeHtml(data.firstName);
+    const escapedLastName = escapeHtml(data.lastName);
+    const escapedEmail = escapeHtml(data.email);
+    const escapedCompany = data.company ? escapeHtml(data.company) : '';
+    const escapedPhone = data.phone ? escapeHtml(data.phone) : '';
+    const escapedSubject = escapeHtml(data.subject);
+    const escapedMessage = escapeHtml(data.message);
+
     const html = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h2 style="color: #333;">New Contact Request</h2>
         
         <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <p><strong>From:</strong> ${data.firstName} ${data.lastName}</p>
-            <p><strong>Email:</strong> <a href="mailto:${data.email}">${data.email}</a></p>
-            ${data.company ? `<p><strong>Company:</strong> ${data.company}</p>` : ''}
-            ${data.phone ? `<p><strong>Phone:</strong> ${data.phone}</p>` : ''}
-            <p><strong>Subject:</strong> ${data.subject}</p>
+            <p><strong>From:</strong> ${escapedFirstName} ${escapedLastName}</p>
+            <p><strong>Email:</strong> <a href="mailto:${escapedEmail}">${escapedEmail}</a></p>
+            ${escapedCompany ? `<p><strong>Company:</strong> ${escapedCompany}</p>` : ''}
+            ${escapedPhone ? `<p><strong>Phone:</strong> ${escapedPhone}</p>` : ''}
+            <p><strong>Subject:</strong> ${escapedSubject}</p>
         </div>
         
         <div style="margin: 20px 0;">
             <h3 style="color: #333;">Message:</h3>
-            <div style="background: white; padding: 15px; border-left: 4px solid #007acc; white-space: pre-wrap;">${data.message}</div>
+            <div style="background: white; padding: 15px; border-left: 4px solid #007acc; white-space: pre-wrap;">${escapedMessage}</div>
         </div>
         
         <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
