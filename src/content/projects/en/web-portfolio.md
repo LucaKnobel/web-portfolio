@@ -11,7 +11,7 @@ url: "https://github.com/LucaKnobel/web-portfolio"
 
 # Web Portfolio
 
-## Project Overview
+## Project at a Glance
 
 A technical portfolio project that combines modern web technologies with a security-first approach. The portfolio uses **Server-Side Rendering** with Astro 5, **Vue Islands** for targeted interactivity, and achieves a **Lighthouse Score of 90+ on mobile**. Automated security scans (Semgrep, Trivy) run on every pull request to ensure code quality and security. The project demonstrates practical implementation of TypeScript, SQLite, Nodemailer, and modern web standards and is under continuous development.
 
