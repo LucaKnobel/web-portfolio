@@ -1,0 +1,35 @@
+{
+  "name": "web-portfolio",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:24-bookworm",
+  "forwardPorts": [4321],
+  "portsAttributes": {
+    "4321": {
+      "label": "Astro Dev Server",
+      "onAutoForward": "openBrowser"
+    }
+  },
+  "workspaceFolder": "/workspaces",
+  "postCreateCommand": "if [ -f package.json ]; then npm install; fi",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "astro-build.astro-vscode",
+        "Vue.volar",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "bradlc.vscode-tailwindcss",
+        "bruno-api-client.bruno",
+        "snyk-security.snyk-vulnerability-scanner",
+        "aquasecurityofficial.trivy-vulnerability-scanner",
+        "vitest.explorer",
+        "EditorConfig.EditorConfig",
+        "oxc.oxc-vscode"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "eslint.validate": ["javascript", "typescript", "vue"],
+        "js/ts.preferences.includePackageJsonAutoImports": "on"
+      }
+    }
+  }
+}
