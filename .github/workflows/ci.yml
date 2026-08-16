@@ -1,0 +1,94 @@
+name: Pull Request CI Checks
+
+# Trigger: Run quality checks, tests, and security scans on PRs to main or dev
+# Ensures code meets standards before merging
+on:
+  pull_request:
+    branches:
+      - "main"
+      - "dev"
+
+# Cancel outdated runs on the same PR branch to save CI minutes.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# Give read access to repository contents for jobs
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Quality - Typecheck, Tests, Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    # Skip for Dependabot: dependency PRs are handled separately.
+    if: github.actor != 'dependabot[bot]'
+
+    steps:
+      # Clone repository at PR commit
+      - uses: actions/checkout@v7
+
+      # Install Node.js 24 + npm cache
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+
+      # Install dependencies including dev packages needed for checks and tests.
+      - run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Tests
+        run: npm run test:run
+
+      # Verify the same Astro production build that the Docker image runs.
+      - name: Build
+        run: npm run build
+
+  semgrep:
+    name: Security - Semgrep (OSS auto config)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    # Skip for Dependabot: dependency PRs are handled separately.
+    if: github.actor != 'dependabot[bot]'
+
+    steps:
+      # Clone code for static analysis
+      - uses: actions/checkout@v7
+
+      # Run local open-source Semgrep scan with automatic rules.
+      - name: Install Semgrep
+        run: python3 -m pip install --upgrade semgrep
+
+      # ERROR is Semgrep's high/critical level; --error turns findings into a job failure.
+      - name: Run Semgrep (auto config)
+        run: semgrep scan --config auto --severity ERROR --error .
+
+  trivy:
+    name: Security - Trivy filesystem scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    # Skip for Dependabot: dependency PRs are handled separately.
+    if: github.actor != 'dependabot[bot]'
+
+    steps:
+      # Clone repository for comprehensive security scan
+      - uses: actions/checkout@v7
+
+      # Use official Trivy action for maintained setup + built-in cache handling.
+      - name: Run Trivy scan (filesystem)
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: "fs"
+          scan-ref: "."
+          scanners: "vuln,secret,misconfig"
+          severity: "CRITICAL,HIGH"
+          ignore-unfixed: true
+          exit-code: "1"
+          format: "table"
