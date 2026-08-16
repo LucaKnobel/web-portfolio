@@ -1,3 +1,4 @@
+/** Result of a read-only daily rate-limit status check. */
 export interface RateLimitResult {
   allowed: boolean;
   currentCount: number;
@@ -5,26 +6,45 @@ export interface RateLimitResult {
   resetDate: string;
 }
 
+/** Token representing one reserved email slot. */
+export interface RateLimitReservation {
+  readonly date: string;
+}
+
+/** Public operations exposed by the in-memory rate-limit service. */
 export interface RateLimitService {
-  checkLimit(date: string): Promise<RateLimitResult>;
-  incrementCount(date: string): Promise<void>;
+  tryAcquire(): RateLimitReservation | null;
+  release(reservation: RateLimitReservation): void;
+  getStatus(): RateLimitResult;
   getSwissDate(): string;
 }
 
-const productionCounts = new Map<string, number>();
+interface RateLimitState {
+  date: string | null;
+  count: number;
+}
+
+const productionState: RateLimitState = {
+  date: null,
+  count: 0,
+};
+
+const activeReservations = new WeakSet<object>();
 
 /**
- * Rate Limiting Service
- * Handles contact form submission limits per day
+ * Provides a process-wide limit of ten successfully sent emails per Swiss
+ * calendar day using synchronous in-memory reservations.
  */
 export class ContactRateLimitService implements RateLimitService {
   private readonly maxDailyEmails = 10;
 
+  constructor(private readonly now: () => Date = () => new Date()) {}
+
   /**
-   * Get current date in Swiss timezone (YYYY-MM-DD)
+   * Returns the current date in the Europe/Zurich timezone as YYYY-MM-DD.
    */
   getSwissDate(): string {
-    return new Date()
+    return this.now()
       .toLocaleDateString("de-CH", {
         year: "numeric",
         month: "2-digit",
@@ -36,30 +56,74 @@ export class ContactRateLimitService implements RateLimitService {
       .join("-");
   }
 
+  private resetForCurrentDay(): string {
+    const date = this.getSwissDate();
+
+    if (productionState.date !== date) {
+      productionState.date = date;
+      productionState.count = 0;
+    }
+
+    return date;
+  }
+
   /**
-   * Check if rate limit is exceeded for given date
+   * Atomically reserves one daily email slot, or returns null at the limit.
    */
-  async checkLimit(date: string): Promise<RateLimitResult> {
-    const currentCount = productionCounts.get(date) ?? 0;
+  tryAcquire(): RateLimitReservation | null {
+    const date = this.resetForCurrentDay();
+
+    if (productionState.count >= this.maxDailyEmails) {
+      return null;
+    }
+
+    productionState.count += 1;
+    const reservation = { date };
+    activeReservations.add(reservation);
+    return reservation;
+  }
+
+  /**
+   * Releases a previously acquired reservation on the same calendar day.
+   */
+  release(reservation: RateLimitReservation): void {
+    if (!activeReservations.has(reservation)) {
+      return;
+    }
+
+    activeReservations.delete(reservation);
+    this.resetForCurrentDay();
+
+    if (
+      reservation.date === productionState.date &&
+      productionState.count > 0
+    ) {
+      productionState.count -= 1;
+    }
+  }
+
+  /**
+   * Reads the current limit status without reserving a slot.
+   */
+  getStatus(): RateLimitResult {
+    const date = this.resetForCurrentDay();
 
     return {
-      allowed: currentCount < this.maxDailyEmails,
-      currentCount,
+      allowed: productionState.count < this.maxDailyEmails,
+      currentCount: productionState.count,
       maxLimit: this.maxDailyEmails,
       resetDate: date,
     };
   }
-
-  /**
-   * Increment rate limit counter for successful email
-   */
-  async incrementCount(date: string): Promise<void> {
-    const currentCount = productionCounts.get(date) ?? 0;
-    productionCounts.set(date, currentCount + 1);
-  }
 }
 
-// Factory function
+/** Resets shared rate-limit state for isolated tests. */
+export const resetRateLimitStateForTests = (): void => {
+  productionState.date = null;
+  productionState.count = 0;
+};
+
+/** Creates a rate-limit service backed by shared process-level state. */
 export const getRateLimitService = (): RateLimitService => {
   return new ContactRateLimitService();
 };
