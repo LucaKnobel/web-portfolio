@@ -59,51 +59,7 @@ export class ContactRateLimitService implements RateLimitService {
   }
 }
 
-/**
- * Mock service for testing
- */
-export class MockRateLimitService implements RateLimitService {
-  private counts = new Map<string, number>();
-  private readonly maxDailyEmails = 10;
-
-  getSwissDate(): string {
-    return "2025-10-11"; // Fixed date for testing
-  }
-
-  async checkLimit(date: string): Promise<RateLimitResult> {
-    const currentCount = this.counts.get(date) ?? 0;
-    const allowed = currentCount < this.maxDailyEmails;
-
-    return {
-      allowed,
-      currentCount,
-      maxLimit: this.maxDailyEmails,
-      resetDate: date,
-    };
-  }
-
-  async incrementCount(date: string): Promise<void> {
-    const current = this.counts.get(date) ?? 0;
-    this.counts.set(date, current + 1);
-  }
-
-  // Test helpers
-  reset(): void {
-    this.counts.clear();
-  }
-
-  setCount(date: string, count: number): void {
-    this.counts.set(date, count);
-  }
-}
-
 // Factory function
 export const getRateLimitService = (): RateLimitService => {
-  const isDevelopment = process.env.NODE_ENV !== "production";
-
-  if (isDevelopment) {
-    return new MockRateLimitService();
-  }
-
   return new ContactRateLimitService();
 };
