@@ -12,16 +12,8 @@ export interface ContactFormProps {
 const { lang, t } = Astro.props as ContactFormProps;
 
 const rateLimitService = getRateLimitService();
-const today = rateLimitService.getSwissDate();
-let rateLimitReached = false;
-
-try {
-    const rateLimit = await rateLimitService.checkLimit(today);
-    rateLimitReached = !rateLimit.allowed;
-} catch (error) {
-    console.error("Failed to check rate limit on page load:", error);
-    rateLimitReached = false;
-}
+const rateLimit = rateLimitService.getStatus();
+const rateLimitReached = !rateLimit.allowed;
 
 const result = Astro.getActionResult(actions.sendMail);
 

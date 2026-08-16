@@ -1,126 +1,103 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { ContactRateLimitService } from "../src/services/rateLimitService.js";
+import {
+  ContactRateLimitService,
+  resetRateLimitStateForTests,
+} from "../src/services/rateLimitService.js";
 
 describe("ContactRateLimitService", () => {
   let service: ContactRateLimitService;
+  let currentTime: Date;
 
   beforeEach(() => {
-    service = new ContactRateLimitService();
+    resetRateLimitStateForTests();
+    currentTime = new Date("2025-10-11T12:00:00+02:00");
+    service = new ContactRateLimitService(() => currentTime);
   });
 
-  describe("getSwissDate", () => {
-    it("should return date in YYYY-MM-DD format", () => {
-      const date = service.getSwissDate();
-      expect(date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
-    });
-
-    it("should return consistent date for same day", () => {
-      const date1 = service.getSwissDate();
-      const date2 = service.getSwissDate();
-      expect(date1).toBe(date2);
+  it("reports that a fresh limiter allows sending", () => {
+    expect(service.getStatus()).toMatchObject({
+      allowed: true,
+      currentCount: 0,
+      maxLimit: 10,
     });
   });
 
-  describe("checkLimit", () => {
-    it("should allow requests when under limit", async () => {
-      const date = "2025-10-11-under";
-      await service.incrementCount(date);
-      await service.incrementCount(date);
-      await service.incrementCount(date);
-      await service.incrementCount(date);
-      await service.incrementCount(date);
+  it("allows the first ten acquisitions and rejects the eleventh", () => {
+    const reservations = Array.from({ length: 10 }, () => service.tryAcquire());
 
-      const result = await service.checkLimit(date);
+    expect(reservations.every(Boolean)).toBe(true);
+    expect(service.tryAcquire()).toBeNull();
+    expect(service.getStatus().currentCount).toBe(10);
+  });
 
-      expect(result.allowed).toBe(true);
-      expect(result.currentCount).toBe(5);
-      expect(result.maxLimit).toBe(10);
-    });
+  it("allows exactly one of two competing acquisitions for the final slot", () => {
+    for (let count = 0; count < 9; count += 1) {
+      expect(service.tryAcquire()).not.toBeNull();
+    }
 
-    it("should deny requests when at limit", async () => {
-      const date = "2025-10-11-at";
-      for (let count = 0; count < 10; count++) {
-        await service.incrementCount(date);
-      }
+    const first = service.tryAcquire();
+    const second = service.tryAcquire();
 
-      const result = await service.checkLimit(date);
+    expect([first, second].filter(Boolean)).toHaveLength(1);
+    expect(service.getStatus().currentCount).toBe(10);
+  });
 
-      expect(result.allowed).toBe(false);
-      expect(result.currentCount).toBe(10);
-    });
+  it("does not consume a slot when reading status", () => {
+    expect(service.getStatus().currentCount).toBe(0);
+    expect(service.getStatus().currentCount).toBe(0);
+    expect(service.tryAcquire()).not.toBeNull();
+    expect(service.getStatus().currentCount).toBe(1);
+  });
 
-    it("should allow the tenth email and block the eleventh", async () => {
-      const date = "2025-10-11-tenth";
-      for (let count = 0; count < 9; count++) {
-        await service.incrementCount(date);
-      }
+  it("makes a released reservation available again", () => {
+    const reservation = service.tryAcquire();
 
-      const tenthEmail = await service.checkLimit(date);
-      await service.incrementCount(date);
-      const eleventhEmail = await service.checkLimit(date);
+    expect(reservation).not.toBeNull();
+    service.release(reservation!);
 
-      expect(tenthEmail.allowed).toBe(true);
-      expect(tenthEmail.currentCount).toBe(9);
-      expect(eleventhEmail.allowed).toBe(false);
-      expect(eleventhEmail.currentCount).toBe(10);
-    });
+    expect(service.getStatus().currentCount).toBe(0);
+    expect(service.tryAcquire()).not.toBeNull();
+  });
 
-    it("should deny requests when over limit", async () => {
-      const date = "2025-10-11-over";
-      for (let count = 0; count < 15; count++) {
-        await service.incrementCount(date);
-      }
+  it("does not make the counter negative when releasing repeatedly", () => {
+    const reservation = service.tryAcquire();
 
-      const result = await service.checkLimit(date);
+    service.release(reservation!);
+    service.release(reservation!);
+    service.release({ date: service.getSwissDate() });
 
-      expect(result.allowed).toBe(false);
-      expect(result.currentCount).toBe(15);
-    });
+    expect(service.getStatus().currentCount).toBe(0);
+  });
 
-    it("should allow when no record exists", async () => {
-      const result = await service.checkLimit("2025-10-11-empty");
+  it("resets the effective counter on a new Swiss calendar day", () => {
+    for (let count = 0; count < 10; count += 1) {
+      expect(service.tryAcquire()).not.toBeNull();
+    }
 
-      expect(result.allowed).toBe(true);
-      expect(result.currentCount).toBe(0);
-    });
+    currentTime = new Date("2025-10-12T00:00:00+02:00");
 
-    it("should share state across service instances", async () => {
-      const secondService = new ContactRateLimitService();
-      const date = "2025-10-11-shared";
-
-      await service.incrementCount(date);
-
-      const result = await secondService.checkLimit(date);
-
-      expect(result.currentCount).toBe(1);
-    });
-
-    it("should reset the counter for a new Swiss calendar day", async () => {
-      const firstDate = "2025-10-11-reset";
-      const secondDate = "2025-10-12-reset";
-
-      for (let count = 0; count < 10; count++) {
-        await service.incrementCount(firstDate);
-      }
-
-      const result = await service.checkLimit(secondDate);
-
-      expect(result.allowed).toBe(true);
-      expect(result.currentCount).toBe(0);
-      expect(result.resetDate).toBe(secondDate);
+    expect(service.getStatus()).toMatchObject({
+      allowed: true,
+      currentCount: 0,
+      resetDate: "2025-10-12",
     });
   });
 
-  describe("incrementCount", () => {
-    it("should increment the in-memory counter", async () => {
-      const date = "2025-10-11-increment";
+  it("does not release an old-day reservation into the new day", () => {
+    const reservation = service.tryAcquire();
+    currentTime = new Date("2025-10-12T00:00:00+02:00");
 
-      await service.incrementCount(date);
-      await service.incrementCount(date);
+    expect(service.getStatus().currentCount).toBe(0);
+    service.release(reservation!);
 
-      const result = await service.checkLimit(date);
+    expect(service.getStatus().currentCount).toBe(0);
+  });
 
-      expect(result.currentCount).toBe(2);
-    });
+  it("shares the counter across service instances", () => {
+    const secondService = new ContactRateLimitService(() => currentTime);
+
+    expect(service.tryAcquire()).not.toBeNull();
+
+    expect(secondService.getStatus().currentCount).toBe(1);
   });
 });
