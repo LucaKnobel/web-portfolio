@@ -1,78 +1,97 @@
 [
-    {
-        "id": "bimag-elektroschemazeichner",
-        "organizationName": "Bimag Steuerungstechnik AG",
-        "organizationWebsite": "https://bimag.com/",
-        "title": "Elektroschemazeichner Eplan P8",
-        "employmentRate": "80%",
-        "period": {
-            "start": "08/2023",
-            "end": "Heute"
-        },
-        "responsibilities": [
-            "Bearbeitung von Industrieautomations- und Gebäudeautomationsprojekten",
-            "Engineering mit EPLAN Electric P8",
-            "Arbeitsvorbereitung für Produktion",
-            "Materialbestellungen und Materialkontrollen",
-            "Abklärungen mit den Kunden"
-        ],
-        "keySkills": [
-            "Eplan P8",
-            "Automation",
-            "SPS (Siemens)",
-            "Projektmanagement",
-            "Schaltplanerstellung"
-        ]
+  {
+    "id": "gilgen-application-engineer",
+    "organizationName": "Gilgen Door Systems AG",
+    "organizationWebsite": "https://www.gilgendoorsystems.com/",
+    "title": "Application Engineer",
+    "employmentRate": "80%",
+    "period": {
+      "start": "01/2026",
+      "end": "Heute"
     },
-    {
-        "id": "bimag-automatiker",
-        "organizationName": "Bimag Steuerungstechnik AG",
-        "organizationWebsite": "https://bimag.com/",
-        "title": "Automatiker",
-        "employmentRate": "100%",
-        "period": {
-            "start": "11/2021",
-            "end": "08/2023"
-        },
-        "responsibilities": [
-            "Bearbeitung von Industrieautomations- und Gebäudeautomationsprojekten",
-            "Prüfung und Qualitätskontrolle von Schaltschränken",
-            "Mechanischer Aufbau und Verdrahtung von Schaltschränken",
-            "Störungsbehebung und Umbauten vor Ort",
-            "Lieferung und Montage von Schaltschränken"
-        ],
-        "keySkills": [
-            "Automation",
-            "SPS (Siemens)",
-            "Problemlösung",
-            "Verdrahtung",
-            "Mechanik"
-        ]
+    "responsibilities": [
+      "Betreuung und Weiterentwicklung von Webanwendungen",
+      "Entwicklung und Wartung von Backend- und Frontend-Funktionalitäten",
+      "Erstellung und Evaluation technischer Proof of Concepts",
+      "Betreuung und Weiterentwicklung von Tür- und Torkonfiguratoren",
+      "Analyse und Weiterentwicklung bestehender Legacy-Anwendungen"
+    ],
+    "keySkills": ["Java", "Spring Boot", "Thymeleaf", "MySQL", "Docker"]
+  },
+  {
+    "id": "bimag-elektroschemazeichner",
+    "organizationName": "Bimag Steuerungstechnik AG",
+    "organizationWebsite": "https://bimag.com/",
+    "title": "Elektroschemazeichner Eplan P8",
+    "employmentRate": "80%",
+    "period": {
+      "start": "08/2023",
+      "end": "10/2025"
     },
-    {
-        "id": "hediger-automatiker-lehre",
-        "organizationName": "Hediger Gruppe (Debag Industrieautomations AG)",
-        "organizationWebsite": "https://www.hediger.ch/",
-        "title": "Lehre Automatiker EFZ",
-        "employmentRate": "100%",
-        "period": {
-            "start": "08/2017",
-            "end": "08/2021"
-        },
-        "responsibilities": [
-            "Bearbeitung von Industrieautomations-, Gebäudeautomations- und Schaltanlagenbauprojekten",
-            "Mechanischer Aufbau, Verdrahtung und Prüfung von Schaltschränken",
-            "Störungsbehebung und Umbauten vor Ort",
-            "Programmierung einfacher Steuerungen",
-            "Lieferung, Montage und Inbetriebnahme von Schaltschränken",
-            "Materialbestellung und Qualitätskontrolle"
-        ],
-        "keySkills": [
-            "Automation",
-            "SPS (Siemens, Wago, Saia)",
-            "Eplan",
-            "Verdrahtung",
-            "Mechanik"
-        ]
-    }
+    "responsibilities": [
+      "Bearbeitung von Industrieautomations- und Gebäudeautomationsprojekten",
+      "Engineering mit EPLAN Electric P8",
+      "Arbeitsvorbereitung für Produktion",
+      "Materialbestellungen und Materialkontrollen",
+      "Abklärungen mit den Kunden"
+    ],
+    "keySkills": [
+      "Eplan P8",
+      "Automation",
+      "SPS (Siemens)",
+      "Projektmanagement",
+      "Schaltplanerstellung"
+    ]
+  },
+  {
+    "id": "bimag-automatiker",
+    "organizationName": "Bimag Steuerungstechnik AG",
+    "organizationWebsite": "https://bimag.com/",
+    "title": "Automatiker",
+    "employmentRate": "100%",
+    "period": {
+      "start": "11/2021",
+      "end": "08/2023"
+    },
+    "responsibilities": [
+      "Bearbeitung von Industrieautomations- und Gebäudeautomationsprojekten",
+      "Prüfung und Qualitätskontrolle von Schaltschränken",
+      "Mechanischer Aufbau und Verdrahtung von Schaltschränken",
+      "Störungsbehebung und Umbauten vor Ort",
+      "Lieferung und Montage von Schaltschränken"
+    ],
+    "keySkills": [
+      "Automation",
+      "SPS (Siemens)",
+      "Problemlösung",
+      "Verdrahtung",
+      "Mechanik"
+    ]
+  },
+  {
+    "id": "hediger-automatiker-lehre",
+    "organizationName": "Hediger Gruppe (Debag Industrieautomations AG)",
+    "organizationWebsite": "https://www.hediger.ch/",
+    "title": "Lehre Automatiker EFZ",
+    "employmentRate": "100%",
+    "period": {
+      "start": "08/2017",
+      "end": "08/2021"
+    },
+    "responsibilities": [
+      "Bearbeitung von Industrieautomations-, Gebäudeautomations- und Schaltanlagenbauprojekten",
+      "Mechanischer Aufbau, Verdrahtung und Prüfung von Schaltschränken",
+      "Störungsbehebung und Umbauten vor Ort",
+      "Programmierung einfacher Steuerungen",
+      "Lieferung, Montage und Inbetriebnahme von Schaltschränken",
+      "Materialbestellung und Qualitätskontrolle"
+    ],
+    "keySkills": [
+      "Automation",
+      "SPS (Siemens, Wago, Saia)",
+      "Eplan",
+      "Verdrahtung",
+      "Mechanik"
+    ]
+  }
 ]
