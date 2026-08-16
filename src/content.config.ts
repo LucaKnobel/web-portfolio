@@ -1,10 +1,11 @@
-import { defineCollection, z } from "astro:content";
+import { defineCollection } from "astro:content";
+import { z } from "astro/zod";
 import { glob } from "astro/loaders";
 
 const careerSchema = z.object({
   id: z.string(),
   organizationName: z.string(),
-  organizationWebsite: z.string().url(),
+  organizationWebsite: z.url(),
   title: z.string(),
   employmentRate: z.string(),
   period: z.object({
@@ -18,7 +19,7 @@ const careerSchema = z.object({
 const educationSchema = z.object({
   id: z.string(),
   organizationName: z.string(),
-  organizationWebsite: z.string().url(),
+  organizationWebsite: z.url(),
   title: z.string(),
   studyMode: z.string(),
   period: z.object({
@@ -40,35 +41,37 @@ const education = defineCollection({
 });
 
 const projects = defineCollection({
-  loader: glob({ 
-    pattern: "**/*.md", 
+  loader: glob({
+    pattern: "**/*.md",
     base: "./src/content/projects",
     generateId: ({ entry }) => {
       /* Preserve directory structure in ID: "de/bashnet" and "en/bashnet" */
       return entry.replace(/\.md$/, "");
-    }
+    },
   }),
-  schema: ({ image }) => z.object({
-    title: z.string(),
-    description: z.string(),
-    date: z.string(),
-    lang: z.string(),
-    tags: z.array(z.string()),
-    cover: image(), 
-    url: z.string().url(),
-  }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      description: z.string(),
+      date: z.string(),
+      lang: z.string(),
+      tags: z.array(z.string()),
+      cover: image(),
+      url: z.url(),
+    }),
 });
 
 const privacyPolicy = defineCollection({
-  loader: glob({ pattern: "**/*.md",
-  base: "./src/content/privacy",
-  generateId: ({ entry }) => {
+  loader: glob({
+    pattern: "**/*.md",
+    base: "./src/content/privacy",
+    generateId: ({ entry }) => {
       return entry.replace(/\.md$/, "");
-    } }),
-  
+    },
+  }),
 });
 
-export const collections = { 
+export const collections = {
   career,
   education,
   projects,

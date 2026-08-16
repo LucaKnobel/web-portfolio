@@ -1,5 +1,5 @@
 import { defineAction, ActionError } from "astro:actions";
-import { z } from "astro:schema";
+import { z } from "astro/zod";
 import { getEmailService } from "../services/emailService.js";
 import { getRateLimitService } from "../services/rateLimitService.js";
 import type {
@@ -19,7 +19,7 @@ export const sendMail = defineAction({
   input: z.object({
     firstName: z.string().min(2).max(50).trim(),
     lastName: z.string().min(2).max(60).trim(),
-    email: z.string().email().max(254).toLowerCase(),
+    email: z.email().max(254).toLowerCase(),
     subject: z.string().min(1).max(100).trim(),
     message: z.string().min(1).max(3000).trim(),
     privacy: z.coerce.boolean().refine((val) => val === true),
