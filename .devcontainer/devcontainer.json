@@ -8,7 +8,7 @@
       "onAutoForward": "openBrowser"
     }
   },
-  "workspaceFolder": "/workspaces",
+  "workspaceFolder": "/workspaces/web-portfolio",
   "postCreateCommand": "if [ -f package.json ]; then npm install; fi",
   "customizations": {
     "vscode": {
@@ -26,6 +26,7 @@
         "oxc.oxc-vscode"
       ],
       "settings": {
+        "terminal.integrated.cwd": "/workspaces/web-portfolio",
         "editor.formatOnSave": true,
         "eslint.validate": ["javascript", "typescript", "vue"],
         "js/ts.preferences.includePackageJsonAutoImports": "on"
