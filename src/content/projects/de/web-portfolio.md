@@ -1,20 +1,18 @@
 ---
 title: "Web-Portfolio"
-description: "Modernes SSR-Portfolio mit Astro 5, Vue Islands und TypeScript. Optimiert für Performance und Security-Best-Practices mit automatisierten Scans."
+description: "Modernes SSR-Portfolio mit Astro 7, Vue Islands und TypeScript. Optimiert für Performance und Security-Best-Practices mit automatisierten Scans."
 date: "2025-11"
 lang: "de"
-tags: ["Astro", "Vue", "TypeScript", "SSR", "SQLite", "DevSecOps", "Nodemailer"]
+tags: ["Astro", "Vue", "TypeScript", "SSR", "DevSecOps", "Nodemailer"]
 cover: "../images/web-portfolio/cover.png"
 url: "https://github.com/LucaKnobel/web-portfolio"
-
 ---
 
 # Web-Portfolio
 
 ## Projekt in Kürze
 
-Ein technisches Portfolio-Projekt, das moderne Web-Technologien mit einem Security-First-Ansatz verbindet. Das Portfolio nutzt **Server-Side Rendering** mit Astro 5, **Vue Islands** für gezielte Interaktivität und erreicht einen **Lighthouse Score von 90+ auf Mobile**. Automatisierte Security-Scans (Semgrep, Trivy) laufen bei jedem Pull Request, um Code-Qualität und Sicherheit zu gewährleisten. Das Projekt demonstriert den praktischen Einsatz von TypeScript, SQLite, Nodemailer und modernen Web-Standards und befindet sich in kontinuierlicher Weiterentwicklung.
-
+Ein technisches Portfolio-Projekt, das moderne Web-Technologien mit einem Security-First-Ansatz verbindet. Das Portfolio nutzt **Server-Side Rendering** mit Astro 7, **Vue Islands** für gezielte Interaktivität und erreicht einen **Lighthouse Score von 90+ auf Mobile**. Automatisierte Security-Scans (Semgrep, Trivy) laufen bei jedem Pull Request, um Code-Qualität und Sicherheit zu gewährleisten. Das Projekt demonstriert den praktischen Einsatz von TypeScript, serverseitigem Schutz, Nodemailer und modernen Web-Standards und befindet sich in kontinuierlicher Weiterentwicklung.
 
 ## Motivation & Projektziele
 
@@ -22,16 +20,14 @@ Dieses Portfolio sollte nicht nur optisch ansprechen, sondern auch technisch üb
 
 Das Ergebnis ist ein SSR-basiertes Portfolio mit minimalistischem JavaScript-Footprint, umfassenden Security-Scans und einem konsistenten Lighthouse Score von über 90 Punkten auf Mobile-Geräten.
 
-
 ## Technologie-Stack
 
 ### Core Technologien
 
-- **Astro 5** – SSR Framework mit Island Architecture
+- **Astro 7** – SSR Framework mit Island Architecture
 - **TypeScript** – Type-Safety für robusteren Code
 - **Vue 3** – Interaktive Komponenten als Islands
-- **Node.js 22** – Moderne Runtime für Server-Side Rendering
-- **SQLite (better-sqlite3)** – Synchrone Datenbank für Rate Limiting
+- **Node.js 24** – Moderne Runtime für Server-Side Rendering
 - **Nodemailer** – SMTP-basierter E-Mail-Versand
 
 ### Infrastruktur & Tools
@@ -40,7 +36,6 @@ Das Ergebnis ist ein SSR-basiertes Portfolio mit minimalistischem JavaScript-Foo
 - **GitHub Actions** – Automatisierte Security-Scans bei Pull Requests
 - **Semgrep & Trivy** – SAST, Dependency-Scans, Secret Detection
 
-
 ## Astro & Island Architecture
 
 **Astro** ist ein modernes Web-Framework mit flexiblen Rendering-Modi: Als Static Site Generator (SSG) für rein statische Websites oder mit Server-Side Rendering (SSR) für dynamische Inhalte. Die zentrale Idee: HTML wird vorab gerendert, JavaScript kommt nur dort zum Client, wo es tatsächlich benötigt wird.
@@ -48,7 +43,6 @@ Das Ergebnis ist ein SSR-basiertes Portfolio mit minimalistischem JavaScript-Foo
 Dieses Konzept nennt sich **Island Architecture** – statische Inhalte bleiben statisch, interaktive Komponenten werden als "Inseln" gezielt aktiviert. In diesem Projekt liefern Astro-Komponenten statisches HTML, während Vue-Komponenten nur bei Bedarf clientseitig initialisiert werden. Das Ergebnis: minimaler JavaScript-Footprint bei voller Interaktivität.
 
 Mehr zur Architektur: [astro.build/concepts](https://docs.astro.build/en/concepts/islands/)
-
 
 ## Projekt-Architektur
 
@@ -60,15 +54,13 @@ src/
 ├── components/     # UI-Komponenten (Astro + Vue Islands)
 ├── layouts/        # Basis-Layout mit SEO-Meta-Tags
 ├── content/        # Markdown & JSON für Projekte, Career, Education
-├── middleware/     # CSP Headers, Rate Limiting
+├── middleware/     # CSP Headers
 ├── services/       # E-Mail-Versand, Rate-Limit-Logic
-├── db/             # SQLite-Schema mit Drizzle ORM
 ├── i18n/           # Übersetzungen (DE/EN)
 └── styles/         # CSS Tokens, Primitives, Global Styles
 ```
 
 Das Routing basiert auf URL-Pfaden (`/de/`, `/en/`) für klare Sprachauswahl. Dynamische Routen wie `/de/projects/[slug].astro` laden Inhalte aus Markdown-Dateien und rendern diese serverseitig.
-
 
 ## Zentrale Features
 
@@ -88,7 +80,7 @@ Zeigt technische Projekte mit Bildern, kurzen Beschreibungen und Tags. Jedes Pro
 
 ### Contact Section
 
-Funktionales Kontaktformular zum direkten Versenden von Nachrichten. Das Formular ist gegen Spam geschützt und speichert keine persönlichen Daten dauerhaft.
+Funktionales Kontaktformular zum direkten Versenden von Nachrichten. Das Formular ist gegen Spam geschützt, verwendet eine schlanke In-Memory-Tagesbegrenzung und speichert keine persönlichen Daten dauerhaft.
 
 ### Übergreifende Features
 
@@ -106,7 +98,6 @@ Das Portfolio erreicht einen **Lighthouse Score von 90+ auf Mobile-Geräten** du
 - **Server-Side Rendering:** Sofortiges First Contentful Paint
 - **CSS Tokens:** Kein Framework-Bloat, handoptimierte Styles
 - **Lazy Loading:** Bilder werden erst bei Bedarf geladen und sind optimiert
-
 
 ## Security & Automatisierte Scans
 
@@ -137,6 +128,3 @@ Dieses Projekt ist ein kontinuierlicher Lernprozess. Einige Bereiche sind bewuss
 Dieses Portfolio verbindet moderne Web-Development-Praktiken mit Security-Best-Practices. Von Server-Side Rendering über automatisierte Security-Scans bis hin zu DSG-Konformität wurde jedes Feature praktisch implementiert und jedes Problem hands-on gelöst.
 
 Das Projekt zeigt, dass Performance und Security keine Gegensätze sind und dass moderne Frameworks wie Astro es ermöglichen, beides mit minimalem Overhead zu erreichen. Der kontinuierliche Entwicklungsprozess spiegelt wider, dass gute Software nie wirklich "fertig" ist.
-
-
-

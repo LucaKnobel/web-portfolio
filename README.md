@@ -2,8 +2,7 @@
 
 ## Project at a Glance
 
-A technical portfolio project that combines modern web technologies with a security-first approach. The portfolio uses **Server-Side Rendering** with Astro 5, **Vue Islands** for targeted interactivity, and achieves a **Lighthouse Score of 90+ on mobile**. Automated security scans (Semgrep, Trivy) run on every pull request to ensure code quality and security. The project demonstrates practical implementation of TypeScript, SQLite, Nodemailer, and modern web standards and is under continuous development.
-
+A technical portfolio project that combines modern web technologies with a security-first approach. The portfolio uses **Server-Side Rendering** with Astro 7, **Vue Islands** for targeted interactivity, and achieves a **Lighthouse Score of 90+ on mobile**. Automated security scans (Semgrep, Trivy) run on every pull request to ensure code quality and security. The project demonstrates practical implementation of TypeScript, Nodemailer, and modern web standards and is under continuous development.
 
 ## Motivation & Project Goals
 
@@ -11,16 +10,14 @@ This portfolio should not only appeal visually but also convince technically. Th
 
 The result is an SSR-based portfolio with a minimalist JavaScript footprint, comprehensive security scans, and a consistent Lighthouse score of over 90 points on mobile devices.
 
-
 ## Technology Stack
 
 ### Core Technologies
 
-- **Astro 5** – SSR framework with Island Architecture
+- **Astro 7** – SSR framework with Island Architecture
 - **TypeScript** – Type-safety for more robust code
 - **Vue 3** – Interactive components as Islands
-- **Node.js 22** – Modern runtime for server-side rendering
-- **SQLite (better-sqlite3)** – Synchronous database for rate limiting
+- **Node.js 24** – Modern runtime for server-side rendering
 - **Nodemailer** – SMTP-based email delivery
 
 ### Infrastructure & Tools
@@ -29,7 +26,6 @@ The result is an SSR-based portfolio with a minimalist JavaScript footprint, com
 - **GitHub Actions** – Automated security scans on pull requests
 - **Semgrep & Trivy** – SAST, dependency scans, secret detection
 
-
 ## Astro & Island Architecture
 
 **Astro** is a modern web framework with flexible rendering modes: As a Static Site Generator (SSG) for purely static websites or with Server-Side Rendering (SSR) for dynamic content. The core idea: HTML is pre-rendered, JavaScript only reaches the client where it's actually needed.
@@ -37,7 +33,6 @@ The result is an SSR-based portfolio with a minimalist JavaScript footprint, com
 This concept is called **Island Architecture** – static content remains static, interactive components are selectively activated as "islands". In this project, Astro components deliver static HTML, while Vue components are only initialized client-side when needed. The result: minimal JavaScript footprint with full interactivity.
 
 More on the architecture: [astro.build/concepts](https://docs.astro.build/en/concepts/islands/)
-
 
 ## Project Architecture
 
@@ -49,16 +44,13 @@ src/
 ├── components/     # UI components (Astro + Vue Islands)
 ├── layouts/        # Base layout with SEO meta tags
 ├── content/        # Markdown & JSON for projects, career, education
-├── middleware/     # CSP headers, rate limiting
+├── middleware/     # CSP headers
 ├── services/       # Email delivery, rate limit logic
-├── db/             # SQLite schema with Drizzle ORM
 ├── i18n/           # Translations (DE/EN)
 └── styles/         # CSS tokens, primitives, global styles
 ```
 
 The routing is based on URL paths (`/de/`, `/en/`) for clear language selection. Dynamic routes like `/de/projects/[slug].astro` load content from Markdown files and render them server-side.
-
-
 
 ## Core Features
 
@@ -88,7 +80,6 @@ Functional contact form for directly sending messages. The form is protected aga
 
 **Mobile Navigation:** Responsive menu for optimal operation on smartphones and tablets.
 
-
 ## Performance & Lighthouse
 
 The portfolio achieves a **Lighthouse Score of 90+ on mobile devices** through:
@@ -97,7 +88,6 @@ The portfolio achieves a **Lighthouse Score of 90+ on mobile devices** through:
 - **Server-Side Rendering:** Instant First Contentful Paint
 - **CSS Tokens:** No framework bloat, hand-optimized styles
 - **Lazy Loading:** Images are loaded on demand and optimized
-
 
 ## Security & Automated Scans
 
@@ -129,8 +119,6 @@ This portfolio combines modern web development practices with security best prac
 
 The project shows that performance and security are not opposites and that modern frameworks like Astro make it possible to achieve both with minimal overhead. The continuous development process reflects that good software is never truly "finished".
 
-
-
 ## Reporting Security Issues
 
 If you discover a security vulnerability in this project, please report it to:
@@ -141,4 +129,4 @@ If you discover a security vulnerability in this project, please report it to:
 ## License
 
 Apache License 2.0 © 2025 Luca Knobel  
-See [LICENSE](./LICENSE) and [NOTICE](./NOTICE). 
+See [LICENSE](./LICENSE) and [NOTICE](./NOTICE).
