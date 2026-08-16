@@ -49,6 +49,22 @@ describe("ContactRateLimitService", () => {
       expect(result.currentCount).toBe(10);
     });
 
+    it("should allow the tenth email and block the eleventh", async () => {
+      const date = "2025-10-11-tenth";
+      for (let count = 0; count < 9; count++) {
+        await service.incrementCount(date);
+      }
+
+      const tenthEmail = await service.checkLimit(date);
+      await service.incrementCount(date);
+      const eleventhEmail = await service.checkLimit(date);
+
+      expect(tenthEmail.allowed).toBe(true);
+      expect(tenthEmail.currentCount).toBe(9);
+      expect(eleventhEmail.allowed).toBe(false);
+      expect(eleventhEmail.currentCount).toBe(10);
+    });
+
     it("should deny requests when over limit", async () => {
       const date = "2025-10-11-over";
       for (let count = 0; count < 15; count++) {
@@ -77,6 +93,21 @@ describe("ContactRateLimitService", () => {
       const result = await secondService.checkLimit(date);
 
       expect(result.currentCount).toBe(1);
+    });
+
+    it("should reset the counter for a new Swiss calendar day", async () => {
+      const firstDate = "2025-10-11-reset";
+      const secondDate = "2025-10-12-reset";
+
+      for (let count = 0; count < 10; count++) {
+        await service.incrementCount(firstDate);
+      }
+
+      const result = await service.checkLimit(secondDate);
+
+      expect(result.allowed).toBe(true);
+      expect(result.currentCount).toBe(0);
+      expect(result.resetDate).toBe(secondDate);
     });
   });
 
