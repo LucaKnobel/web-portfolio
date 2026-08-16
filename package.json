@@ -16,13 +16,13 @@
     "lint": "echo 'Add ESLint/Prettier here'"
   },
   "dependencies": {
-    "@astrojs/check": "^0.9.5",
-    "@astrojs/node": "^10.1.4",
-    "@astrojs/vue": "^6.0.1",
+    "@astrojs/check": "^0.9.10",
+    "@astrojs/node": "^11.1.2",
+    "@astrojs/vue": "^7.0.2",
     "@iconify-icons/mdi": "^1.2.48",
     "@iconify-json/mdi": "^1.2.3",
     "@iconify/vue": "^5.0.0",
-    "astro": "^6.4.8",
+    "astro": "^7.2.2",
     "astro-icon": "^1.1.5",
     "nodemailer": "^7.0.9",
     "typescript": "^5.9.3",
