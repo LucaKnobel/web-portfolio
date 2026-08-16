@@ -20,7 +20,6 @@ try {
     rateLimitReached = !rateLimit.allowed;
 } catch (error) {
     console.error("Failed to check rate limit on page load:", error);
-    // If DB fails, allow form to be shown
     rateLimitReached = false;
 }
 
