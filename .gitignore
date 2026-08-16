@@ -24,11 +24,6 @@ data/
 *.db-wal
 *.db-journal
 
-# keep database schema and migrations
-!src/db/schema.ts
-!src/db/index.ts
-!drizzle.config.ts
-!src/db/migrations/
 
 # macOS-specific files
 .DS_Store

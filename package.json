@@ -12,9 +12,6 @@
     "test": "vitest",
     "test:run": "vitest run",
     "test:watch": "vitest --watch",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio",
     "typecheck": "astro check",
     "lint": "echo 'Add ESLint/Prettier here'"
   },
@@ -27,16 +24,12 @@
     "@iconify/vue": "^5.0.0",
     "astro": "^5.15.3",
     "astro-icon": "^1.1.5",
-    "better-sqlite3": "^12.4.1",
-    "drizzle-orm": "^0.44.6",
     "nodemailer": "^7.0.9",
     "typescript": "^5.9.3",
     "vue": "^3.5.22"
   },
   "devDependencies": {
-    "@types/better-sqlite3": "^7.6.13",
     "@types/nodemailer": "^7.0.2",
-    "drizzle-kit": "^0.31.5",
     "vitest": "^3.2.4"
   }
 }
