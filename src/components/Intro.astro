@@ -4,159 +4,156 @@ import ActionButton from "@/components/ActionButton.astro";
 import { Image } from "astro:assets";
 
 export interface IntroProps {
-    /** Current language (e.g., 'de' or 'en') */
-    lang: string;
-    /** Translation function for UI strings */
-    t: Function;
-    /** Name to display in intro */
-    name?: string;
-    /** Role or subtitle */
-    role?: string;
-    /** Portrait image source */
-    portraitSrc?: ImageMetadata;
-    /** GitHub profile URL */
-    githubUrl?: string;
-    /** LinkedIn profile URL */
-    linkedinUrl?: string;
-    /** Contact page href */
-    contactHref?: string;
+  /** Current language (e.g., 'de' or 'en') */
+  lang: string;
+  /** Translation function for UI strings */
+  t: Function;
+  /** Name to display in intro */
+  name?: string;
+  /** Role or subtitle */
+  role?: string;
+  /** Portrait image source */
+  portraitSrc?: ImageMetadata;
+  /** GitHub profile URL */
+  githubUrl?: string;
+  /** LinkedIn profile URL */
+  linkedinUrl?: string;
+  /** Contact page href */
+  contactHref?: string;
 }
 
 const {
-    lang,
-    t,
-    name = "Luca Knobel",
-    role = "",
-    portraitSrc = portrait,
-    githubUrl = "https://github.com/LucaKnobel",
-    linkedinUrl = "https://linkedin.com/in/luca-knobel-14b4a7221",
-    contactHref = `/${lang}/contact`,
+  lang,
+  t,
+  name = "Luca Knobel",
+  role = "",
+  portraitSrc = portrait,
+  githubUrl = "https://github.com/LucaKnobel",
+  linkedinUrl = "https://linkedin.com/in/luca-knobel-14b4a7221",
+  contactHref = `/${lang}/contact`,
 } = Astro.props as IntroProps;
 ---
 
 <section aria-labelledby="intro-title">
-    <div class="intro-container">
-        <Image
-            src={portraitSrc}
-            alt={t("intro.portraitAlt") + " " + name}
-            class="intro-portrait"
-            loading="eager"
-            decoding="async"
-            quality={90}
-            format="webp"
-            width={900}
-            height={1800}
-            priority
-            sizes="(max-width: 600px) 80vw, 450px"
-        />
+  <div class="intro-container">
+    <Image
+      src={portraitSrc}
+      alt={t("intro.portraitAlt") + " " + name}
+      class="intro-portrait"
+      loading="eager"
+      decoding="async"
+      quality={90}
+      format="webp"
+      priority
+      sizes="(max-width: 600px) 80vw, 450px"
+    />
 
-        <h1 class="intro-title">
-            {t("intro.welcome")}<br />
-            {t("intro.intro")}
-            {name}
-        </h1>
-        <p class="intro-role">{role}</p>
+    <h1 class="intro-title">
+      {t("intro.welcome")}<br />
+      {t("intro.intro")}
+      {name}
+    </h1>
+    <p class="intro-role">{role}</p>
 
-        <div class="intro-actions">
-            <ActionButton
-                href={contactHref}
-                text={t("intro.contact")}
-                variant="primary"
-                size="m"
-            />
-            <ActionButton
-                href={githubUrl}
-                icon="mdi:github"
-                ariaLabel="GitHub"
-                variant="gradient"
-                text="GitHub"
-                size="m"
-            />
+    <div class="intro-actions">
+      <ActionButton
+        href={contactHref}
+        text={t("intro.contact")}
+        variant="primary"
+        size="m"
+      />
+      <ActionButton
+        href={githubUrl}
+        icon="mdi:github"
+        ariaLabel="GitHub"
+        variant="gradient"
+        text="GitHub"
+        size="m"
+      />
 
-            <ActionButton
-                href={linkedinUrl}
-                icon="mdi:linkedin"
-                ariaLabel="LinkedIn"
-                variant="gradient"
-                text="LinkedIn"
-                size="m"
-            />
-        </div>
+      <ActionButton
+        href={linkedinUrl}
+        icon="mdi:linkedin"
+        ariaLabel="LinkedIn"
+        variant="gradient"
+        text="LinkedIn"
+        size="m"
+      />
     </div>
+  </div>
 </section>
 
-
 <style>
+  section {
+    padding: var(--section-y) var(--section-x);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: var(--stack-sm) 0 var(--stack-xxxl) 0;
+  }
+
+  .intro-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--stack-lg);
+    max-width: 700px;
+    width: 100%;
+  }
+
+  .intro-portrait {
+    width: 80vw;
+    height: 80vw;
+    max-width: 450px;
+    max-height: 450px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: none;
+    box-shadow: var(--elev-2);
+  }
+
+  .intro-title {
+    font-size: var(--heading-lg);
+    font-weight: var(--fw-semibold);
+    margin: 0;
+    text-align: center;
+    line-height: 1.15;
+    color: var(--color-text);
+  }
+
+  .intro-role {
+    font-size: var(--heading-sm);
+    color: var(--color-muted);
+    margin: 0;
+    text-align: center;
+  }
+
+  .intro-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--stack-sm);
+    align-items: center;
+    justify-content: center;
+  }
+
+  @media (min-width: 1024px) {
     section {
-        padding: var(--section-y) var(--section-x);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin: var(--stack-sm) 0 var(--stack-xxxl) 0;
+      margin: 0 0 var(--stack-xxxl) 0;
     }
-
     .intro-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: var(--stack-lg);
-        max-width: 700px;
-        width: 100%;
-    }
-
-    .intro-portrait {
-        width: 80vw;
-        height: 80vw;
-        max-width: 450px;
-        max-height: 450px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: none;
-        box-shadow: var(--elev-2);
+      max-width: 900px;
+      gap: var(--stack-xl);
     }
 
     .intro-title {
-        font-size: var(--heading-lg);
-        font-weight: var(--fw-semibold);
-        margin: 0;
-        text-align: center;
-        line-height: 1.15;
-        color: var(--color-text);
+      font-size: var(--display-xl);
     }
-
     .intro-role {
-        font-size: var(--heading-sm);
-        color: var(--color-muted);
-        margin: 0;
-        text-align: center;
+      font-size: var(--heading-md);
     }
-
     .intro-actions {
-        display: flex;
-        flex-direction: column;
-        gap: var(--stack-sm);
-        align-items: center;
-        justify-content: center;
+      flex-direction: row;
+      gap: var(--stack-lg);
     }
-
-    @media (min-width: 1024px) {
-        section {
-            margin: 0 0 var(--stack-xxxl) 0;
-        }
-        .intro-container {
-            max-width: 900px;
-            gap: var(--stack-xl);
-        }
-
-        .intro-title {
-            font-size: var(--display-xl);
-        }
-        .intro-role {
-            font-size: var(--heading-md);
-        }
-        .intro-actions {
-            flex-direction: row;
-            gap: var(--stack-lg);
-        }
-    }
+  }
 </style>
