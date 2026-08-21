@@ -55,16 +55,25 @@ const headerLinks = [
 
 <style>
     .site-header {
-        background: var(--glass-bg);
         border-bottom: var(--border-hairline) solid var(--color-border-hairline);
         box-shadow: var(--elev-2);
         position: sticky;
         top: 0;
         z-index: var(--layer-header);
-        backdrop-filter: var(--glass-blur);
-        -webkit-backdrop-filter: var(--glass-blur);
         padding-block: 0;
         min-height: 80px;
+        isolation: isolate;
+
+        &::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+        }
 
         .header-container {
             max-width: var(--content-max);
@@ -75,6 +84,8 @@ const headerLinks = [
             justify-content: space-between;
             gap: var(--cluster-gap);
             height: 80px;
+            position: relative;
+            z-index: 1;
         }
     }
 
