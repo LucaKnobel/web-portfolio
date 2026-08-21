@@ -73,9 +73,9 @@
     --shadow-color: rgba(26, 33, 41, 0.08);
 
     /* Glassmorphism */
-    --glass-bg: rgba(255, 255, 255, 0.5);
-    --glass-border: rgba(255, 255, 255, 0.15);
-    --glass-blur: blur(20px);
+    --glass-bg: rgba(255, 255, 255, 0.58);
+    --glass-border: rgba(255, 255, 255, 0.6);
+    --glass-blur: blur(64px) saturate(150%);
 
     /* Selection & focus */
     --focus-ring-color: var(--primary-500);
