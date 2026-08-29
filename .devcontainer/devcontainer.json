@@ -23,7 +23,8 @@
         "aquasecurityofficial.trivy-vulnerability-scanner",
         "vitest.explorer",
         "EditorConfig.EditorConfig",
-        "oxc.oxc-vscode"
+        "oxc.oxc-vscode",
+        "openai.chatgpt"
       ],
       "settings": {
         "terminal.integrated.cwd": "/workspaces/web-portfolio",
