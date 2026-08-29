@@ -33,3 +33,8 @@ data/
 
 # Snyk Security Extension - AI Rules (auto-generated)
 .github/instructions/snyk_rules.instructions.md
+
+# CI reports and test artifacts (generated during workflow runs)
+reports/
+coverage/
+*.json.tmp

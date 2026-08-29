@@ -61,46 +61,48 @@ jobs:
             ${{ env.IMAGE }}:latest
             ${{ env.IMAGE }}:${{ env.IMAGE_TAG_SHA }}
 
-      # Informative security scan for the locally built image.
-      # This step does not fail deployment because the base image may contain
-      # known vulnerabilities that are handled separately.
+      # Security scan for the locally built image.
+      # CRITICAL vulnerabilities with available fixes will block the image push and deploy.
+      # Note: Using exit-code: "0" to always write the report; security gate logic is in the summary script
       - name: Scan image with Trivy
         uses: aquasecurity/trivy-action@v0.36.0
-        timeout-minutes: 10
         with:
           scan-type: "image"
           image-ref: "${{ env.IMAGE }}:${{ env.IMAGE_TAG_SHA }}"
-          format: "table"
-          output: "trivy-report.txt"
+          format: "json"
+          output: "reports/trivy-image.json"
           severity: "CRITICAL,HIGH,MEDIUM"
           ignore-unfixed: true
           vuln-type: "os,library"
-          list-all-pkgs: false
           exit-code: "0"
 
-      # Print the scan result to the job log and the run summary.
-      - name: Trivy report
+      # Trivy Summary & Security Gate for image
+      - name: Trivy Summary & Security Gate
+        if: always()
         run: |
-          set -euo pipefail
-          if [ ! -s trivy-report.txt ]; then
-            echo "No CRITICAL, HIGH or MEDIUM findings." > trivy-report.txt
+          bash .github/scripts/trivy-summary.sh reports/trivy-image.json image
+          # Check for CRITICAL vulnerabilities and fail if present
+          CRITICAL=$(jq '[.Results[]?.Vulnerabilities[]? // empty | select(.Severity == "CRITICAL")] | length' reports/trivy-image.json 2>/dev/null || echo "0")
+          if [[ "$CRITICAL" -gt 0 ]]; then
+            echo "❌ Security Gate Failed: $CRITICAL CRITICAL vulnerabilities in image"
+            exit 1
           fi
-          cat trivy-report.txt
-          {
-            echo "## Trivy Scan"
-            echo ""
-            echo "Image: ${IMAGE}:${IMAGE_TAG_SHA}"
-            echo ""
-            echo '```'
-            cat trivy-report.txt
-            echo '```'
-          } >> "$GITHUB_STEP_SUMMARY"
+
+      # Upload Trivy report for detailed analysis
+      - name: Upload Trivy Report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: security-reports-image
+          path: reports/trivy-image.json
+          retention-days: 30
 
       # Push the exact image that was scanned above.
+      # This step only runs if Trivy scan succeeded (no continue-on-error).
       - name: Push image
         run: |
-          docker push "${IMAGE}:${IMAGE_TAG_SHA}"
-          docker push "${IMAGE}:latest"
+          docker push "${{ env.IMAGE }}:${{ env.IMAGE_TAG_SHA }}"
+          docker push "${{ env.IMAGE }}:latest"
 
   deploy:
     name: Deploy to Coolify (Production)
@@ -113,10 +115,18 @@ jobs:
       contents: read
 
     steps:
+      # Generate deployment summary in GitHub job summary
       - name: Deployment summary
         run: |
-          echo "Deployment environment: production"
-          echo "Deployed image tag: ${{ github.sha }}"
+          {
+            echo "## Production Deployment"
+            echo ""
+            echo "**Environment:** production"
+            echo ""
+            echo "**Commit:** ${{ github.sha }}"
+            echo ""
+            echo "**Image:** ghcr.io/lucaknobel/web-portfolio:${{ github.sha }}"
+          } >> "$GITHUB_STEP_SUMMARY"
 
       # Coolify pulls the freshly pushed image and restarts the application.
       - name: Trigger Coolify deploy webhook

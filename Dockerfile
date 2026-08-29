@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Shared Node.js base image for build and runtime stages.
-FROM node:24-bookworm-slim AS base
+FROM node:24-trixie-slim AS base
 
 WORKDIR /app
 
