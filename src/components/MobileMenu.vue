@@ -54,7 +54,7 @@ import closeIcon from "@iconify-icons/mdi/close"
 import ThemeToggle from "./ThemeToggle.vue"
 import LanguageSelect from "./LanguageSelect.vue"
 import { useClientTranslations } from "@/i18n/utils.ts"
-import { closeAllDropdowns } from "@/composables/useDropdown.ts"
+import { closeAllDropdowns } from "@/composables/use-dropdown.ts"
 
 interface NavLink {
     href: string

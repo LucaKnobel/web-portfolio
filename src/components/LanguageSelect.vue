@@ -23,7 +23,7 @@ import { Icon } from "@iconify/vue"
 import translateIcon from "@iconify-icons/mdi/translate"
 import { languages as languageConfig } from "@/i18n/ui"
 import { useClientTranslations } from "@/i18n/utils"
-import { useDropdown, useClickOutside } from "@/composables/useDropdown"
+import { useDropdown, useClickOutside } from "@/composables/use-dropdown"
 
 interface Language {
     code: string
