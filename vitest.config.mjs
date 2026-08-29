@@ -11,8 +11,8 @@ export default defineConfig({
       provider: "v8",
       reporter: ["text", "json"],
       outputDir: "reports",
-      include: ["src/**/*.{ts,js,tsx,jsx,astro,vue}"],
-      exclude: ["node_modules", "dist"],
+      include: ["src/**/*.{ts,js,tsx,jsx}"],
+      exclude: ["node_modules", "dist", "**/*.astro", "**/*.vue"],
     },
   },
 });

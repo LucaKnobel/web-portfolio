@@ -39,6 +39,10 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+      # Ensure reports directory exists for test/coverage output
+      - name: Create reports directory
+        run: mkdir -p reports
+
       # Run tests with coverage enabled; generates JSON report + coverage metrics
       - name: Tests
         run: npm run test:run -- --coverage
@@ -69,6 +73,10 @@ jobs:
     steps:
       # Clone code for static analysis
       - uses: actions/checkout@v7
+
+      # Ensure reports directory exists for Semgrep output
+      - name: Create reports directory
+        run: mkdir -p reports
 
       # Run local open-source Semgrep scan with automatic rules.
       - name: Install Semgrep
@@ -104,6 +112,10 @@ jobs:
       # Clone repository for comprehensive security scan
       - uses: actions/checkout@v7
 
+      # Ensure reports directory exists for Trivy output
+      - name: Create reports directory
+        run: mkdir -p reports
+
       # Use official Trivy action for maintained setup + built-in cache handling.
       # Generate JSON report for structured analysis
       - name: Run Trivy scan (filesystem)
@@ -123,7 +135,7 @@ jobs:
       # Always run summary even if Trivy finds issues; uses if: always() to capture results
       - name: Trivy Summary
         if: always()
-        run: bash .github/scripts/trivy-summary.sh
+        run: bash .github/scripts/trivy-summary.sh reports/trivy.json fs
 
       # Upload Trivy report for detailed analysis
       - name: Upload Trivy Report

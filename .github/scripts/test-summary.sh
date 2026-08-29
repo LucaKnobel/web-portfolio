@@ -12,17 +12,34 @@ if [[ ! -f "$REPORT_FILE" ]]; then
   exit 0
 fi
 
-# Extract test statistics from JSON report
-TOTAL=$(jq -r '.testResults[0].numTotalTests // 0' "$REPORT_FILE" 2>/dev/null || echo "0")
-PASSED=$(jq -r '.testResults[0].numPassingTests // 0' "$REPORT_FILE" 2>/dev/null || echo "0")
-FAILED=$(jq -r '.testResults[0].numFailingTests // 0' "$REPORT_FILE" 2>/dev/null || echo "0")
-SKIPPED=$(jq -r '.testResults[0].numPendingTests // 0' "$REPORT_FILE" 2>/dev/null || echo "0")
+# Extract test statistics from JSON report (root level, not testResults)
+TOTAL=$(jq -r '.numTotalTests // 0' "$REPORT_FILE" 2>/dev/null || echo "0")
+PASSED=$(jq -r '.numPassedTests // 0' "$REPORT_FILE" 2>/dev/null || echo "0")
+FAILED=$(jq -r '.numFailedTests // 0' "$REPORT_FILE" 2>/dev/null || echo "0")
+SKIPPED=$(jq -r '.numPendingTests // 0' "$REPORT_FILE" 2>/dev/null || echo "0")
 
-# Extract coverage metrics from JSON report
-STATEMENTS=$(jq -r '.coverage[0].statements.percentage // "-"' "$REPORT_FILE" 2>/dev/null || echo "-")
-BRANCHES=$(jq -r '.coverage[0].branches.percentage // "-"' "$REPORT_FILE" 2>/dev/null || echo "-")
-FUNCTIONS=$(jq -r '.coverage[0].functions.percentage // "-"' "$REPORT_FILE" 2>/dev/null || echo "-")
-LINES=$(jq -r '.coverage[0].lines.percentage // "-"' "$REPORT_FILE" 2>/dev/null || echo "-")
+# Extract coverage metrics from coverage-final.json if available
+COVERAGE_FILE="coverage/coverage-final.json"
+if [[ -f "$COVERAGE_FILE" ]]; then
+  # Calculate coverage percentages from v8 coverage format
+  # Coverage format: { "/path/file.ts": { "s": { "0": count, ... }, "f": {...}, "b": {...} } }
+  # Count executed (> 0) vs total for each type
+  STATEMENTS=$(jq -r '[.[] | .s | to_entries | length as $total | [.[] | select(.value > 0)] | length as $covered | ($covered / $total * 100 | round)] | add / length | round' "$COVERAGE_FILE" 2>/dev/null || echo "-")
+  BRANCHES=$(jq -r '[.[] | .b | to_entries | length as $total | if $total == 0 then 100 else [.[] | select(.value[0] > 0 or .value[1] > 0)] | length as $covered | ($covered / $total * 100 | round) end] | add / length | round' "$COVERAGE_FILE" 2>/dev/null || echo "-")
+  FUNCTIONS=$(jq -r '[.[] | .f | to_entries | length as $total | if $total == 0 then 100 else [.[] | select(.value > 0)] | length as $covered | ($covered / $total * 100 | round) end] | add / length | round' "$COVERAGE_FILE" 2>/dev/null || echo "-")
+  LINES=$(jq -r '[.[] | .s | to_entries | length as $total | [.[] | select(.value > 0)] | length as $covered | ($covered / $total * 100 | round)] | add / length | round' "$COVERAGE_FILE" 2>/dev/null || echo "-")
+  
+  # Add % symbols if valid numbers
+  [[ "$STATEMENTS" != "-" ]] && STATEMENTS="${STATEMENTS}%"
+  [[ "$BRANCHES" != "-" ]] && BRANCHES="${BRANCHES}%"
+  [[ "$FUNCTIONS" != "-" ]] && FUNCTIONS="${FUNCTIONS}%"
+  [[ "$LINES" != "-" ]] && LINES="${LINES}%"
+else
+  STATEMENTS="-"
+  BRANCHES="-"
+  FUNCTIONS="-"
+  LINES="-"
+fi
 
 # Write summary to GitHub Step Summary
 {
