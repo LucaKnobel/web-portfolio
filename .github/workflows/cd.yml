@@ -61,6 +61,10 @@ jobs:
             ${{ env.IMAGE }}:latest
             ${{ env.IMAGE }}:${{ env.IMAGE_TAG_SHA }}
 
+      # Ensure reports directory exists for Trivy output
+      - name: Create reports directory
+        run: mkdir -p reports
+
       # Security scan for the locally built image.
       # CRITICAL vulnerabilities with available fixes will block the image push and deploy.
       # Note: Using exit-code: "0" to always write the report; security gate logic is in the summary script
