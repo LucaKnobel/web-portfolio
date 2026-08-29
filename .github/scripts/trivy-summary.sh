@@ -17,7 +17,7 @@ SCAN_TYPE="${2:-auto}"
 
 # If report doesn't exist, print warning and exit gracefully
 if [[ ! -f "$REPORT_FILE" ]]; then
-  echo "Trivy report not found at $REPORT_FILE" >> "$GITHUB_STEP_SUMMARY"  echo "⚠️ Trivy report not found at $REPORT_FILE (continuing gracefully)" >&2  exit 0
+  echo "Trivy report not found at $REPORT_FILE" >> "$GITHUB_STEP_SUMMARY"  echo "Trivy report not found at $REPORT_FILE (continuing gracefully)" >&2  exit 0
 fi
 
 # Auto-detect scan type from report filename if not specified
