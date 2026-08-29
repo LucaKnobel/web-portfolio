@@ -1,3 +1,5 @@
+import { MAX_DAILY_EMAILS } from "../config/rate-limit.js";
+
 /** Result of a read-only daily rate-limit status check. */
 export interface RateLimitResult {
   allowed: boolean;
@@ -36,7 +38,7 @@ const activeReservations = new WeakSet<object>();
  * calendar day using synchronous in-memory reservations.
  */
 export class ContactRateLimitService implements RateLimitService {
-  private readonly maxDailyEmails = 10;
+  private readonly maxDailyEmails = MAX_DAILY_EMAILS;
 
   constructor(private readonly now: () => Date = () => new Date()) {}
 

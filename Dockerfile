@@ -44,6 +44,10 @@ COPY --from=build --chown=node:node /app/dist ./dist
 # Run the application as the unprivileged Node.js user.
 USER node
 
+# Declared last so a changing commit SHA only invalidates this metadata layer.
+ARG APP_VERSION=dev
+ENV APP_VERSION=${APP_VERSION}
+
 EXPOSE 4321
 
 # Verify that the Astro server is responding inside the container.

@@ -24,14 +24,14 @@ vi.mock("astro:schema", async () => ({
   z: (await import("zod")).z,
 }));
 
-import { getEmailService } from "../src/services/emailService.js";
+import { getEmailService } from "../src/services/email-service.js";
 import {
   getRateLimitService,
   resetRateLimitStateForTests,
-} from "../src/services/rateLimitService.js";
-import { sendMail } from "../src/actions/sendMail.js";
+} from "../src/services/rate-limit-service.js";
+import { sendMail } from "../src/actions/send-mail.js";
 
-vi.mock("../src/services/emailService.js", () => ({
+vi.mock("../src/services/email-service.js", () => ({
   getEmailService: vi.fn(),
 }));
 

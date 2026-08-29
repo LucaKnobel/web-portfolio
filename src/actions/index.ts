@@ -1,5 +1,5 @@
-import { sendMail } from "@/actions/sendMail.ts";
+import { sendMail } from "@/actions/send-mail.ts";
 
 export const server = {
-    sendMail,
+  sendMail,
 };

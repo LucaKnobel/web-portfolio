@@ -1,9 +1,7 @@
-
 import { sequence } from "astro:middleware";
 import { csp } from "./csp";
-import { debugOrigin } from "./debugOrigin";
+import { originCheck } from "./origin-check";
+import { version } from "./version";
 
-export const onRequest = sequence(
-  debugOrigin,
-  csp
-);
+/* version runs outermost so its header survives the response csp rebuilds. */
+export const onRequest = sequence(version, originCheck, csp);

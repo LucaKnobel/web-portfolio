@@ -1,11 +1,11 @@
 import { defineAction, ActionError } from "astro:actions";
 import { z } from "astro/zod";
-import { getEmailService } from "../services/emailService.js";
-import { getRateLimitService } from "../services/rateLimitService.js";
+import { getEmailService } from "../services/email-service.js";
+import { getRateLimitService } from "../services/rate-limit-service.js";
 import type {
   RateLimitReservation,
   RateLimitService,
-} from "../services/rateLimitService.js";
+} from "../services/rate-limit-service.js";
 import type { EmailData } from "../utils/email.js";
 
 /** Result returned after a contact email has been sent successfully. */
