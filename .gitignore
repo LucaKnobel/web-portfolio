@@ -36,4 +36,5 @@ data/
 
 # CI reports and test artifacts (generated during workflow runs)
 reports/
+coverage/
 *.json.tmp
