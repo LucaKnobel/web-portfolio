@@ -13,7 +13,8 @@ export default defineConfig({
   site: "https://lucaknobel.ch",
 
   security: {
-    checkOrigin: true,
+    /* TEMPORARY: disabled to diagnose 403 origin-check false positive; re-enable ASAP */
+    checkOrigin: false,
     allowedDomains: [
       {
         hostname: "lucaknobel.ch",
