@@ -57,6 +57,8 @@ jobs:
           push: false
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          build-args: |
+            APP_VERSION=${{ github.sha }}
           tags: |
             ${{ env.IMAGE }}:latest
             ${{ env.IMAGE }}:${{ env.IMAGE_TAG_SHA }}
@@ -112,6 +114,7 @@ jobs:
     name: Deploy to Coolify (Production)
     runs-on: ubuntu-latest
     environment: production
+    timeout-minutes: 15
 
     needs: image
 
@@ -143,3 +146,27 @@ jobs:
             --request POST \
             --header "Authorization: Bearer ${COOLIFY_AUTH_TOKEN}" \
             "${COOLIFY_WEBHOOK}"
+
+      # The webhook only confirms Coolify accepted the job, so poll the live site
+      # until it serves the X-App-Version header baked into this commit's image.
+      - name: Verify deployed version
+        env:
+          URL: https://lucaknobel.ch/de/
+          EXPECTED: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 40); do
+            DEPLOYED=$(curl --silent --show-error --head --max-time 10 "${URL}" \
+              | tr -d '\r' \
+              | awk -F': ' 'tolower($1) == "x-app-version" { print $2 }' || true)
+            if [[ "${DEPLOYED}" == "${EXPECTED}" ]]; then
+              echo "Version ${EXPECTED} is live (attempt ${attempt})"
+              echo "**Verified:** \`${EXPECTED}\` live after ${attempt} attempt(s)" >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            echo "Attempt ${attempt}: live=${DEPLOYED:-<none>} expected=${EXPECTED}"
+            sleep 15
+          done
+          echo "Deployment verification failed: expected ${EXPECTED}, last seen ${DEPLOYED:-<none>}"
+          echo "**Verification failed:** expected \`${EXPECTED}\`, last seen \`${DEPLOYED:-none}\`" >> "$GITHUB_STEP_SUMMARY"
+          exit 1
