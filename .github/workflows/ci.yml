@@ -118,6 +118,7 @@ jobs:
 
       # Use official Trivy action for maintained setup + built-in cache handling.
       # Generate JSON report for structured analysis
+      # Note: Using exit-code: "0" to always write the report; error gate logic is in the summary script
       - name: Run Trivy scan (filesystem)
         uses: aquasecurity/trivy-action@v0.36.0
         with:
@@ -126,16 +127,21 @@ jobs:
           scanners: "vuln,secret,misconfig"
           severity: "CRITICAL,HIGH"
           ignore-unfixed: true
-          exit-code: "1"
+          exit-code: "0"
           format: "json"
           output: "reports/trivy.json"
-        # Continue on error to allow summary script to run (job failure still occurs due to exit-code: "1")
-        continue-on-error: true
 
-      # Always run summary even if Trivy finds issues; uses if: always() to capture results
-      - name: Trivy Summary
+      # Trivy Summary: Check for CRITICAL findings and fail job if found
+      - name: Trivy Summary & Security Gate
         if: always()
-        run: bash .github/scripts/trivy-summary.sh reports/trivy.json fs
+        run: |
+          bash .github/scripts/trivy-summary.sh reports/trivy.json fs
+          # Check for CRITICAL findings and fail if present
+          CRITICAL=$(jq '[.Results[]?.Vulnerabilities[]? // empty | select(.Severity == "CRITICAL")] | length' reports/trivy.json 2>/dev/null || echo "0")
+          if [[ "$CRITICAL" -gt 0 ]]; then
+            echo "❌ Security Gate Failed: $CRITICAL CRITICAL vulnerabilities found"
+            exit 1
+          fi
 
       # Upload Trivy report for detailed analysis
       - name: Upload Trivy Report

@@ -62,8 +62,8 @@ jobs:
             ${{ env.IMAGE }}:${{ env.IMAGE_TAG_SHA }}
 
       # Security scan for the locally built image.
-      # CRITICAL vulnerabilities with available fixes will fail this job.
-      # This blocks the image push and prevents deploy job from running.
+      # CRITICAL vulnerabilities with available fixes will block the image push and deploy.
+      # Note: Using exit-code: "0" to always write the report; security gate logic is in the summary script
       - name: Scan image with Trivy
         uses: aquasecurity/trivy-action@v0.36.0
         with:
@@ -74,14 +74,19 @@ jobs:
           severity: "CRITICAL,HIGH,MEDIUM"
           ignore-unfixed: true
           vuln-type: "os,library"
-          exit-code: "1"
-        # Continue on error to allow summary script to run; job failure still occurs due to exit-code: "1"
-        continue-on-error: true
+          exit-code: "0"
 
-      # Always generate summary even if Trivy found critical issues
-      - name: Trivy Summary
+      # Trivy Summary & Security Gate for image
+      - name: Trivy Summary & Security Gate
         if: always()
-        run: bash .github/scripts/trivy-summary.sh reports/trivy-image.json image
+        run: |
+          bash .github/scripts/trivy-summary.sh reports/trivy-image.json image
+          # Check for CRITICAL vulnerabilities and fail if present
+          CRITICAL=$(jq '[.Results[]?.Vulnerabilities[]? // empty | select(.Severity == "CRITICAL")] | length' reports/trivy-image.json 2>/dev/null || echo "0")
+          if [[ "$CRITICAL" -gt 0 ]]; then
+            echo "❌ Security Gate Failed: $CRITICAL CRITICAL vulnerabilities in image"
+            exit 1
+          fi
 
       # Upload Trivy report for detailed analysis
       - name: Upload Trivy Report
