@@ -7,10 +7,10 @@ const makeNonce = () => crypto.randomBytes(16).toString("base64");
  * Builds CSP policy string with optional nonce for HTML responses
  */
 const buildCSPPolicy = (nonce?: string): string => {
-  const scriptSrc = nonce 
+  const scriptSrc = nonce
     ? `'self' 'nonce-${nonce}' 'report-sample'`
     : "'self' 'report-sample'";
-  
+
   const styleSrc = nonce
     ? `'self' 'nonce-${nonce}' 'report-sample'`
     : "'self' 'report-sample'";
@@ -31,7 +31,7 @@ const buildCSPPolicy = (nonce?: string): string => {
     "form-action 'self'",
     "manifest-src 'self'",
     "frame-ancestors 'none'",
-    "upgrade-insecure-requests"
+    "upgrade-insecure-requests",
   ].join("; ");
 };
 
@@ -39,15 +39,24 @@ const buildCSPPolicy = (nonce?: string): string => {
  * Sets additional security headers on response
  */
 const setSecurityHeaders = (headers: Headers): void => {
-  headers.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
+  headers.set(
+    "Strict-Transport-Security",
+    "max-age=31536000; includeSubDomains; preload",
+  );
   headers.set("X-Content-Type-Options", "nosniff");
   headers.set("X-Frame-Options", "DENY");
   headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
-  headers.set("Permissions-Policy", "geolocation=(), microphone=(), camera=(), payment=()");
+  headers.set(
+    "Permissions-Policy",
+    "geolocation=(), microphone=(), camera=(), payment=()",
+  );
 };
 
-export const csp = async (_: APIContext, next: (r?: string | URL | Request) => Promise<Response>) => {
-  if (process.env.NODE_ENV !== "production") {
+export const csp = async (
+  _: APIContext,
+  next: (r?: string | URL | Request) => Promise<Response>,
+) => {
+  if (import.meta.env.DEV) {
     return await next(); /* skips middleware in non-production */
   }
 
@@ -67,16 +76,16 @@ export const csp = async (_: APIContext, next: (r?: string | URL | Request) => P
 
   const withScriptNonce = html.replace(
     /<script(?![^>]*\bnonce=)/gi,
-    `<script nonce="${nonce}"`
+    `<script nonce="${nonce}"`,
   );
 
   const withStyleNonce = withScriptNonce.replace(
     /<style(?![^>]*\bnonce=)/gi,
-    `<style nonce="${nonce}"`
+    `<style nonce="${nonce}"`,
   );
 
   /* Remove empty style="" attributes from iconify/vue to prevent CSP violations */
-  const cleaned = withStyleNonce.replace(/\s+style=""\s*/gi, ' ');
+  const cleaned = withStyleNonce.replace(/\s+style=""\s*/gi, " ");
 
   const body = new Response(cleaned, {
     status: res.status,
@@ -86,6 +95,6 @@ export const csp = async (_: APIContext, next: (r?: string | URL | Request) => P
 
   body.headers.set("Content-Security-Policy", buildCSPPolicy(nonce));
   setSecurityHeaders(body.headers);
-  
+
   return body;
 };
