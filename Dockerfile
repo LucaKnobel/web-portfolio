@@ -1,5 +1,8 @@
 # syntax=docker/dockerfile:1
 
+# Declared before the first FROM so it can be re-declared in any stage that needs it.
+ARG APP_VERSION=dev
+
 # Shared Node.js base image for build and runtime stages.
 FROM node:24-trixie-slim AS base
 
@@ -18,6 +21,11 @@ RUN --mount=type=cache,target=/root/.npm \
 
 # Install all dependencies and build the Astro application.
 FROM base AS build
+
+# Astro validates the APP_VERSION env schema during `astro build`, so it must
+# be set here too, not just in the runtime stage.
+ARG APP_VERSION
+ENV APP_VERSION=${APP_VERSION}
 
 COPY package.json package-lock.json ./
 
@@ -44,8 +52,8 @@ COPY --from=build --chown=node:node /app/dist ./dist
 # Run the application as the unprivileged Node.js user.
 USER node
 
-# Declared last so a changing commit SHA only invalidates this metadata layer.
-ARG APP_VERSION=dev
+# Re-declared here so the running container reports the same version baked into the build stage.
+ARG APP_VERSION
 ENV APP_VERSION=${APP_VERSION}
 
 EXPOSE 4321
