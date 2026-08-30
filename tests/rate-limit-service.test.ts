@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from "vitest";
 import {
   ContactRateLimitService,
   resetRateLimitStateForTests,
-} from "../src/services/rate-limit-service.js";
+} from "@/services/rate-limit-service.js";
 
 describe("ContactRateLimitService", () => {
   let service: ContactRateLimitService;

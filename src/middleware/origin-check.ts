@@ -1,5 +1,5 @@
 import type { APIContext } from "astro";
-import { TRUSTED_ORIGINS } from "../config/trusted-origins";
+import { TRUSTED_ORIGINS } from "@/config/trusted-origins.js";
 
 const SAFE_METHODS = new Set(["GET", "HEAD", "OPTIONS"]);
 
@@ -10,6 +10,15 @@ const FORM_CONTENT_TYPES = [
 ];
 
 const ALLOWED_ORIGINS = new Set<string>(TRUSTED_ORIGINS);
+
+const isLocalOrigin = (origin: string): boolean => {
+  try {
+    const url = new URL(origin);
+    return url.hostname === "localhost" || url.hostname === "127.0.0.1";
+  } catch {
+    return false;
+  }
+};
 
 const hasFormLikeContentType = (contentType: string | null): boolean => {
   if (!contentType) return false;
@@ -24,7 +33,8 @@ const hasFormLikeContentType = (contentType: string | null): boolean => {
  * TLS-terminating reverse proxy Astro always sees "http" and rejects every
  * same-site POST. This checks the Origin header against TRUSTED_ORIGINS
  * instead, which is unaffected by that bug. Keep TRUSTED_ORIGINS in sync
- * with astro.config.mjs's security.allowedDomains.
+ * with astro.config.mjs's security.allowedDomains. In local development,
+ * localhost origins are allowed.
  */
 export const originCheck = async (
   { request }: APIContext,
@@ -35,8 +45,13 @@ export const originCheck = async (
     hasFormLikeContentType(request.headers.get("content-type"))
   ) {
     const origin = request.headers.get("origin");
+    const isDev = import.meta.env.DEV || process.env.NODE_ENV !== "production";
 
-    if (!origin || !ALLOWED_ORIGINS.has(origin)) {
+    const isAllowed =
+      origin !== null &&
+      (ALLOWED_ORIGINS.has(origin) || (isDev && isLocalOrigin(origin)));
+
+    if (!origin || !isAllowed) {
       return new Response(
         `Cross-site ${request.method} form submissions are forbidden`,
         {

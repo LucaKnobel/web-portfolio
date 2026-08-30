@@ -24,15 +24,21 @@ vi.mock("astro:schema", async () => ({
   z: (await import("zod")).z,
 }));
 
-import { getEmailService } from "../src/services/email-service.js";
+import { sendEmail } from "@/server/infrastructure/composition.js";
 import {
   getRateLimitService,
   resetRateLimitStateForTests,
-} from "../src/services/rate-limit-service.js";
-import { sendMail } from "../src/actions/send-mail.js";
+} from "@/services/rate-limit-service.js";
+import { sendMail } from "@/actions/send-mail.js";
 
-vi.mock("../src/services/email-service.js", () => ({
-  getEmailService: vi.fn(),
+vi.mock("@/server/infrastructure/composition.js", () => ({
+  sendEmail: vi.fn(),
+  logger: {
+    info: vi.fn(),
+    error: vi.fn(),
+    warn: vi.fn(),
+    debug: vi.fn(),
+  },
 }));
 
 const validInput = () => ({
@@ -52,11 +58,9 @@ describe("sendMail rate-limit reservations", () => {
   });
 
   it("keeps exactly one slot after a successful email", async () => {
-    vi.mocked(getEmailService).mockReturnValue({
-      sendEmail: vi
-        .fn()
-        .mockResolvedValue({ success: true, messageId: "test" }),
-      validateConfig: vi.fn(),
+    vi.mocked(sendEmail).mockResolvedValue({
+      success: true,
+      messageId: "test",
     });
 
     await sendMail.orThrow(validInput() as unknown as FormData);
@@ -65,11 +69,9 @@ describe("sendMail rate-limit reservations", () => {
   });
 
   it("releases the slot after a failed email", async () => {
-    vi.mocked(getEmailService).mockReturnValue({
-      sendEmail: vi
-        .fn()
-        .mockResolvedValue({ success: false, error: "SMTP failed" }),
-      validateConfig: vi.fn(),
+    vi.mocked(sendEmail).mockResolvedValue({
+      success: false,
+      error: "SMTP failed",
     });
 
     await expect(
@@ -85,10 +87,9 @@ describe("sendMail rate-limit reservations", () => {
       expect(rateLimitService.tryAcquire()).not.toBeNull();
     }
 
-    const sendEmail = vi.fn();
-    vi.mocked(getEmailService).mockReturnValue({
-      sendEmail,
-      validateConfig: vi.fn(),
+    vi.mocked(sendEmail).mockResolvedValue({
+      success: true,
+      messageId: "test",
     });
 
     await expect(
