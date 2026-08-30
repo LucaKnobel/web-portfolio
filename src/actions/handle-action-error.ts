@@ -18,7 +18,9 @@ export const handleActionError = (error: unknown): never => {
     });
 
     const code =
-      error.code === "RATE_LIMIT_EXCEEDED" ? "TOO_MANY_REQUESTS" : "BAD_REQUEST";
+      error.code === "RATE_LIMIT_EXCEEDED"
+        ? "TOO_MANY_REQUESTS"
+        : "BAD_REQUEST";
 
     throw new ActionError({
       code,

@@ -77,7 +77,9 @@ describe("buildSendEmail", () => {
       rateLimiter: mockRateLimiter,
     });
 
-    await expect(sendEmail(sampleEmailData)).rejects.toThrow(RateLimitExceededError);
+    await expect(sendEmail(sampleEmailData)).rejects.toThrow(
+      RateLimitExceededError,
+    );
     expect(mockEmailSender.send).not.toHaveBeenCalled();
   });
 

@@ -16,7 +16,7 @@ export default defineConfig({
     /* Astro's built-in check derives the request protocol from the raw socket
      * instead of X-Forwarded-Proto, so it always sees "http" behind Traefik's
      * TLS termination and rejects every POST. Replaced by src/middleware/origin-check.ts;
-     * keep allowedDomains below in sync with src/config/trusted-origins.ts. */
+     * keep allowedDomains below in sync with src/server/config/trusted-origins.ts. */
     checkOrigin: false,
     allowedDomains: [
       {

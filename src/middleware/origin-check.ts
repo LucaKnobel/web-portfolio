@@ -1,5 +1,5 @@
 import type { APIContext } from "astro";
-import { TRUSTED_ORIGINS } from "@/config/trusted-origins.js";
+import { TRUSTED_ORIGINS } from "@/server/config/trusted-origins.js";
 
 const SAFE_METHODS = new Set(["GET", "HEAD", "OPTIONS"]);
 

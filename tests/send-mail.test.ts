@@ -73,11 +73,13 @@ describe("sendMail action", () => {
 
   it("handles RateLimitExceededError by converting to TOO_MANY_REQUESTS ActionError", async () => {
     vi.mocked(sendEmail).mockRejectedValue(
-      new RateLimitExceededError("Daily email limit reached. Please try again tomorrow.")
+      new RateLimitExceededError(
+        "Daily email limit reached. Please try again tomorrow.",
+      ),
     );
 
     await expect(
-      sendMail.orThrow(validInput() as unknown as FormData)
+      sendMail.orThrow(validInput() as unknown as FormData),
     ).rejects.toMatchObject({
       code: "TOO_MANY_REQUESTS",
       message: "Daily email limit reached. Please try again tomorrow.",
@@ -86,11 +88,11 @@ describe("sendMail action", () => {
 
   it("handles EmailSendError by converting to BAD_REQUEST ActionError", async () => {
     vi.mocked(sendEmail).mockRejectedValue(
-      new EmailSendError("SMTP connection failed")
+      new EmailSendError("SMTP connection failed"),
     );
 
     await expect(
-      sendMail.orThrow(validInput() as unknown as FormData)
+      sendMail.orThrow(validInput() as unknown as FormData),
     ).rejects.toMatchObject({
       code: "BAD_REQUEST",
       message: "SMTP connection failed",

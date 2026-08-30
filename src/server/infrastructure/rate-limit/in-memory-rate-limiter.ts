@@ -1,4 +1,4 @@
-import { MAX_DAILY_EMAILS } from "@/config/rate-limit.js";
+import { MAX_DAILY_EMAILS } from "@/server/config/rate-limit.js";
 import type {
   RateLimiter,
   RateLimitReservation,
