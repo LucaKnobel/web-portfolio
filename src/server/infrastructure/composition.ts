@@ -4,6 +4,9 @@ import { createEtherealEmailSender } from "@/server/infrastructure/email/etherea
 import { createInMemoryRateLimiter } from "@/server/infrastructure/rate-limit/in-memory-rate-limiter.js";
 import { buildSendEmail } from "@/server/application/services/build-send-email.js";
 
+/**
+ * Composition Root: Wires together application use cases with infrastructure implementations.
+ */
 export const emailSender = import.meta.env.DEV
   ? createEtherealEmailSender(logger)
   : createNodemailerEmailSender();

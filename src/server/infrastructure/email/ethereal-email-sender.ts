@@ -7,6 +7,9 @@ import type {
 import type { Logger } from "@/server/application/interfaces/logger.js";
 import { buildEmailTemplate } from "@/server/infrastructure/email/email-template.js";
 
+/**
+ * Creates a Development EmailSender implementation using Ethereal test SMTP accounts.
+ */
 export const createEtherealEmailSender = (logger: Logger): EmailSender => ({
   async send(data: EmailData): Promise<EmailResult> {
     try {

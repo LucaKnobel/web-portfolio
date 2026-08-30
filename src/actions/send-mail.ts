@@ -3,11 +3,17 @@ import { contactFormSchema } from "@/server/infrastructure/validation/contact-fo
 import { sendEmail } from "@/server/infrastructure/composition.js";
 import { handleActionError } from "@/actions/handle-action-error.js";
 
+/**
+ * Return type for the successful sendMail action.
+ */
 export type SendMailResult = {
   success: true;
 };
 
-/** Validates contact data and sends the contact email. */
+/**
+ * Server action that validates contact form input, enforces rate limiting,
+ * and sends a contact email using the application layer.
+ */
 export const sendMail = defineAction({
   accept: "form",
   input: contactFormSchema,

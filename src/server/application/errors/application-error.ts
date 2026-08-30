@@ -1,3 +1,6 @@
+/**
+ * Base application error class for all domain and application level errors.
+ */
 export class ApplicationError extends Error {
   constructor(
     message: string,

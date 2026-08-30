@@ -1,5 +1,9 @@
 import { z } from "astro/zod";
 
+/**
+ * Zod validation schema for contact form input data.
+ * Includes field constraints, string trimming, honeypot check, and privacy policy enforcement.
+ */
 export const contactFormSchema = z.object({
   firstName: z.string().min(2).max(50).trim(),
   lastName: z.string().min(2).max(60).trim(),
@@ -15,4 +19,7 @@ export const contactFormSchema = z.object({
     .refine((v) => v === "") /* Honeypot */,
 });
 
+/**
+ * Validated TypeScript type inferred from contactFormSchema.
+ */
 export type ContactFormInput = z.infer<typeof contactFormSchema>;

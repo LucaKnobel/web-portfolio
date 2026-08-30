@@ -32,6 +32,9 @@ const createTransporter = () => {
   });
 };
 
+/**
+ * Creates a Production EmailSender implementation powered by Nodemailer and SMTP.
+ */
 export const createNodemailerEmailSender = (): EmailSender => ({
   async send(data: EmailData): Promise<EmailResult> {
     try {

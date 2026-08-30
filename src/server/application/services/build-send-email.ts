@@ -8,12 +8,19 @@ import type { RateLimiter } from "@/server/application/interfaces/rate-limiter.j
 import { EmailSendError } from "@/server/application/errors/email-send-error.js";
 import { RateLimitExceededError } from "@/server/application/errors/rate-limit-exceeded-error.js";
 
+/**
+ * Dependencies required to initialize the send email use case closure.
+ */
 export type SendEmailDependencies = {
   emailSender: EmailSender;
   logger: Logger;
   rateLimiter: RateLimiter;
 };
 
+/**
+ * Higher-order function factory creating the send email use case function.
+ * Enforces rate limiting, logs execution steps, and coordinates email dispatch.
+ */
 export const buildSendEmail = (deps: SendEmailDependencies) => {
   return async (data: EmailData): Promise<EmailResult> => {
     const { emailSender, logger, rateLimiter } = deps;
