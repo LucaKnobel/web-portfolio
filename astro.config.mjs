@@ -1,9 +1,27 @@
-import { defineConfig } from "astro/config";
+import { defineConfig, envField } from "astro/config";
 import icon from "astro-icon";
 import node from "@astrojs/node";
 import vue from "@astrojs/vue";
 
 export default defineConfig({
+  env: {
+    schema: {
+      SMTP_HOST: envField.string({ context: "server", access: "secret"}),
+      SMTP_PORT: envField.number({ context: "server", access: "secret"}),
+      SMTP_USER: envField.string({ context: "server", access: "secret" }),
+      SMTP_PASS: envField.string({ context: "server", access: "secret"}),
+      SMTP_FROM: envField.string({ context: "server", access: "secret" }),
+      SMTP_TO: envField.string({ context: "server", access: "secret" }),
+      LOG_LEVEL: envField.enum({
+        context: "server",
+        access: "public",
+        values: ["trace", "debug", "info", "warn", "error"],
+        default: "info",
+      }),
+      APP_VERSION: envField.string({ context: "server", access: "public", default: "dev" }),
+    },
+  },
+
   /* CSP experimental feature from Astro doesn't work, using custom middleware instead */
   output: "server",
   adapter: node({

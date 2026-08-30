@@ -45,11 +45,11 @@ export const originCheck = async (
     hasFormLikeContentType(request.headers.get("content-type"))
   ) {
     const origin = request.headers.get("origin");
-    const isDev = import.meta.env.DEV || process.env.NODE_ENV !== "production";
 
     const isAllowed =
       origin !== null &&
-      (ALLOWED_ORIGINS.has(origin) || (isDev && isLocalOrigin(origin)));
+      (ALLOWED_ORIGINS.has(origin) ||
+        (import.meta.env.DEV && isLocalOrigin(origin)));
 
     if (!origin || !isAllowed) {
       return new Response(

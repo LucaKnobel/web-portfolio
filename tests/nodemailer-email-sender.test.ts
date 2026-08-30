@@ -3,6 +3,33 @@ import { createNodemailerEmailSender } from "@/server/infrastructure/email/nodem
 import type { EmailData } from "@/server/application/interfaces/email-sender.js";
 import nodemailer from "nodemailer";
 
+vi.mock("astro:env/server", () => ({
+  get SMTP_HOST() {
+    return process.env.SMTP_HOST;
+  },
+  get SMTP_PORT() {
+    return process.env.SMTP_PORT ? Number(process.env.SMTP_PORT) : undefined;
+  },
+  get SMTP_USER() {
+    return process.env.SMTP_USER;
+  },
+  get SMTP_PASS() {
+    return process.env.SMTP_PASS;
+  },
+  get SMTP_FROM() {
+    return process.env.SMTP_FROM;
+  },
+  get SMTP_TO() {
+    return process.env.SMTP_TO;
+  },
+  get LOG_LEVEL() {
+    return process.env.LOG_LEVEL ?? "info";
+  },
+  get APP_VERSION() {
+    return process.env.APP_VERSION ?? "dev";
+  },
+}));
+
 vi.mock("nodemailer");
 
 describe("createNodemailerEmailSender", () => {

@@ -1,4 +1,5 @@
 import pino from "pino";
+import { LOG_LEVEL } from "astro:env/server";
 import type { Logger } from "@/server/application/interfaces/logger.js";
 
 type LogLevel = "trace" | "debug" | "info" | "warn" | "error";
@@ -16,10 +17,8 @@ const toLogLevel = (value: unknown, fallback: LogLevel): LogLevel => {
   return fallback;
 };
 
-const logLevel = process.env.LOG_LEVEL as LogLevel | undefined;
-
 const baseLogger = pino({
-  level: toLogLevel(logLevel, "info"),
+  level: toLogLevel(LOG_LEVEL, "info"),
   redact: {
     paths: [
       "req.headers.authorization",

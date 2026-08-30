@@ -1,4 +1,12 @@
 import nodemailer from "nodemailer";
+import {
+  SMTP_HOST,
+  SMTP_PORT,
+  SMTP_USER,
+  SMTP_PASS,
+  SMTP_FROM,
+  SMTP_TO,
+} from "astro:env/server";
 import type {
   EmailSender,
   EmailData,
@@ -7,8 +15,6 @@ import type {
 import { buildEmailTemplate } from "@/server/infrastructure/email/email-template.js";
 
 const createTransporter = () => {
-  const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS } = process.env;
-
   if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS || !SMTP_PORT) {
     throw new Error(
       "Missing required SMTP configuration. Please check your environment variables.",
@@ -17,7 +23,7 @@ const createTransporter = () => {
 
   return nodemailer.createTransport({
     host: SMTP_HOST,
-    port: parseInt(SMTP_PORT, 10),
+    port: typeof SMTP_PORT === "number" ? SMTP_PORT : parseInt(SMTP_PORT, 10),
     secure: false,
     auth: {
       user: SMTP_USER,
@@ -33,8 +39,8 @@ export const createNodemailerEmailSender = (): EmailSender => ({
       const { html, text } = buildEmailTemplate(data);
 
       const info = await transporter.sendMail({
-        from: `"${data.firstName} ${data.lastName}" <${process.env.SMTP_FROM}>`,
-        to: process.env.SMTP_TO,
+        from: `"${data.firstName} ${data.lastName}" <${SMTP_FROM}>`,
+        to: SMTP_TO,
         replyTo: data.email,
         subject: `[Web-Portfolio] ${data.subject}`,
         text,

@@ -4,9 +4,7 @@ import { createEtherealEmailSender } from "@/server/infrastructure/email/etherea
 import { createInMemoryRateLimiter } from "@/server/infrastructure/rate-limit/in-memory-rate-limiter.js";
 import { buildSendEmail } from "@/server/application/services/build-send-email.js";
 
-const isDevelopment = process.env.NODE_ENV !== "production";
-
-export const emailSender = isDevelopment
+export const emailSender = import.meta.env.DEV
   ? createEtherealEmailSender(logger)
   : createNodemailerEmailSender();
 
