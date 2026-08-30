@@ -18,7 +18,7 @@ export default defineConfig({
         values: ["trace", "debug", "info", "warn", "error"],
         default: "info",
       }),
-      APP_VERSION: envField.string({ context: "server", access: "public", default: "dev" }),
+      APP_VERSION: envField.string({ context: "server", access: "public" }),
     },
   },
 
