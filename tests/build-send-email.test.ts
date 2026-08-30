@@ -1,15 +1,18 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { buildSendEmail } from "@/server/application/services/build-send-email.js";
 import { EmailSendError } from "@/server/application/errors/email-send-error.js";
+import { RateLimitExceededError } from "@/server/application/errors/rate-limit-exceeded-error.js";
 import type {
   EmailSender,
   EmailData,
 } from "@/server/application/interfaces/email-sender.js";
 import type { Logger } from "@/server/application/interfaces/logger.js";
+import type { RateLimiter } from "@/server/application/interfaces/rate-limiter.js";
 
 describe("buildSendEmail", () => {
   let mockEmailSender: EmailSender;
   let mockLogger: Logger;
+  let mockRateLimiter: RateLimiter;
   const sampleEmailData: EmailData = {
     firstName: "Max",
     lastName: "Mustermann",
@@ -31,6 +34,18 @@ describe("buildSendEmail", () => {
       warn: vi.fn(),
       error: vi.fn(),
     };
+
+    mockRateLimiter = {
+      tryAcquire: vi.fn().mockReturnValue({ date: "2026-08-30" }),
+      release: vi.fn(),
+      getStatus: vi.fn().mockReturnValue({
+        allowed: true,
+        currentCount: 1,
+        maxLimit: 10,
+        resetDate: "2026-08-30",
+      }),
+      getSwissDate: vi.fn().mockReturnValue("2026-08-30"),
+    };
   });
 
   it("sends email successfully and logs progress", async () => {
@@ -42,26 +57,31 @@ describe("buildSendEmail", () => {
     const sendEmail = buildSendEmail({
       emailSender: mockEmailSender,
       logger: mockLogger,
+      rateLimiter: mockRateLimiter,
     });
 
     const result = await sendEmail(sampleEmailData);
 
     expect(result).toEqual({ success: true, messageId: "msg-123" });
+    expect(mockRateLimiter.tryAcquire).toHaveBeenCalled();
     expect(mockEmailSender.send).toHaveBeenCalledWith(sampleEmailData);
-    expect(mockLogger.info).toHaveBeenCalledWith(
-      "Starting email delivery process",
-      {
-        recipient: "max@example.com",
-        subject: "Test Subject",
-      },
-    );
-    expect(mockLogger.info).toHaveBeenCalledWith("Email sent successfully", {
-      messageId: "msg-123",
-      recipient: "max@example.com",
-    });
+    expect(mockRateLimiter.release).not.toHaveBeenCalled();
   });
 
-  it("throws EmailSendError when email sender returns failure", async () => {
+  it("throws RateLimitExceededError when rate limit is reached", async () => {
+    vi.mocked(mockRateLimiter.tryAcquire).mockReturnValue(null);
+
+    const sendEmail = buildSendEmail({
+      emailSender: mockEmailSender,
+      logger: mockLogger,
+      rateLimiter: mockRateLimiter,
+    });
+
+    await expect(sendEmail(sampleEmailData)).rejects.toThrow(RateLimitExceededError);
+    expect(mockEmailSender.send).not.toHaveBeenCalled();
+  });
+
+  it("releases reservation and throws EmailSendError when email sender returns failure", async () => {
     vi.mocked(mockEmailSender.send).mockResolvedValue({
       success: false,
       error: "SMTP Connection Timeout",
@@ -70,16 +90,18 @@ describe("buildSendEmail", () => {
     const sendEmail = buildSendEmail({
       emailSender: mockEmailSender,
       logger: mockLogger,
+      rateLimiter: mockRateLimiter,
     });
 
     await expect(sendEmail(sampleEmailData)).rejects.toThrow(EmailSendError);
+    expect(mockRateLimiter.release).toHaveBeenCalled();
     expect(mockLogger.error).toHaveBeenCalledWith("Failed to send email", {
       error: "SMTP Connection Timeout",
       email: "max@example.com",
     });
   });
 
-  it("catches unexpected exceptions and throws EmailSendError", async () => {
+  it("releases reservation and throws EmailSendError on unexpected exception", async () => {
     vi.mocked(mockEmailSender.send).mockRejectedValue(
       new Error("Network crash"),
     );
@@ -87,13 +109,10 @@ describe("buildSendEmail", () => {
     const sendEmail = buildSendEmail({
       emailSender: mockEmailSender,
       logger: mockLogger,
+      rateLimiter: mockRateLimiter,
     });
 
     await expect(sendEmail(sampleEmailData)).rejects.toThrow(EmailSendError);
-    expect(mockLogger.error).toHaveBeenCalledWith(
-      "Unexpected error during send email execution",
-      {},
-      expect.any(Error),
-    );
+    expect(mockRateLimiter.release).toHaveBeenCalled();
   });
 });

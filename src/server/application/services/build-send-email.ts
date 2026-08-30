@@ -4,16 +4,27 @@ import type {
   EmailResult,
 } from "@/server/application/interfaces/email-sender.js";
 import type { Logger } from "@/server/application/interfaces/logger.js";
+import type { RateLimiter } from "@/server/application/interfaces/rate-limiter.js";
 import { EmailSendError } from "@/server/application/errors/email-send-error.js";
+import { RateLimitExceededError } from "@/server/application/errors/rate-limit-exceeded-error.js";
 
 export type SendEmailDependencies = {
   emailSender: EmailSender;
   logger: Logger;
+  rateLimiter: RateLimiter;
 };
 
 export const buildSendEmail = (deps: SendEmailDependencies) => {
   return async (data: EmailData): Promise<EmailResult> => {
-    const { emailSender, logger } = deps;
+    const { emailSender, logger, rateLimiter } = deps;
+
+    const reservation = rateLimiter.tryAcquire();
+    if (!reservation) {
+      logger.warn("Email sending blocked: rate limit exceeded", {
+        recipient: data.email,
+      });
+      throw new RateLimitExceededError();
+    }
 
     logger.info("Starting email delivery process", {
       recipient: data.email,
@@ -24,6 +35,7 @@ export const buildSendEmail = (deps: SendEmailDependencies) => {
       const result = await emailSender.send(data);
 
       if (!result.success) {
+        rateLimiter.release(reservation);
         logger.error("Failed to send email", {
           error: result.error,
           email: data.email,
@@ -39,7 +51,12 @@ export const buildSendEmail = (deps: SendEmailDependencies) => {
 
       return result;
     } catch (error) {
-      if (error instanceof EmailSendError) {
+      rateLimiter.release(reservation);
+
+      if (
+        error instanceof RateLimitExceededError ||
+        error instanceof EmailSendError
+      ) {
         throw error;
       }
 

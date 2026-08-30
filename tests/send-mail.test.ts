@@ -25,11 +25,9 @@ vi.mock("astro:schema", async () => ({
 }));
 
 import { sendEmail } from "@/server/infrastructure/composition.js";
-import {
-  getRateLimitService,
-  resetRateLimitStateForTests,
-} from "@/services/rate-limit-service.js";
 import { sendMail } from "@/actions/send-mail.js";
+import { RateLimitExceededError } from "@/server/application/errors/rate-limit-exceeded-error.js";
+import { EmailSendError } from "@/server/application/errors/email-send-error.js";
 
 vi.mock("@/server/infrastructure/composition.js", () => ({
   sendEmail: vi.fn(),
@@ -51,53 +49,51 @@ const validInput = () => ({
   website: "",
 });
 
-describe("sendMail rate-limit reservations", () => {
+describe("sendMail action", () => {
   beforeEach(() => {
-    resetRateLimitStateForTests();
     vi.clearAllMocks();
   });
 
-  it("keeps exactly one slot after a successful email", async () => {
+  it("returns success: true when sendEmail succeeds", async () => {
     vi.mocked(sendEmail).mockResolvedValue({
       success: true,
-      messageId: "test",
+      messageId: "test-id",
     });
 
-    await sendMail.orThrow(validInput() as unknown as FormData);
-
-    expect(getRateLimitService().getStatus().currentCount).toBe(1);
+    const result = await sendMail.orThrow(validInput() as unknown as FormData);
+    expect(result).toEqual({ success: true });
+    expect(sendEmail).toHaveBeenCalledWith({
+      firstName: "Max",
+      lastName: "Mustermann",
+      email: "max@example.com",
+      subject: "Test",
+      message: "Hello",
+    });
   });
 
-  it("releases the slot after a failed email", async () => {
-    vi.mocked(sendEmail).mockResolvedValue({
-      success: false,
-      error: "SMTP failed",
-    });
+  it("handles RateLimitExceededError by converting to TOO_MANY_REQUESTS ActionError", async () => {
+    vi.mocked(sendEmail).mockRejectedValue(
+      new RateLimitExceededError("Daily email limit reached. Please try again tomorrow.")
+    );
 
     await expect(
-      sendMail.orThrow(validInput() as unknown as FormData),
-    ).rejects.toBeDefined();
-
-    expect(getRateLimitService().getStatus().currentCount).toBe(0);
-  });
-
-  it("preserves TOO_MANY_REQUESTS when all slots are reserved", async () => {
-    const rateLimitService = getRateLimitService();
-    for (let count = 0; count < 10; count += 1) {
-      expect(rateLimitService.tryAcquire()).not.toBeNull();
-    }
-
-    vi.mocked(sendEmail).mockResolvedValue({
-      success: true,
-      messageId: "test",
-    });
-
-    await expect(
-      sendMail.orThrow(validInput() as unknown as FormData),
+      sendMail.orThrow(validInput() as unknown as FormData)
     ).rejects.toMatchObject({
       code: "TOO_MANY_REQUESTS",
+      message: "Daily email limit reached. Please try again tomorrow.",
     });
+  });
 
-    expect(sendEmail).not.toHaveBeenCalled();
+  it("handles EmailSendError by converting to BAD_REQUEST ActionError", async () => {
+    vi.mocked(sendEmail).mockRejectedValue(
+      new EmailSendError("SMTP connection failed")
+    );
+
+    await expect(
+      sendMail.orThrow(validInput() as unknown as FormData)
+    ).rejects.toMatchObject({
+      code: "BAD_REQUEST",
+      message: "SMTP connection failed",
+    });
   });
 });

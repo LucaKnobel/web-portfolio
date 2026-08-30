@@ -23,6 +23,7 @@ vi.mock("@/server/infrastructure/composition.js", () => ({
 
 import { ActionError } from "astro:actions";
 import { ApplicationError } from "@/server/application/errors/application-error.js";
+import { RateLimitExceededError } from "@/server/application/errors/rate-limit-exceeded-error.js";
 import { handleActionError } from "@/actions/handle-action-error.js";
 
 describe("handleActionError", () => {
@@ -35,7 +36,19 @@ describe("handleActionError", () => {
     expect(() => handleActionError(actionErr)).toThrow(actionErr);
   });
 
-  it("converts ApplicationError to BAD_REQUEST ActionError", () => {
+  it("converts RateLimitExceededError to TOO_MANY_REQUESTS ActionError", () => {
+    const rateErr = new RateLimitExceededError("Limit reached");
+
+    try {
+      handleActionError(rateErr);
+    } catch (err) {
+      expect(err).toBeInstanceOf(ActionError);
+      expect((err as any).code).toBe("TOO_MANY_REQUESTS");
+      expect((err as any).message).toBe("Limit reached");
+    }
+  });
+
+  it("converts general ApplicationError to BAD_REQUEST ActionError", () => {
     const appErr = new ApplicationError("Invalid domain state", "DOMAIN_ERROR");
 
     try {
