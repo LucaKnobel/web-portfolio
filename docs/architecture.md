@@ -40,9 +40,9 @@ The frontend follows official **Astro architectural patterns**, focusing on serv
 - **Layouts (`src/layouts/`)**:
   - Wraps pages with common HTML document scaffolding, meta tags, and global stylesheets.
 
-- **Components & Islands (`src/components/`)**:
-  - **Astro Components (`.astro`)**: Static HTML templates rendered exclusively on the server with zero client-side JavaScript bundle overhead.
-  - **UI Framework Islands (`.vue`)**: Client-side interactive components hydrated selectively using Astro directives (e.g. `client:load` or `client:idle`).
+- **Components (`src/components/`)**:
+  - **Astro Components (`.astro`)**: Server-rendered templates with small, local scripts only where native browser behavior needs enhancement.
+  - Interactive controls use native HTML elements such as `<dialog>` and `<details>` instead of a client-side UI framework.
 
 - **Content Collections (`src/content/` & `src/content.config.ts`)**:
   - Structured content management for Markdown and JSON documents.
@@ -50,9 +50,6 @@ The frontend follows official **Astro architectural patterns**, focusing on serv
 
 - **Internationalization (`src/i18n/`)**:
   - Dictionary-based translation utilities and locale detection helpers.
-
-- **Composables & State (`src/composables/`)**:
-  - Encapsulated reactive state logic for interactive UI islands.
 
 ---
 
