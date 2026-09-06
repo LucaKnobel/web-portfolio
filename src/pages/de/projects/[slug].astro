@@ -1,6 +1,7 @@
 ---
 import { getProjectDetail } from "@/content/get-project-detail.ts";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import ErrorPage from "@/components/ErrorPage.astro";
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 import ProjectDetail from "@/components/ProjectDetail.astro";
 
@@ -8,25 +9,36 @@ const { slug } = Astro.params;
 const lang = getLangFromUrl(Astro.url);
 
 if (!lang || !slug) {
-  return Astro.redirect("/404");
+  Astro.response.status = 404;
 }
 
 const t = useTranslations(lang);
 
 let detail;
 try {
-  detail = await getProjectDetail(lang, slug);
+  detail = await getProjectDetail(lang, slug ?? "");
 } catch (err) {
-  return Astro.redirect("/500");
+  Astro.response.status = 500;
 }
 
-if (!detail || !detail.project || !detail.Content) {
-  return Astro.redirect("/404");
+const project = detail?.project;
+const Content = detail?.Content;
+if (!project || !Content) {
+  Astro.response.status = Astro.response.status === 500 ? 500 : 404;
 }
-
-const { project, Content } = detail;
+const errorStatus = Astro.response.status === 500 ? 500 : 404;
 ---
 
-<BaseLayout title={`Luca Knobel | ${project.data.title}`}>
-  <ProjectDetail project={project} lang={lang} t={t} Content={Content} />
+<BaseLayout
+  title={project
+    ? `Luca Knobel | ${project.data.title}`
+    : `Luca Knobel | ${errorStatus === 500 ? t("500.pageTitle") : t("404.pageTitle")}`}
+>
+  {
+    project && Content ? (
+      <ProjectDetail project={project} lang={lang} t={t} Content={Content} />
+    ) : (
+      <ErrorPage status={errorStatus} />
+    )
+  }
 </BaseLayout>

@@ -1,7 +1,9 @@
 ---
+import type { Translator } from "@/i18n/utils";
+
 export interface CareerCardProps {
   /** Translation function for UI strings */
-  t: Function;
+  t: Translator;
   /** Entry object containing all career/education data */
   entry: {
     /** Name of the organization */
@@ -94,12 +96,12 @@ const {
     background: var(--color-surface-1);
     border-radius: var(--card-radius);
     box-shadow: var(--elev-1);
-    padding: var(--card-pad);
+    padding: var(--space-6);
     margin: 0 auto;
     border: 1px solid var(--color-border);
     display: flex;
     flex-direction: column;
-    gap: var(--stack-sm);
+    gap: var(--space-3);
     max-width: 600px;
     width: 95%;
     transition:
@@ -109,7 +111,7 @@ const {
     header {
       display: flex;
       flex-direction: column;
-      gap: var(--stack-xs);
+      gap: var(--space-2);
 
       h4 {
         font-size: var(--heading-sm);
@@ -140,7 +142,7 @@ const {
       .meta-row {
         display: flex;
         flex-direction: row;
-        gap: var(--stack-xs);
+        gap: var(--space-2);
         align-items: center;
       }
       .final-grade {
@@ -152,16 +154,15 @@ const {
     }
 
     details {
-      margin-top: var(--stack-xs);
+      margin-top: var(--space-2);
       border-top: 1px solid var(--color-border-hairline);
-      padding-top: var(--stack-xs);
+      padding-top: var(--space-2);
 
       summary {
         cursor: pointer;
         font-size: var(--text-small);
         color: var(--color-primary);
-        outline: none;
-        padding: var(--stack-xs) 0;
+        padding: var(--space-2) 0;
         font-weight: var(--fw-medium);
         border-radius: var(--radius-sm);
         transition: background var(--dur-1) var(--ease-standard);
@@ -174,12 +175,12 @@ const {
       }
 
       .details-content {
-        margin-top: var(--stack-xs);
+        margin-top: var(--space-2);
         font-size: var(--text-body);
         color: var(--color-text);
 
         ul {
-          margin: 0 0 var(--stack-xs) 0;
+          margin: 0 0 var(--space-2) 0;
           padding-left: 1.2em;
           list-style: disc;
         }

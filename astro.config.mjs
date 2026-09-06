@@ -1,7 +1,6 @@
 import { defineConfig, envField } from "astro/config";
 import icon from "astro-icon";
 import node from "@astrojs/node";
-import vue from "@astrojs/vue";
 
 export default defineConfig({
   env: {
@@ -22,7 +21,6 @@ export default defineConfig({
     },
   },
 
-  /* CSP experimental feature from Astro doesn't work, using custom middleware instead */
   output: "server",
   adapter: node({
     mode: "standalone",
@@ -45,7 +43,35 @@ export default defineConfig({
         hostname: "www.lucaknobel.ch",
         protocol: "https:"
       }
-    ]
+    ],
+    csp: {
+      directives: [
+        "default-src 'self'",
+        "img-src 'self' data:",
+        "font-src 'self' data:",
+        "connect-src 'self'",
+        "media-src 'self'",
+        "worker-src 'self' blob:",
+        "object-src 'none'",
+        "base-uri 'self'",
+        "form-action 'self'",
+        "manifest-src 'self'",
+        "frame-ancestors 'none'",
+        "upgrade-insecure-requests",
+      ],
+      scriptDirective: {
+        resources: [
+          { resource: "'self'", kind: "element" },
+          { resource: "'none'", kind: "attribute" },
+        ],
+      },
+      styleDirective: {
+        resources: [
+          { resource: "'self'", kind: "element" },
+          { resource: "'none'", kind: "attribute" },
+        ],
+      },
+    },
   },
 
   markdown: {
@@ -75,5 +101,5 @@ export default defineConfig({
 
   integrations: [icon({
     iconDir: "src/assets/icons",
-  }), vue()],
+  })],
 });

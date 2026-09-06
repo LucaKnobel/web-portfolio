@@ -1,13 +1,39 @@
 ---
+import { getPrivacyPolicy } from "@/content/get-privacy-policy";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import ErrorPage from "@/components/ErrorPage.astro";
 import PrivacyPolicySection from "@/components/PrivacyPolicySection.astro";
 
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
----
-<BaseLayout title="Luca Knobel | Portfolio">
-    <PrivacyPolicySection lang={lang} t={t} />
-</BaseLayout>
 
+let Content;
+try {
+  const policy = await getPrivacyPolicy(lang);
+
+  if (!policy) {
+    Astro.response.status = 404;
+  } else {
+    ({ Content } = policy);
+  }
+} catch {
+  Astro.response.status = 500;
+}
+const errorStatus = Astro.response.status === 500 ? 500 : 404;
+---
+
+<BaseLayout
+  title={Content
+    ? "Luca Knobel | Portfolio"
+    : `Luca Knobel | ${errorStatus === 500 ? t("500.pageTitle") : t("404.pageTitle")}`}
+>
+  {
+    Content ? (
+      <PrivacyPolicySection Content={Content} />
+    ) : (
+      <ErrorPage status={errorStatus} />
+    )
+  }
+</BaseLayout>

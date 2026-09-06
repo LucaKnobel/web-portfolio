@@ -1,0 +1,121 @@
+---
+import { Icon } from "astro-icon/components";
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<button
+  class="theme-toggle"
+  data-theme-toggle
+  type="button"
+  aria-label={t("aria.themeSelect")}
+>
+  <span class="icon-container" aria-hidden="true">
+    <Icon name="mdi:white-balance-sunny" class="theme-icon theme-icon-sun" />
+    <Icon name="mdi:brightness-3" class="theme-icon theme-icon-moon" />
+  </span>
+</button>
+
+<script>
+  type Theme = "light" | "dark";
+
+  const getNextTheme = (root: HTMLElement): Theme => {
+    const currentTheme: Theme =
+      root.dataset.theme === "dark" ? "dark" : "light";
+    return currentTheme === "dark" ? "light" : "dark";
+  };
+
+  document.addEventListener("click", (event) => {
+    if (!(event.target instanceof Element)) return;
+
+    const toggle = event.target.closest<HTMLButtonElement>(
+      "[data-theme-toggle]",
+    );
+    if (!toggle) return;
+
+    const root = document.documentElement;
+    const theme = getNextTheme(root);
+    const maxAge = 60 * 60 * 24 * 365;
+    const secure = window.location.protocol === "https:" ? "; Secure" : "";
+
+    root.dataset.theme = theme;
+    document.cookie = `theme=${theme}; Max-Age=${maxAge}; Path=/; SameSite=Lax${secure}`;
+  });
+</script>
+
+<style>
+  .theme-toggle {
+    background: var(--grad-surface-soft);
+    border: var(--border-hairline) solid var(--color-border-hairline);
+    border-radius: var(--button-radius);
+    box-shadow: var(--elev-1);
+    color: var(--color-text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: var(--touch-target-min);
+    min-width: var(--touch-target-min);
+    padding: 0;
+    transition:
+      background-color var(--dur-2) var(--ease-standard),
+      border-color var(--dur-2) var(--ease-standard),
+      transform var(--dur-2) var(--ease-standard);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .theme-toggle:hover {
+    background: var(--color-surface-3);
+    transform: scale(var(--scale-hover));
+    border-color: var(--color-primary);
+  }
+
+  .theme-toggle:hover .theme-icon,
+  .theme-toggle:focus-visible .theme-icon {
+    color: var(--color-primary);
+  }
+
+  .theme-toggle:active {
+    transform: scale(var(--scale-active));
+  }
+
+  .theme-toggle:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  .icon-container {
+    position: relative;
+    width: var(--icon-xs);
+    height: var(--icon-xs);
+  }
+
+  .theme-icon {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    color: var(--color-text);
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+    transition: color var(--dur-2) var(--ease-standard);
+  }
+
+  .theme-icon-moon,
+  :global([data-theme="dark"]) .theme-icon-sun {
+    opacity: 0;
+    visibility: hidden;
+    transform: rotate(-180deg) scale(0.5);
+    pointer-events: none;
+  }
+
+  :global([data-theme="dark"]) .theme-icon-moon {
+    opacity: 1;
+    visibility: visible;
+    transform: rotate(0deg) scale(1);
+  }
+
+</style>

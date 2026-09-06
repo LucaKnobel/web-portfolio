@@ -2,99 +2,100 @@
 import Navigation from "./Navigation.astro";
 import ActionButton from "./ActionButton.astro";
 import Copyright from "./Copyright.astro";
+import type { Language, Translator } from "@/i18n/utils";
 
 export interface FooterProps {
-    /** Language code for constructing localized links */
-    lang: string;
-    /** Translation function for UI strings */
-    t: Function;
+  /** Language code for constructing localized links */
+  lang: Language;
+  /** Translation function for UI strings */
+  t: Translator;
 }
 
 const { lang, t } = Astro.props as FooterProps;
 
 const footerLinks = [
-    { href: `/${lang}/projects`, label: t("nav.projects") },
-    { href: `/${lang}/contact`, label: t("nav.contact") },
-    { href: `/${lang}/career`, label: t("nav.career") },
-    { href: `/${lang}/imprint`, label: t("nav.imprint") },
-    { href: `/${lang}/privacy-policy`, label: t("nav.privacyPolicy") },
+  { href: `/${lang}/projects`, label: t("nav.projects") },
+  { href: `/${lang}/contact`, label: t("nav.contact") },
+  { href: `/${lang}/career`, label: t("nav.career") },
+  { href: `/${lang}/imprint`, label: t("nav.imprint") },
+  { href: `/${lang}/privacy-policy`, label: t("nav.privacyPolicy") },
 ];
 ---
 
 <footer class="footer">
-    <div class="container">
-        <Navigation links={footerLinks} />
-        <div class="socials">
-            <ActionButton
-                href="https://github.com/LucaKnobel"
-                icon="mdi:github"
-                ariaLabel="GitHub"
-                variant="gradient"
-                size="square"
-            />
-            <ActionButton
-                href="https://linkedin.com/in/luca-knobel-14b4a7221"
-                icon="mdi:linkedin"
-                ariaLabel="LinkedIn"
-                variant="gradient"
-                size="square"
-            />
-        </div>
-        <Copyright t={t} />
+  <div class="container">
+    <Navigation links={footerLinks} />
+    <div class="socials">
+      <ActionButton
+        href="https://github.com/LucaKnobel"
+        icon="mdi:github"
+        ariaLabel="GitHub"
+        variant="gradient"
+        size="square"
+      />
+      <ActionButton
+        href="https://linkedin.com/in/luca-knobel-14b4a7221"
+        icon="mdi:linkedin"
+        ariaLabel="LinkedIn"
+        variant="gradient"
+        size="square"
+      />
     </div>
+    <Copyright t={t} />
+  </div>
 </footer>
 
 <style>
+  .footer {
+    margin-top: auto;
+    width: 100%;
+    padding: var(--space-8) var(--gutter);
+    background: var(--color-surface-1);
+    border-top: var(--border-hairline) solid var(--color-border-hairline);
+    text-align: center;
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-6);
+      max-width: var(--content-max);
+      margin-inline: auto;
+
+      .socials {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-3);
+        flex-wrap: wrap;
+      }
+    }
+  }
+
+  @media (min-width: 600px) {
     .footer {
-        margin-top: auto;
-        width: 100%;
-        padding: var(--stack-lg) var(--gutter);
-        background: var(--color-surface-1);
-        border-top: var(--border-hairline) solid var(--color-border-hairline);
-        text-align: center;
+      .container {
+        gap: var(--space-3);
 
-        .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: var(--stack-md);
-            max-width: var(--content-max);
-            margin-inline: auto;
-
-            .socials {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: var(--stack-sm);
-                flex-wrap: wrap;
-            }
+        .socials {
+          gap: var(--space-3);
         }
+      }
     }
+  }
 
-    @media (min-width: 600px) {
-        .footer {
-            .container {
-                gap: var(--stack-sm);
+  @media (min-width: 1024px) {
+    .footer {
+      padding: var(--space-6) var(--gutter);
 
-                .socials {
-                    gap: var(--stack-sm);
-                }
-            }
+      .container {
+        gap: var(--space-2);
+
+        .socials {
+          gap: var(--space-2);
         }
+      }
     }
-
-    @media (min-width: 1024px) {
-        .footer {
-            padding: var(--stack-md) var(--gutter);
-
-            .container {
-                gap: var(--stack-xs);
-
-                .socials {
-                    gap: var(--stack-xs);
-                }
-            }
-        }
-    }
+  }
 </style>

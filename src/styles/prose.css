@@ -1,0 +1,202 @@
+@layer prose {
+  .prose {
+    line-height: var(--lh);
+    color: var(--color-text);
+    word-break: break-word;
+  }
+
+  .prose h1,
+  .prose h2,
+  .prose h3,
+  .prose h4,
+  .prose h5,
+  .prose h6 {
+    font-weight: var(--fw-semibold);
+    color: var(--color-text);
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    line-height: 1.2;
+    word-break: break-word;
+    hyphens: auto;
+  }
+
+  .prose h1 { font-size: var(--heading-lg); }
+  .prose h2 { font-size: var(--heading-md); }
+  .prose h3 { font-size: var(--heading-sm); }
+  .prose h4 { font-size: var(--heading-xs); }
+  .prose h5,
+  .prose h6 { font-size: var(--text-body); }
+
+  .prose p,
+  .prose li {
+    hyphens: manual;
+    -webkit-hyphens: manual;
+    -ms-hyphens: manual;
+    text-align: left;
+    word-break: normal;
+    margin-bottom: var(--space-6);
+    word-spacing: normal;
+    letter-spacing: normal;
+  }
+
+  .prose ul,
+  .prose ol {
+    margin-bottom: var(--space-6);
+    padding-left: var(--space-8);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    hyphens: auto;
+    word-break: break-word;
+  }
+
+  .prose a {
+    color: var(--color-link);
+    text-decoration: underline;
+    transition: color var(--dur-1) var(--ease-standard);
+    overflow-wrap: anywhere;
+    text-underline-offset: 0.15em;
+    border-radius: var(--radius-sm);
+  }
+
+  .prose a:hover,
+  .prose a:focus-visible {
+    color: var(--color-link-hover);
+    text-decoration-thickness: 0.12em;
+  }
+
+  /* Keep inline links readable on every dark prose surface. */
+  [data-theme="dark"] .prose a {
+    color: var(--color-link-hover);
+  }
+
+  .prose strong {
+    font-weight: var(--fw-semibold);
+  }
+
+  .prose em {
+    font-style: italic;
+  }
+
+  .prose pre {
+    max-width: 100%;
+    padding: var(--space-8);
+    overflow-x: auto;
+    margin-bottom: var(--space-8);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--elev-2);
+    font-family: var(--font-mono);
+    text-align: left;
+    white-space: pre;
+  }
+
+  .prose code {
+    padding: 0.18em 0.45em;
+    border: 1px solid var(--color-border-hairline);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-1);
+    color: var(--color-primary);
+    font-family: var(--font-mono);
+    font-size: 0.97em;
+    white-space: pre;
+  }
+
+  .prose pre code {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    box-shadow: none;
+  }
+
+  .prose img,
+  .prose picture,
+  .prose astro-image {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: var(--space-6) 0;
+    border-radius: var(--button-radius);
+  }
+
+  .prose blockquote {
+    margin: var(--space-6) 0;
+    padding-left: var(--space-6);
+    border-left: 4px solid var(--color-primary);
+    color: var(--color-muted);
+    font-style: italic;
+  }
+
+  .prose table {
+    width: 100%;
+    margin: var(--space-8) 0;
+    border: var(--border-strong) solid var(--color-border);
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    font-family: var(--font-sans);
+  }
+
+  .prose th,
+  .prose td {
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+    text-align: left;
+    vertical-align: top;
+    hyphens: auto;
+  }
+
+  .prose th {
+    background: var(--color-surface-3);
+    font-weight: var(--fw-semibold);
+  }
+
+  .prose tbody tr:nth-child(even) {
+    background: var(--color-surface-1);
+  }
+
+  .prose hr {
+    margin: var(--space-8) 0;
+    border: 0;
+    border-top: 1px solid var(--divider-subtle);
+  }
+
+  @media (min-width: 1024px) {
+    .prose h1 {
+      font-size: var(--display-xl);
+      margin-top: var(--space-12);
+      margin-bottom: var(--space-6);
+    }
+
+    .prose h2 {
+      font-size: var(--heading-lg);
+      margin-top: var(--space-8);
+      margin-bottom: var(--space-6);
+    }
+
+    .prose h3 {
+      font-size: var(--heading-md);
+      margin-top: var(--space-6);
+      margin-bottom: var(--space-3);
+    }
+
+    .prose h4 {
+      font-size: var(--heading-sm);
+      margin-top: var(--space-3);
+      margin-bottom: var(--space-2);
+    }
+
+    .prose p,
+    .prose li {
+      text-align: justify;
+      text-justify: inter-word;
+      margin-bottom: var(--space-2);
+      hyphens: auto;
+      -webkit-hyphens: auto;
+      -ms-hyphens: auto;
+    }
+  }
+}

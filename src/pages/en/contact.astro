@@ -7,6 +7,6 @@ const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 ---
 
-<BaseLayout title={`Luca Knobel | ${t("career.pageTitle")}`}>
-    <ContactForm lang={lang} t={t} />
+<BaseLayout title={`Luca Knobel | ${t("contact.pageTitle")}`}>
+  <ContactForm lang={lang} t={t} />
 </BaseLayout>

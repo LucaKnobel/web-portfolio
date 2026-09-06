@@ -25,11 +25,11 @@ Die Plattform nutze ich unter anderem für Schul-, Portfolio- und persönliche P
 
 # Security und Infrastruktur
 
-Beim Aufbau der Umgebung stand eine möglichst kleine Angriffsfläche im Vordergrund. Administrativer Zugriff erfolgt über einen abgesicherten SSH-Zugang, während nftables den Netzwerkzugriff auf die tatsächlich benötigten Dienste beschränkt.
+Beim Aufbau der Umgebung stand eine möglichst kleine Angriffsfläche im Vordergrund. Administrativer Zugriff erfolgt über einen gehärteten SSH-Zugang, während nftables den eingehenden Netzwerkverkehr auf die tatsächlich benötigten Dienste beschränkt.
 
-Die Anwendungen werden mit Docker containerisiert betrieben und können dadurch mit ihren jeweiligen Abhängigkeiten getrennt verwaltet und reproduzierbar bereitgestellt werden.
+Die Anwendungen werden als Docker-Container betrieben und über Coolify bereitgestellt. Dadurch verwalte ich neben den Anwendungen selbst auch zentrale Aspekte ihres Betriebs, darunter Domains und DNS, TLS/HTTPS, Reverse Proxying, Container-Netzwerke, persistente Daten sowie Umgebungsvariablen und Secrets.
 
-Im Rahmen des Projekts beschäftigte ich mich neben der eigentlichen Serveradministration auch praktisch mit DNS, TLS/HTTPS, Reverse Proxying, Container-Netzwerken, persistenten Daten sowie dem sicheren Umgang mit Umgebungsvariablen und Secrets.
+Durch den Betrieb auf eigener Infrastruktur konnte ich mich damit nicht nur mit dem Deployment einzelner Anwendungen, sondern auch mit den darunterliegenden Linux-, Netzwerk- und Container-Komponenten praktisch auseinandersetzen.
 
 # Erkenntnisse
 

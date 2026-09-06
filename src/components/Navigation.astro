@@ -37,7 +37,7 @@ const { links } = Astro.props;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: var(--stack-sm);
+      gap: var(--space-3);
       list-style: none;
       margin: 0;
       padding: 0;
@@ -60,11 +60,14 @@ const { links } = Astro.props;
       text-decoration: none;
       width: 100%;
       min-height: var(--touch-target-min);
-      padding: 0 var(--stack-xs);
+      padding: 0 var(--space-2);
       text-align: center;
       font-weight: var(--fw-medium);
       border-radius: var(--button-radius);
-      transition: all var(--dur-2) var(--ease-standard);
+      transition:
+        background-color var(--dur-2) var(--ease-standard),
+        color var(--dur-2) var(--ease-standard),
+        transform var(--dur-2) var(--ease-standard);
       box-sizing: border-box;
 
       &:hover {
@@ -80,7 +83,7 @@ const { links } = Astro.props;
       .nav-list {
         flex-direction: row;
         justify-content: center;
-        gap: var(--stack-xs);
+        gap: var(--space-2);
       }
 
       .nav-item {
@@ -90,7 +93,7 @@ const { links } = Astro.props;
 
       .nav-link {
         width: auto;
-        padding: var(--stack-xs) var(--stack-xs);
+        padding: var(--space-2) var(--space-2);
         min-height: auto;
       }
     }

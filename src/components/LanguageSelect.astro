@@ -1,0 +1,199 @@
+---
+import { Icon } from "astro-icon/components";
+import { languages as languageConfig } from "@/i18n/ui";
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+const currentLang = getLangFromUrl(Astro.url);
+const t = useTranslations(currentLang);
+const pathWithoutLanguage = Astro.url.pathname.replace(
+  /^\/[a-z]{2}(?=\/|$)/,
+  "",
+);
+
+const languageLinks = Object.entries(languageConfig).map(([code, label]) => ({
+  code,
+  label,
+  href: `/${code}${pathWithoutLanguage}`,
+}));
+---
+
+<details class="language-select" data-language-select>
+  <summary
+    class="language-toggle"
+    aria-label={t("aria.languageSelect")}
+    aria-expanded="false"
+  >
+    <Icon name="mdi:translate" class="language-icon" />
+  </summary>
+
+  <nav class="dropdown" aria-label={t("aria.languageSelect")}>
+    {
+      languageLinks.map((language) => (
+        <a
+          href={language.href}
+          class="language-option"
+          lang={language.code}
+          hreflang={language.code}
+          aria-current={language.code === currentLang ? "page" : undefined}
+        >
+          <span class="label">{language.label}</span>
+        </a>
+      ))
+    }
+  </nav>
+</details>
+
+<script>
+  const cleanups = new Set<() => void>();
+
+  const enhanceLanguageSelects = () => {
+    document
+      .querySelectorAll<HTMLDetailsElement>("[data-language-select]")
+      .forEach((select) => {
+        if (select.dataset.enhanced) return;
+
+        const summary = select.querySelector("summary");
+        if (!summary) return;
+
+        const syncExpandedState = () => {
+          summary.setAttribute("aria-expanded", String(select.open));
+        };
+
+        const closeOnOutsideClick = (event: MouseEvent) => {
+          if (!select.contains(event.target as Node)) select.open = false;
+        };
+
+        select.dataset.enhanced = "true";
+        select.addEventListener("toggle", syncExpandedState);
+        document.addEventListener("click", closeOnOutsideClick);
+        syncExpandedState();
+
+        cleanups.add(() => {
+          select.removeEventListener("toggle", syncExpandedState);
+          document.removeEventListener("click", closeOnOutsideClick);
+          delete select.dataset.enhanced;
+        });
+      });
+  };
+
+  const cleanupLanguageSelects = () => {
+    cleanups.forEach((cleanup) => cleanup());
+    cleanups.clear();
+  };
+
+  enhanceLanguageSelects();
+  document.addEventListener("astro:page-load", enhanceLanguageSelects);
+  document.addEventListener("astro:before-swap", cleanupLanguageSelects);
+</script>
+
+<style>
+  .language-select {
+    position: relative;
+    display: inline-block;
+  }
+
+  .language-toggle {
+    background: var(--grad-surface-soft);
+    border: var(--border-hairline) solid var(--color-border-hairline);
+    border-radius: var(--button-radius);
+    box-shadow: var(--elev-1);
+    color: var(--color-text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: var(--touch-target-min);
+    min-width: var(--touch-target-min);
+    padding: 0;
+    transition:
+      background-color var(--dur-2) var(--ease-standard),
+      border-color var(--dur-2) var(--ease-standard),
+      transform var(--dur-2) var(--ease-standard);
+    list-style: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .language-toggle::-webkit-details-marker {
+    display: none;
+  }
+
+  .language-toggle:hover,
+  .language-select[open] .language-toggle {
+    background: var(--color-surface-3);
+    border-color: var(--color-primary);
+  }
+
+  .language-toggle:hover .language-icon,
+  .language-select[open] .language-icon {
+    color: var(--color-primary);
+  }
+
+  .language-toggle:active {
+    transform: scale(var(--scale-active));
+  }
+
+  .language-toggle:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  .language-icon {
+    width: var(--icon-xs);
+    height: var(--icon-xs);
+    color: var(--color-text);
+    transition: color var(--dur-2) var(--ease-standard);
+  }
+
+  .dropdown {
+    position: absolute;
+    top: calc(100% + var(--space-2));
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 120px;
+    margin: 0;
+    padding: 0;
+    background: var(--color-surface-2);
+    border: var(--border-hairline) solid var(--color-border-hairline);
+    border-radius: var(--button-radius);
+    box-shadow: var(--elev-3);
+    overflow: hidden;
+    z-index: var(--layer-tooltip);
+    max-height: 50vh;
+    overflow-y: auto;
+  }
+
+  .language-option {
+    width: 100%;
+    box-sizing: border-box;
+    background: transparent;
+    border: 0;
+    color: var(--color-text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-3);
+    text-decoration: none;
+    transition:
+      background-color var(--dur-2) var(--ease-standard),
+      color var(--dur-2) var(--ease-standard);
+  }
+
+  .language-option:hover,
+  .language-option[aria-current="page"] {
+    background: var(--color-surface-3);
+    color: var(--color-primary);
+  }
+
+  .language-option:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: -2px;
+  }
+
+  .label {
+    font-size: var(--text-small);
+    font-weight: var(--fw-medium);
+  }
+
+</style>

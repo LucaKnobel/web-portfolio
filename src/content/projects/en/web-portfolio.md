@@ -1,130 +1,43 @@
 ---
 title: "Web Portfolio"
-description: "Modern SSR portfolio with Astro 7, Vue Islands, and TypeScript. Optimized for performance and security best practices with automated scans."
+description: "Modern web portfolio built with Astro 7 and TypeScript, with a focus on performance, security, and maintainable web architecture."
 date: "2025-11"
 lang: "en"
-tags: ["Astro", "Vue", "TypeScript", "SSR", "DevSecOps", "Nodemailer"]
+tags: ["Astro", "TypeScript", "SSR", "DevSecOps", "Nodemailer"]
 cover: "../images/web-portfolio/cover.png"
 url: "https://github.com/LucaKnobel/web-portfolio"
 ---
 
-# Web Portfolio
+# Project at a Glance
 
-## Project at a Glance
+This web portfolio is not only a platform for presenting my projects and professional experience, but also a web development project in its own right. It was developed with Astro 7 and TypeScript and is continuously evolving.
 
-A technical portfolio project that combines modern web technologies with a security-first approach. The portfolio uses **Server-Side Rendering** with Astro 7, **Vue Islands** for targeted interactivity, and achieves a **Lighthouse Score of 90+ on mobile**. Automated security scans (Semgrep, Trivy) run on every pull request to ensure code quality and security. The project demonstrates practical implementation of TypeScript, server-side protection, Nodemailer, and modern web standards and is under continuous development.
+The technical focus is on a lean and maintainable architecture, high performance, and the consistent application of web security practices. The portfolio is fully available in German and English and includes dynamically generated project pages, dark and light modes, and a server-side contact form.
 
-## Motivation & Project Goals
+The application runs on Node.js and is deployed on my own hosting infrastructure.
 
-This portfolio should not only appeal visually but also convince technically. The central goals were performance, security, and maintainability – combined with the desire to practically apply and understand modern web technologies.
+# Technical Implementation
 
-The result is an SSR-based portfolio with a minimalist JavaScript footprint, comprehensive security scans, and a consistent Lighthouse score of over 90 points on mobile devices.
+Astro provides the foundation of the application and handles routing, rendering, layouts, and the generation of content pages. Content such as projects is managed in a structured format and used to generate the corresponding German and English pages.
 
-## Technology Stack
+The portfolio uses server-side rendering for functionality that requires server-side processing while deliberately keeping client-side JavaScript to a minimum. Interactivity is only added where it is actually needed, such as navigation, language selection, and theme switching.
 
-### Core Technologies
+The contact form is processed entirely on the server. Messages are sent via SMTP using Nodemailer and are not permanently stored in a dedicated database. Server-side request limiting additionally helps reduce automated abuse.
 
-- **Astro 7** – SSR framework with Island Architecture
-- **TypeScript** – Type-safety for more robust code
-- **Vue 3** – Interactive components as Islands
-- **Node.js 24** – Modern runtime for server-side rendering
-- **Nodemailer** – SMTP-based email delivery
+For styling, I use custom CSS with centralized design tokens and reusable components instead of a UI framework. Responsive design, dark and light modes, and accessibility are addressed directly within the components and global styles.
 
-### Infrastructure & Tools
+# Security & Quality Assurance
 
-- **Infomaniak** – GDPR-compliant Node.js hosting (Switzerland)
-- **GitHub Actions** – Automated security scans on pull requests
-- **Semgrep & Trivy** – SAST, dependency scans, secret detection
+Security is considered both in the application architecture and throughout the development process. Server-side processing, input validation, restrictive security headers, and a Content Security Policy help reduce the attack surface of the publicly accessible application. Secrets such as SMTP credentials are available exclusively on the server and are never exposed to the browser.
 
-## Astro & Island Architecture
+Changes are verified through a CI pipeline. This includes automated tests as well as Semgrep and Trivy for static code analysis and security scanning. The project also aims to minimize unnecessary external dependencies and client-side resources.
 
-**Astro** is a modern web framework with flexible rendering modes: As a Static Site Generator (SSG) for purely static websites or with Server-Side Rendering (SSR) for dynamic content. The core idea: HTML is pre-rendered, JavaScript only reaches the client where it's actually needed.
+The portfolio does not use third-party tracking or analytics. The application is hosted on my own infrastructure at Infomaniak in Switzerland.
 
-This concept is called **Island Architecture** – static content remains static, interactive components are selectively activated as "islands". In this project, Astro components deliver static HTML, while Vue components are only initialized client-side when needed. The result: minimal JavaScript footprint with full interactivity.
+# Key Learnings
 
-More on the architecture: [astro.build/concepts](https://docs.astro.build/en/concepts/islands/)
+Continuously developing the portfolio has allowed me to deepen my understanding of modern web architecture, server-side rendering, TypeScript, CSS, and Astro. An important aspect has been deciding which functionality actually requires client-side JavaScript and which can be implemented entirely using Astro and native web platform features.
 
-## Project Architecture
+Another valuable aspect has been the practical connection between software development and operations. In addition to the application itself, I worked with security headers, Content Security Policy, SMTP, CI/CD, containerization, and operating the application on my own infrastructure.
 
-The project structure follows Astro's conventions and is modularly structured:
-
-```
-src/
-├── pages/          # Routing (SSR) with DE/EN language versions
-├── components/     # UI components (Astro + Vue Islands)
-├── layouts/        # Base layout with SEO meta tags
-├── content/        # Markdown & JSON for projects, career, education
-├── middleware/     # CSP headers
-├── services/       # Email delivery, rate limit logic
-├── i18n/           # Translations (DE/EN)
-└── styles/         # CSS tokens, primitives, global styles
-```
-
-The routing is based on URL paths (`/de/`, `/en/`) for clear language selection. Dynamic routes like `/de/projects/[slug].astro` load content from Markdown files and render them server-side.
-
-## Core Features
-
-The portfolio is divided into several main sections that present various aspects of my professional background and skills:
-
-### Intro Section
-
-The landing page provides a first impression with an introduction and direct contact options. Clear navigation to the different areas of the portfolio.
-
-### Career Section
-
-Presents my professional background in a timeline with positions, companies, and technologies used. The presentation is chronologically structured and fully available in two languages.
-
-### Projects Section
-
-Shows technical projects with images, short descriptions, and tags. Each project can be clicked on and leads to a detail page with comprehensive documentation and code examples.
-
-### Contact Section
-
-Functional contact form for directly sending messages. The form is protected against spam, uses a lightweight in-memory daily safeguard, and does not permanently store personal data.
-
-### Cross-Cutting Features
-
-**Language Switching:** Toggle between German and English via a dropdown menu in the navigation.
-
-**Dark/Light Mode:** Theme switching via a toggle button, preference is saved.
-
-**Mobile Navigation:** Responsive menu for optimal operation on smartphones and tablets.
-
-## Performance & Lighthouse
-
-The portfolio achieves a **Lighthouse Score of 90+ on mobile devices** through:
-
-- **Minimal JavaScript:** Island Architecture reduces the JS footprint
-- **Server-Side Rendering:** Instant First Contentful Paint
-- **CSS Tokens:** No framework bloat, hand-optimized styles
-- **Lazy Loading:** Images are loaded on demand and optimized
-
-## Security & Automated Scans
-
-Automated tests and security scans (Semgrep, Trivy) run on every pull request. These must pass successfully before code can be merged.
-
-## Lessons Learned & Challenges
-
-**Astro & Island Architecture:** Making decisions about which components need JavaScript and which are sufficient as static HTML. Using Vue Islands only where real interactivity is necessary.
-
-**TypeScript & Type-Safety:** Strict typing helps catch errors early. Particularly with structured content (Career, Projects), this pays off.
-
-**HTML, CSS & Performance:** Hand-optimized styles instead of framework bloat. CSS Custom Properties for theme switching. Responsive design without additional libraries.
-
-**DevSecOps Integration:** Integrating automated security scans directly into the development process. Tests and scans must run before code goes live.
-
-**Linux Hosting & Data Protection:** GDPR-compliant hosting in Switzerland. No tracking cookies, no data transmission to third countries.
-
-**Server-Side Rendering:** Understanding how SSR works and when it makes more sense than client-side rendering. Rate limiting and security on the server, not in the browser.
-
-## Project Status & Outlook
-
-The portfolio is functional and in productive use. Core features like multilingualism, theme switching, contact form, and security scans are implemented and tested.
-
-This project is a continuous learning process. Some areas are intentionally kept simple or are still being expanded.
-
-## Conclusion
-
-This portfolio combines modern web development practices with security best practices. From server-side rendering to automated security scans to GDPR compliance, every feature was practically implemented and every problem solved hands-on.
-
-The project shows that performance and security are not opposites and that modern frameworks like Astro make it possible to achieve both with minimal overhead. The continuous development process reflects that good software is never truly "finished".
+As a result, the project has evolved from a simple personal website into a long-term application where I can practically apply and explore new approaches to web development, security, performance, and deployment.
