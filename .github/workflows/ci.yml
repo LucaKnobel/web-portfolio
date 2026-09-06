@@ -50,6 +50,8 @@ jobs:
       # Verify the same Astro production build that the Docker image runs.
       - name: Build
         run: npm run build
+        env:
+          APP_VERSION: ${{ github.sha }}
 
       # Always run summary even if tests fail; uses if: always() to capture results
       - name: Test Summary
