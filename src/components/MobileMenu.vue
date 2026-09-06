@@ -8,14 +8,13 @@
 
         <!-- Mobile Menu Modal Overlay -->
         <Teleport to="body" :disabled="!isMounted">
-            <div v-show="isOpen && isMounted" class="mobile-menu-overlay" @click="handleOverlayClick">
-                <div class="mobile-menu-modal" @click="handleModalClick">
+            <div v-show="isOpen && isMounted" class="mobile-menu-overlay" @click.self="handleOverlayClick">
+                <div class="mobile-menu-modal">
 
                     <!-- Modal Header with all controls in one row -->
                     <div class="modal-header">
                         <div class="header-controls">
                             <slot />
-                            <ThemeToggle />
                             <button class="modal-close" @click="closeMenu" :aria-label="t('aria.closeMenu')"
                                 type="button">
                                 <Icon :icon="closeIcon" class="close-icon" />
@@ -46,7 +45,6 @@ import { navigate } from "astro:transitions/client";
 import { Icon } from "@iconify/vue"
 import menuIcon from "@iconify-icons/mdi/menu"
 import closeIcon from "@iconify-icons/mdi/close"
-import ThemeToggle from "./ThemeToggle.vue"
 import { useClientTranslations } from "@/i18n/utils.ts"
 
 interface NavLink {
@@ -91,11 +89,6 @@ const handleNavLinkClick = (href: string) => {
 
 const handleOverlayClick = (): void => {
     closeMenu();
-}
-
-const handleModalClick = (event: Event): void => {
-    /* Stop propagation to prevent modal from closing */
-    event.stopPropagation();
 }
 
 /* Close menu on escape key */

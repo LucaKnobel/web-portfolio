@@ -1,6 +1,6 @@
 ---
 import Navigation from "@/components/Navigation.astro";
-import ThemeToggle from "@/components/ThemeToggle.vue";
+import ThemeToggle from "@/components/ThemeToggle.astro";
 import LanguageSelect from "@/components/LanguageSelect.astro";
 import MobileMenu from "@/components/MobileMenu.vue";
 
@@ -42,13 +42,14 @@ const headerLinks = [
         <LanguageSelect />
 
         <!-- Theme toggle - desktop only -->
-        <ThemeToggle client:idle />
+        <ThemeToggle />
       </div>
 
       <!-- Mobile menu toggle - visible on small screens -->
       <div class="mobile-menu-toggle">
         <MobileMenu client:idle links={headerLinks}>
           <LanguageSelect />
+          <ThemeToggle />
         </MobileMenu>
       </div>
     </div>
