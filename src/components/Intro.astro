@@ -2,12 +2,13 @@
 import portrait from "@/assets/portrait-photo.jpg";
 import ActionButton from "@/components/ActionButton.astro";
 import { Image } from "astro:assets";
+import type { Language, Translator } from "@/i18n/utils";
 
 export interface IntroProps {
   /** Current language (e.g., 'de' or 'en') */
-  lang: string;
+  lang: Language;
   /** Translation function for UI strings */
-  t: Function;
+  t: Translator;
   /** Name to display in intro */
   name?: string;
   /** Role or subtitle */

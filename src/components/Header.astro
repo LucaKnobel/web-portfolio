@@ -3,12 +3,13 @@ import Navigation from "@/components/Navigation.astro";
 import ThemeToggle from "@/components/ThemeToggle.astro";
 import LanguageSelect from "@/components/LanguageSelect.astro";
 import MobileMenu from "@/components/MobileMenu.astro";
+import type { Language, Translator } from "@/i18n/utils";
 
 export interface HeaderProps {
   /** Current language (e.g., 'de' or 'en') */
-  lang: string;
+  lang: Language;
   /** Translation function for UI strings */
-  t: Function;
+  t: Translator;
 }
 
 const { lang, t } = Astro.props as HeaderProps;

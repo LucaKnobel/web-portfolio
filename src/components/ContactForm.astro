@@ -1,12 +1,13 @@
 ---
 import { actions } from "astro:actions";
 import { rateLimiter } from "@/server/infrastructure/composition.js";
+import type { Language, Translator } from "@/i18n/utils";
 
 export interface ContactFormProps {
     /** Current language (e.g., 'de' or 'en') */
-    lang: string;
+    lang: Language;
     /** Translation function for UI strings */
-    t: Function;
+    t: Translator;
 }
 
 const { lang, t } = Astro.props as ContactFormProps;

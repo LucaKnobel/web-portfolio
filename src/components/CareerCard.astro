@@ -1,7 +1,9 @@
 ---
+import type { Translator } from "@/i18n/utils";
+
 export interface CareerCardProps {
   /** Translation function for UI strings */
-  t: Function;
+  t: Translator;
   /** Entry object containing all career/education data */
   entry: {
     /** Name of the organization */
