@@ -26,6 +26,14 @@
         "oxc.oxc-vscode",
         "openai.chatgpt"
       ],
+      "mcp": {
+        "servers": {
+          "astro-docs": {
+            "type": "http",
+            "url": "https://mcp.docs.astro.build/mcp"
+          }
+        }
+      },
       "settings": {
         "terminal.integrated.cwd": "/workspaces/web-portfolio",
         "editor.formatOnSave": true,
