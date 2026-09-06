@@ -1,7 +1,6 @@
 import { defineConfig, envField } from "astro/config";
 import icon from "astro-icon";
 import node from "@astrojs/node";
-import vue from "@astrojs/vue";
 
 export default defineConfig({
   env: {
@@ -75,5 +74,5 @@ export default defineConfig({
 
   integrations: [icon({
     iconDir: "src/assets/icons",
-  }), vue()],
+  })],
 });

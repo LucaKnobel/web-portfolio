@@ -2,7 +2,7 @@
 import Navigation from "@/components/Navigation.astro";
 import ThemeToggle from "@/components/ThemeToggle.astro";
 import LanguageSelect from "@/components/LanguageSelect.astro";
-import MobileMenu from "@/components/MobileMenu.vue";
+import MobileMenu from "@/components/MobileMenu.astro";
 
 export interface HeaderProps {
   /** Current language (e.g., 'de' or 'en') */
@@ -47,7 +47,7 @@ const headerLinks = [
 
       <!-- Mobile menu toggle - visible on small screens -->
       <div class="mobile-menu-toggle">
-        <MobileMenu client:idle links={headerLinks}>
+        <MobileMenu links={headerLinks}>
           <LanguageSelect />
           <ThemeToggle />
         </MobileMenu>

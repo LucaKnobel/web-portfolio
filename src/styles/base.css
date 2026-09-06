@@ -19,10 +19,6 @@
     flex: 1;
   }
 
-  body.is-scroll-locked {
-    overflow: hidden;
-  }
-
   a {
     color: var(--color-link);
     text-decoration: none;
