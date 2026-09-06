@@ -73,7 +73,9 @@ const { title, description, date, tags, coverSrc, href } = Astro.props;
     &:hover,
     &:focus-visible {
       box-shadow: var(--elev-3);
-      scale: 1.012;
+      @media (prefers-reduced-motion: no-preference) {
+        scale: 1.012;
+      }
     }
 
     .project-card-cover {

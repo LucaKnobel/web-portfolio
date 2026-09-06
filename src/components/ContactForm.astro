@@ -373,8 +373,10 @@ const isRateLimit = result?.error?.code === "TOO_MANY_REQUESTS";
         align-items: center;
         justify-content: center;
 
-        &:hover {
-            transform: translateY(-1px);
+        @media (prefers-reduced-motion: no-preference) {
+            &:hover {
+                transform: translateY(-1px);
+            }
         }
     }
 
