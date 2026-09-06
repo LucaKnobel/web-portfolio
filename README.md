@@ -1,132 +1,89 @@
 # Web Portfolio
 
-## Project at a Glance
+My personal web portfolio, built with Astro 7 and TypeScript with a focus on security, performance, maintainability, and minimal client-side JavaScript.
 
-A technical portfolio project that combines modern web technologies with a security-first approach. The portfolio uses **Server-Side Rendering** with Astro 7, **Vue Islands** for targeted interactivity, and achieves a **Lighthouse Score of 90+ on mobile**. Automated security scans (Semgrep, Trivy) run on every pull request to ensure code quality and security. The project demonstrates practical implementation of TypeScript, Nodemailer, and modern web standards and is under continuous development.
+The application presents my professional experience, education, and software projects in German and English. It also serves as an ongoing project for applying and evaluating modern web development, security, and deployment practices.
 
-## Motivation & Project Goals
+## Tech Stack
 
-This portfolio should not only appeal visually but also convince technically. The central goals were performance, security, and maintainability – combined with the desire to practically apply and understand modern web technologies.
-
-The result is an SSR-based portfolio with a minimalist JavaScript footprint, comprehensive security scans, and a consistent Lighthouse score of over 90 points on mobile devices.
-
-## Technology Stack
-
-### Core Technologies
-
-- **Astro 7** – SSR framework with Island Architecture
-- **TypeScript** – Type-safety for more robust code
-- **Vue 3** – Interactive components as Islands
-- **Node.js 24** – Modern runtime for server-side rendering
+- **Astro 7** – application framework, routing, rendering, and content
+- **TypeScript** – type-safe application development
+- **Node.js 24** – server runtime
 - **Nodemailer** – SMTP-based email delivery
+- **CSS** – custom design system without a UI framework
+- **GitHub Actions** – CI and automated quality checks
+- **Semgrep & Trivy** – static analysis and security scanning
+- **Docker** – containerized deployment
+- **Infomaniak** – hosting infrastructure in Switzerland
 
-### Infrastructure & Tools
+## Architecture
 
-- **Infomaniak** – GDPR-compliant Node.js hosting (Switzerland)
-- **GitHub Actions** – Automated security scans on pull requests
-- **Semgrep & Trivy** – SAST, dependency scans, secret detection
+Astro forms the foundation of the application. Pages, layouts, and most UI components are rendered using Astro, while client-side JavaScript is kept to a minimum and only used where interactivity is required.
 
-## Astro & Island Architecture
+Portfolio content such as projects, career information, education, and privacy-related content is maintained separately from the UI and provided in German and English.
 
-**Astro** is a modern web framework with flexible rendering modes: As a Static Site Generator (SSG) for purely static websites or with Server-Side Rendering (SSR) for dynamic content. The core idea: HTML is pre-rendered, JavaScript only reaches the client where it's actually needed.
+Server-side functionality is primarily required for the contact form. Astro Actions provide the entry point for processing form submissions, while the underlying application logic is separated from infrastructure concerns.
 
-This concept is called **Island Architecture** – static content remains static, interactive components are selectively activated as "islands". In this project, Astro components deliver static HTML, while Vue components are only initialized client-side when needed. The result: minimal JavaScript footprint with full interactivity.
+The server-side code is structured around three main areas:
 
-More on the architecture: [astro.build/concepts](https://docs.astro.build/en/concepts/islands/)
+- **Application** – use cases, interfaces, and application-specific errors
+- **Infrastructure** – SMTP email delivery, logging, rate limiting, and validation
+- **Composition** – creation and wiring of concrete infrastructure dependencies
 
-## Project Architecture
+This keeps the core email workflow independent of concrete implementations such as Nodemailer or the in-memory rate limiter.
 
-The project structure follows Astro's conventions and is modularly structured:
+## Contact Form
 
-```
-src/
-├── pages/          # Routing (SSR) with DE/EN language versions
-├── components/     # UI components (Astro + Vue Islands)
-├── layouts/        # Base layout with SEO meta tags
-├── content/        # Markdown & JSON for projects, career, education
-├── middleware/     # CSP headers
-├── services/       # Email delivery, rate limit logic
-├── i18n/           # Translations (DE/EN)
-└── styles/         # CSS tokens, primitives, global styles
-```
+The contact form is processed entirely on the server. Submitted data is validated before being passed to the application service responsible for sending the message.
 
-The routing is based on URL paths (`/de/`, `/en/`) for clear language selection. Dynamic routes like `/de/projects/[slug].astro` load content from Markdown files and render them server-side.
+Email delivery is abstracted behind an application interface and implemented using Nodemailer for production. Rate limiting is handled server-side to reduce automated abuse without requiring persistent storage of contact requests.
 
-## Core Features
+SMTP credentials and other secrets are restricted to the server environment and are never exposed to client-side code.
 
-The portfolio is divided into several main sections that present various aspects of my professional background and skills:
+## Security
 
-### Intro Section
+Security is considered both at runtime and throughout the development process.
 
-The landing page provides a first impression with an introduction and direct contact options. Clear navigation to the different areas of the portfolio.
+The application includes measures such as:
 
-### Career Section
+- Content Security Policy and additional security headers
+- Origin validation for relevant server requests
+- Server-side input validation
+- Server-side rate limiting
+- Separation of secrets from client-side code
+- No third-party tracking or analytics
+- Automated static analysis and security scans
 
-Presents my professional background in a timeline with positions, companies, and technologies used. The presentation is chronologically structured and fully available in two languages.
+Semgrep and Trivy are integrated into the CI workflow to identify potential security issues, vulnerable dependencies, secrets, and configuration problems before changes are merged.
 
-### Projects Section
+## Content & Internationalization
 
-Shows technical projects with images, short descriptions, and tags. Each project can be clicked on and leads to a detail page with comprehensive documentation and code examples.
+The portfolio is fully available in German and English under dedicated language routes.
 
-### Contact Section
+Projects and other larger content are maintained separately from the presentation layer. Project pages are generated from structured Markdown content, while reusable UI components remain independent of the actual project data.
 
-Functional contact form for directly sending messages. The form is protected against spam and does not permanently store personal data.
+This separation keeps translations and portfolio content maintainable without coupling them directly to individual UI components.
 
-### Cross-Cutting Features
+## Styling
 
-**Language Switching:** Toggle between German and English via a dropdown menu in the navigation.
+The interface uses custom CSS rather than a UI framework. Global styles are divided into focused layers for design tokens, reset and base styles, reusable primitives, prose, syntax highlighting, and utilities.
 
-**Dark/Light Mode:** Theme switching via a toggle button, preference is saved.
+Dark and light themes are implemented using CSS custom properties. The interface is responsive and designed to work without requiring a large client-side styling or component library.
 
-**Mobile Navigation:** Responsive menu for optimal operation on smartphones and tablets.
+## Development & Quality Assurance
 
-## Performance & Lighthouse
+Changes are checked through automated CI workflows before being merged. The project uses automated testing, type checking, linting, and security analysis to detect regressions and implementation issues early.
 
-The portfolio achieves a **Lighthouse Score of 90+ on mobile devices** through:
+The application is continuously developed and serves as both my public portfolio and a practical environment for improving my knowledge of Astro, TypeScript, web security, accessibility, performance, and software architecture.
 
-- **Minimal JavaScript:** Island Architecture reduces the JS footprint
-- **Server-Side Rendering:** Instant First Contentful Paint
-- **CSS Tokens:** No framework bloat, hand-optimized styles
-- **Lazy Loading:** Images are loaded on demand and optimized
+## Deployment
 
-## Security & Automated Scans
+The application runs on Node.js and is deployed as a container on my own hosting infrastructure at Infomaniak in Switzerland.
 
-Automated tests and security scans (Semgrep, Trivy) run on every pull request. These must pass successfully before code can be merged.
-
-## Lessons Learned & Challenges
-
-**Astro & Island Architecture:** Making decisions about which components need JavaScript and which are sufficient as static HTML. Using Vue Islands only where real interactivity is necessary.
-
-**TypeScript & Type-Safety:** Strict typing helps catch errors early. Particularly with structured content (Career, Projects), this pays off.
-
-**HTML, CSS & Performance:** Hand-optimized styles instead of framework bloat. CSS Custom Properties for theme switching. Responsive design without additional libraries.
-
-**DevSecOps Integration:** Integrating automated security scans directly into the development process. Tests and scans must run before code goes live.
-
-**Linux Hosting & Data Protection:** GDPR-compliant hosting in Switzerland. No tracking cookies, no data transmission to third countries.
-
-**Server-Side Rendering:** Understanding how SSR works and when it makes more sense than client-side rendering. Rate limiting and security on the server, not in the browser.
-
-## Project Status & Outlook
-
-The portfolio is functional and in productive use. Core features like multilingualism, theme switching, contact form, and security scans are implemented and tested.
-
-This project is a continuous learning process. Some areas are intentionally kept simple or are still being expanded.
-
-## Conclusion
-
-This portfolio combines modern web development practices with security best practices. From server-side rendering to automated security scans to GDPR compliance, every feature was practically implemented and every problem solved hands-on.
-
-The project shows that performance and security are not opposites and that modern frameworks like Astro make it possible to achieve both with minimal overhead. The continuous development process reflects that good software is never truly "finished".
-
-## Reporting Security Issues
-
-If you discover a security vulnerability in this project, please report it to:
-**web-portfolio@lucaknobel.ch**
-
----
+The deployment setup keeps application configuration and secrets outside the container image and provides the server-side runtime required for features such as the contact form.
 
 ## License
 
-Apache License 2.0 © 2025 Luca Knobel  
+Apache License 2.0 © 2026 Luca Knobel
+
 See [LICENSE](./LICENSE) and [NOTICE](./NOTICE).
