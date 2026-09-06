@@ -55,15 +55,19 @@
     color: var(--color-link);
     text-decoration: underline;
     transition: color var(--dur-1) var(--ease-standard);
-    display: inline-flex;
-    align-items: center;
-    min-height: var(--touch-target-min);
-    padding: var(--space-1) var(--space-2);
-    margin: calc(var(--space-1) * -1) calc(var(--space-2) * -1);
+    overflow-wrap: anywhere;
+    text-underline-offset: 0.15em;
     border-radius: var(--radius-sm);
   }
 
-  .prose a:hover {
+  .prose a:hover,
+  .prose a:focus-visible {
+    color: var(--color-link-hover);
+    text-decoration-thickness: 0.12em;
+  }
+
+  /* Keep inline links readable on every dark prose surface. */
+  [data-theme="dark"] .prose a {
     color: var(--color-link-hover);
   }
 

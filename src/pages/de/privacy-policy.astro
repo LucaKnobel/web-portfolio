@@ -1,5 +1,5 @@
 ---
-import { getCollection, render } from "astro:content";
+import { getPrivacyPolicy } from "@/content/get-privacy-policy";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import ErrorPage from "@/components/ErrorPage.astro";
 import PrivacyPolicySection from "@/components/PrivacyPolicySection.astro";
@@ -11,13 +11,12 @@ const t = useTranslations(lang);
 
 let Content;
 try {
-  const entries = await getCollection("privacyPolicy");
-  const entry = entries.find((item) => item.id.startsWith(`${lang}/`));
+  const policy = await getPrivacyPolicy(lang);
 
-  if (!entry) {
+  if (!policy) {
     Astro.response.status = 404;
   } else {
-    ({ Content } = await render(entry));
+    ({ Content } = policy);
   }
 } catch {
   Astro.response.status = 500;

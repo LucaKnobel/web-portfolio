@@ -118,6 +118,10 @@
     --syntax-panel: rgba(11, 18, 27, 0.48);
     --syntax-panel-border: #0b121b;
 
+    /* FONT FAMILIES - local system fonts only */
+    --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
     /* TYPE SCALE (primitives) - do not use directly */
     --fs-body: 1rem;
     --fs-caption: 0.875rem;
@@ -323,4 +327,16 @@
     --syntax-diff-insert: rgba(123, 200, 141, 0.18);
     --syntax-panel: rgba(10, 12, 16, 0.7);
     --syntax-panel-border: rgba(248, 249, 250, 0.16);
+}
+
+/* Reduced motion keeps state feedback, without animated or scaled controls. */
+@media (prefers-reduced-motion: reduce) {
+    :root {
+        --dur-1: 0s;
+        --dur-2: 0s;
+        --scale-hover: 1;
+        --scale-active: 1;
+        --scale-focus: 1;
+        --scale-disabled: 1;
+    }
 }
