@@ -73,7 +73,7 @@ src/styles/
 ├── base.css         Sensible defaults for bare HTML elements.
 ├── prose.css        Rendered Markdown content (Content Collections).
 ├── utilities.css    A small, fixed set of layout primitives.
-└── prism-theme.css  Syntax highlighting.
+└── prism-theme.css  Prism syntax highlighting.
 ```
 
 ```
@@ -151,11 +151,11 @@ precedence over normal author styles inside layers; within the layers, the decla
 That cascade behaviour — not the scoping mechanism itself — is why a component can override a
 global default without inflating selector specificity.
 
-`syntax` sits after `prose` so that `prism-theme.css` wins for highlighted code blocks. `prose.css`
-must therefore exclude them:
+`syntax` sits after `prose` so that `prism-theme.css` wins for Prism-highlighted code blocks.
+`prose.css` must therefore exclude them:
 
 ```css
-.prose :where(pre:not([class*="language-"])) {
+.prose :where(pre:not(.astro-code)) {
   /* ... */
 }
 ```

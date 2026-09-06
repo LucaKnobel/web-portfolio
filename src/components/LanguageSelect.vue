@@ -83,7 +83,7 @@ const switchLanguage = (newLang: string): void => {
     min-height: var(--touch-target-min);
     min-width: var(--touch-target-min);
     padding: 0;
-    transition: all var(--dur-2) var(--ease-standard);
+    transition: background-color var(--dur-2) var(--ease-standard), border-color var(--dur-2) var(--ease-standard), transform var(--dur-2) var(--ease-standard);
     position: relative;
     overflow: hidden;
 
@@ -123,7 +123,7 @@ const switchLanguage = (newLang: string): void => {
 
 .dropdown {
     position: absolute;
-    top: calc(100% + var(--stack-xs));
+    top: calc(100% + var(--space-2));
     left: 50%;
     transform: translateX(-50%);
     min-width: 120px;
@@ -138,12 +138,12 @@ const switchLanguage = (newLang: string): void => {
 }
 
 .dropdown-enter-active {
-    transition: all var(--dur-2) var(--ease-standard);
+    transition: opacity var(--dur-2) var(--ease-standard), transform var(--dur-2) var(--ease-standard);
     transform-origin: top;
 }
 
 .dropdown-leave-active {
-    transition: all var(--dur-2) var(--ease-standard);
+    transition: background-color var(--dur-2) var(--ease-standard), color var(--dur-2) var(--ease-standard);
     transform-origin: top;
 }
 
@@ -172,8 +172,8 @@ const switchLanguage = (newLang: string): void => {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: var(--stack-sm);
-    transition: all var(--dur-2) var(--ease-standard);
+    padding: var(--space-3);
+    transition: background-color var(--dur-2) var(--ease-standard), color var(--dur-2) var(--ease-standard);
 
     &:hover {
         background: var(--color-surface-3);
@@ -202,17 +202,6 @@ const switchLanguage = (newLang: string): void => {
         font-weight: var(--fw-medium);
         transition: color var(--dur-2) var(--ease-standard);
     }
-}
-
-/* Dropdown transition animations */
-.dropdown-enter-active {
-    transition: all var(--dur-2) var(--ease-standard);
-    transform-origin: top;
-}
-
-.dropdown-leave-active {
-    transition: all var(--dur-2) var(--ease-standard);
-    transform-origin: top;
 }
 
 .dropdown-enter-from {

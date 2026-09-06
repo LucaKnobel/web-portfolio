@@ -48,7 +48,7 @@ const footerLinks = [
     .footer {
         margin-top: auto;
         width: 100%;
-        padding: var(--stack-lg) var(--gutter);
+        padding: var(--space-8) var(--gutter);
         background: var(--color-surface-1);
         border-top: var(--border-hairline) solid var(--color-border-hairline);
         text-align: center;
@@ -58,7 +58,7 @@ const footerLinks = [
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: var(--stack-md);
+            gap: var(--space-6);
             max-width: var(--content-max);
             margin-inline: auto;
 
@@ -66,7 +66,7 @@ const footerLinks = [
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                gap: var(--stack-sm);
+                gap: var(--space-3);
                 flex-wrap: wrap;
             }
         }
@@ -75,10 +75,10 @@ const footerLinks = [
     @media (min-width: 600px) {
         .footer {
             .container {
-                gap: var(--stack-sm);
+                gap: var(--space-3);
 
                 .socials {
-                    gap: var(--stack-sm);
+                    gap: var(--space-3);
                 }
             }
         }
@@ -86,13 +86,13 @@ const footerLinks = [
 
     @media (min-width: 1024px) {
         .footer {
-            padding: var(--stack-md) var(--gutter);
+            padding: var(--space-6) var(--gutter);
 
             .container {
-                gap: var(--stack-xs);
+                gap: var(--space-2);
 
                 .socials {
-                    gap: var(--stack-xs);
+                    gap: var(--space-2);
                 }
             }
         }

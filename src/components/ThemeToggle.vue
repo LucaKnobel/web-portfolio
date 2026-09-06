@@ -41,7 +41,8 @@ const toggleTheme = (): void => {
 
     // Set cookie for SSR (expires in 1 year)
     const maxAge = 60 * 60 * 24 * 365;// 1 year in seconds
-    document.cookie = `theme=${theme}; Max-Age=${maxAge}; path=/; SameSite=Lax; Secure`;
+    const secure = window.location.protocol === "https:" ? "; Secure" : "";
+    document.cookie = `theme=${theme}; Max-Age=${maxAge}; path=/; SameSite=Lax${secure}`;
 }
 
 onMounted((): void => {
@@ -72,7 +73,7 @@ onMounted((): void => {
     min-height: var(--touch-target-min);
     min-width: var(--touch-target-min);
     padding: 0;
-    transition: all var(--dur-2) var(--ease-standard);
+    transition: background-color var(--dur-2) var(--ease-standard), border-color var(--dur-2) var(--ease-standard), transform var(--dur-2) var(--ease-standard);
     position: relative;
     overflow: hidden;
 
@@ -131,7 +132,7 @@ onMounted((): void => {
 /* Transition Component Styles - moved out for valid CSS nesting */
 .icon-fade-enter-active,
 .icon-fade-leave-active {
-    transition: all var(--dur-2) var(--ease-standard);
+    transition: opacity var(--dur-2) var(--ease-standard), transform var(--dur-2) var(--ease-standard);
 }
 .icon-fade-enter-from {
     opacity: 0;
