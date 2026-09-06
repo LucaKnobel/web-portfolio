@@ -2,11 +2,15 @@ import { defineCollection } from "astro:content";
 import { z } from "astro/zod";
 import { glob } from "astro/loaders";
 
-const httpsUrl = z
-  .url()
-  .refine((value) => new URL(value).protocol === "https:", {
-    message: "URL must use the https: protocol",
-  });
+const httpsUrl = z.url({
+  protocol: /^https$/,
+  error: "URL must be a valid HTTPS URL",
+});
+
+const projectLanguage = z.enum(["de", "en"]);
+const projectDate = z
+  .string()
+  .regex(/^\d{4}-(0[1-9]|1[0-2])$/, "Date must use the YYYY-MM format");
 
 const careerSchema = z.object({
   id: z.string(),
@@ -59,8 +63,8 @@ const projects = defineCollection({
     z.object({
       title: z.string(),
       description: z.string(),
-      date: z.string(),
-      lang: z.string(),
+      date: projectDate,
+      lang: projectLanguage,
       tags: z.array(z.string()),
       cover: image(),
       url: httpsUrl.optional(),

@@ -1,20 +1,28 @@
 ---
+import { formatProjectDate } from "@/content/project-utils";
 import ActionButton from "@/components/ActionButton.astro";
 import { Image } from "astro:assets";
+import type { render } from "astro:content";
+import type { CollectionEntry } from "astro:content";
 import type { Language, Translator } from "@/i18n/utils";
+
+type Project = CollectionEntry<"projects">;
+type ProjectContent = Awaited<ReturnType<typeof render>>["Content"];
 
 export interface ProjectDetailProps {
   /** Project data object */
-  project: any;
+  project: Project;
   /** Current language (e.g., 'de' or 'en') */
   lang: Language;
   /** Translation function for UI strings */
   t: Translator;
   /** Astro Content component for project details */
-  Content: any;
+  Content: ProjectContent;
 }
 
-const { project, lang, t, Content } = Astro.props as ProjectDetailProps;
+type Props = ProjectDetailProps;
+
+const { project, lang, t, Content } = Astro.props;
 ---
 
 <article class="project-detail">
@@ -24,20 +32,7 @@ const { project, lang, t, Content } = Astro.props as ProjectDetailProps;
         <a href={`/${lang}/projects`} class="back-link">
           ← {t("nav.projects")}
         </a>
-        <span class="project-date">
-          {
-            (() => {
-              if (
-                typeof project.data.date === "string" &&
-                /^\d{4}-\d{2}/.test(project.data.date)
-              ) {
-                const [year, month] = project.data.date.split("-");
-                return `${month}/${year}`;
-              }
-              return project.data.date;
-            })()
-          }
-        </span>
+        <span class="project-date">{formatProjectDate(project.data.date)}</span>
       </div>
       <h1 class="project-title">{project.data.title}</h1>
       <div class="project-cover">
