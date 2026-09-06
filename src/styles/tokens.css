@@ -1,6 +1,8 @@
 /* Design tokens for minimal professional portfolio system */
 
-:root { 
+@layer reset, base, primitives, prose, syntax, utilities;
+
+:root {
 
     /* PALETTE (primitives) - do not use directly in components */
 
@@ -98,6 +100,24 @@
     --msg-warning-border: rgba(184, 134, 11, 0.2);
     --msg-warning-fg: #8b6914;
 
+    /* Syntax highlighting roles */
+    --syntax-accent: #6cb8e6;
+    --syntax-comment: #4a8a5c;
+    --syntax-code: #66cccc;
+    --syntax-light: #e3eaf2;
+    --syntax-list: #f4adf4;
+    --syntax-muted: #8da1b9;
+    --syntax-number: #e6d37a;
+    --syntax-on-accent: #111b27;
+    --syntax-string: #91d076;
+    --syntax-line-bg: rgba(60, 82, 109, 0.37);
+    --syntax-line-bg-end: rgba(60, 82, 109, 0.33);
+    --syntax-line-shadow: rgba(60, 82, 109, 0.37);
+    --syntax-diff-delete: rgba(205, 102, 96, 0.12);
+    --syntax-diff-insert: rgba(145, 208, 118, 0.12);
+    --syntax-panel: rgba(11, 18, 27, 0.48);
+    --syntax-panel-border: #0b121b;
+
     /* TYPE SCALE (primitives) - do not use directly */
     --fs-body: 1rem;
     --fs-caption: 0.875rem;
@@ -135,25 +155,10 @@
     --space-7: 1.75rem;
     --space-8: 2rem;
 
-    /* LAYOUT/SPACING ALIASES (semantic) - use these in components */
-    --card-gap: var(--space-4);
-    --card-pad: var(--space-6);
-    --cluster-gap: var(--space-4);
+    /* Global layout tokens */
     --content-max: 1200px;
-    --form-row: var(--space-4);
-    --grid-gap: var(--space-6);
     --gutter: var(--space-4);
-    --label-gap: var(--space-2);
     --measure: 65ch;
-    --section-x: var(--space-4);
-    --section-y: var(--space-12);
-    --stack-xs: var(--space-2);
-    --stack-sm: var(--space-3);
-    --stack-md: var(--space-6);
-    --stack-lg: var(--space-8);
-    --stack-xl: var(--space-12);
-    --stack-xxl: var(--space-16);
-    --stack-xxxl: calc(var(--space-16) + var(--space-12));
 
     /* SHAPE & BORDERS */
     --border-hairline: 1px;
@@ -212,49 +217,23 @@
 /* RESPONSIVE REMAPS - only semantic aliases scale */
 @media (min-width: 600px) {
     :root {
-        --card-gap: var(--space-5);
-        --card-pad: var(--space-8);
-        --cluster-gap: var(--space-5);
         --display-xl: 3rem;
-        --grid-gap: var(--space-8);
         --gutter: var(--space-6);
         --heading-lg: 2.375rem;
         --heading-md: 1.875rem;
         --heading-sm: 1.5rem;
         --heading-xs: 1.375rem;
-        --section-x: var(--space-6);
-        --section-y: var(--space-16);
-        --stack-xs: var(--space-3);
-        --stack-sm: var(--space-4);
-        --stack-md: var(--space-6);
-        --stack-lg: var(--space-8);
-        --stack-xl: var(--space-10);
-        --stack-xxl: var(--space-12);
-        --stack-xxxl: var(--space-16);
     }
 }
 
 @media (min-width: 1024px) {
     :root {
-        --card-gap: var(--space-6);
-        --card-pad: var(--space-10);
-        --cluster-gap: var(--space-5);
         --display-xl: 3.5rem;
-        --grid-gap: var(--space-10);
         --gutter: var(--space-8);
         --heading-lg: 2.75rem;
         --heading-md: 2.125rem;
         --heading-sm: 1.625rem;
         --heading-xs: 1.5rem;
-        --section-x: var(--space-8);
-        --section-y: calc(var(--space-16) + var(--space-4));
-        --stack-xs: var(--space-4);
-        --stack-sm: var(--space-6);
-        --stack-md: var(--space-8);
-        --stack-lg: var(--space-10);
-        --stack-xl: var(--space-12);
-        --stack-xxl: var(--space-16);
-        --stack-xxxl: calc(var(--space-16) + var(--space-8));
     }
 }
 
@@ -327,4 +306,21 @@
     --grad-primary-soft: linear-gradient(180deg, var(--primary-500) 0%, var(--primary-400) 100%);
     --grad-surface-contrast: linear-gradient(180deg, var(--color-surface-2) 0%, var(--color-surface-3) 100%);
     --grad-surface-soft: linear-gradient(180deg, var(--color-surface-1) 0%, var(--color-surface-2) 100%);
+
+    --syntax-accent: #8bd3ff;
+    --syntax-comment: #91d076;
+    --syntax-code: #79e2e2;
+    --syntax-light: #f3f6fa;
+    --syntax-list: #f4adf4;
+    --syntax-muted: #a9bad0;
+    --syntax-number: #f3d675;
+    --syntax-on-accent: #101820;
+    --syntax-string: #a7e68d;
+    --syntax-line-bg: rgba(139, 163, 199, 0.28);
+    --syntax-line-bg-end: rgba(139, 163, 199, 0.2);
+    --syntax-line-shadow: rgba(139, 163, 199, 0.3);
+    --syntax-diff-delete: rgba(240, 140, 140, 0.18);
+    --syntax-diff-insert: rgba(123, 200, 141, 0.18);
+    --syntax-panel: rgba(10, 12, 16, 0.7);
+    --syntax-panel-border: rgba(248, 249, 250, 0.16);
 }

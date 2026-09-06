@@ -43,18 +43,18 @@ try {
 <style>
     section {
         max-width: var(--content-max);
-        margin-inline: var(--section-x);
-        padding-block: var(--section-y);
+        margin-inline: var(--gutter);
+        padding-block: var(--space-12);
         display: flex;
         flex-direction: column;
-        gap: var(--section-x);
+        gap: var(--gutter);
     }
 
     .section-title {
         text-align: center;
         font-size: var(--heading-md);
         font-weight: var(--fw-semibold);
-        margin-bottom: var(--section-x);
+        margin-bottom: var(--gutter);
         color: var(--color-text);
     }
 
@@ -62,12 +62,12 @@ try {
         section {
             max-width: var(--content-max);
             margin-inline: auto;
-            padding-block: var(--section-y);
-            gap: var(--section-x);
+            padding-block: var(--space-16);
+            gap: var(--gutter);
         }
         .section-title {
             font-size: var(--heading-lg);
-            margin-bottom: var(--section-x);
+            margin-bottom: var(--gutter);
         }
     }
 </style>

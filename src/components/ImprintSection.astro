@@ -28,8 +28,8 @@ const { lang, t } = Astro.props as ImprintSectionProps;
 <style>
     .impressum {
         max-width: var(--content-max);
-        margin: var(--stack-xxl) auto;
-        padding: var(--section-y) var(--section-x);
+        margin: var(--space-16) auto;
+        padding: var(--space-12) var(--gutter);
         color: var(--color-text);
         line-height: var(--lh);
         text-align: center;
@@ -48,23 +48,23 @@ const { lang, t } = Astro.props as ImprintSectionProps;
     h1 {
         font-size: var(--heading-lg);
         font-weight: var(--fw-semibold);
-        margin-bottom: var(--stack-lg);
+        margin-bottom: var(--space-8);
         color: var(--color-text);
         text-align: center;
     }
 
     .impressum-section {
-        margin-bottom: var(--stack-lg);
+        margin-bottom: var(--space-8);
         text-align: center;
         width: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: var(--stack-sm);
+        gap: var(--space-3);
     }
 
     p {
-        margin-bottom: var(--stack-md);
+        margin-bottom: var(--space-6);
         color: var(--color-text);
         font-size: var(--text-body);
         line-height: var(--lh);
@@ -84,11 +84,6 @@ const { lang, t } = Astro.props as ImprintSectionProps;
 
         &:hover {
             color: var(--color-link-hover);
-        }
-
-        &:focus {
-            outline: var(--focus-ring-width) solid var(--focus-ring-color);
-            outline-offset: var(--focus-ring-offset);
         }
 
         &:visited {

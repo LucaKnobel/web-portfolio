@@ -82,7 +82,7 @@ const headerLinks = [
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: var(--cluster-gap);
+            gap: var(--space-4);
             height: 80px;
             position: relative;
             z-index: 1;
@@ -118,14 +118,14 @@ const headerLinks = [
     .header-controls {
         display: flex;
         align-items: center;
-        gap: var(--stack-xs);
+        gap: var(--space-2);
         flex-shrink: 0;
 
         /* Desktop controls - hidden on mobile */
         .desktop-controls {
             display: none;
             align-items: center;
-            gap: var(--stack-xs);
+            gap: var(--space-2);
         }
 
         /* Mobile menu - only visible on small screens */
@@ -150,11 +150,11 @@ const headerLinks = [
         }
 
         .header-controls {
-            gap: var(--stack-sm);
+            gap: var(--space-3);
 
             .desktop-controls {
                 display: flex;
-                gap: var(--stack-sm);
+                gap: var(--space-3);
             }
 
             .mobile-menu-toggle {

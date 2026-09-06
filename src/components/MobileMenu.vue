@@ -86,15 +86,15 @@ const toggleMenu = (): void => {
 
     /* Prevent body scroll when menu is open */
     if (isOpen.value) {
-        document.body.style.overflow = "hidden";
+        document.body.classList.add("is-scroll-locked");
     } else {
-        document.body.style.overflow = "";
+        document.body.classList.remove("is-scroll-locked");
     }
 }
 
 const closeMenu = (): void => {
     isOpen.value = false
-    document.body.style.overflow = "";
+    document.body.classList.remove("is-scroll-locked");
 }
 
 const handleNavLinkClick = (href: string) => {
@@ -134,7 +134,7 @@ onMounted((): void => {
 onUnmounted((): void => {
     document.removeEventListener("keydown", handleKeydown);
     // Restore body scroll on unmount
-    document.body.style.overflow = "";
+    document.body.classList.remove("is-scroll-locked");
 })
 </script>
 
@@ -218,7 +218,7 @@ onUnmounted((): void => {
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    padding: var(--stack-sm) var(--gutter);
+    padding: var(--space-3) var(--gutter);
     flex-shrink: 0;
     min-height: 60px;
     /* Match header height */
@@ -226,7 +226,7 @@ onUnmounted((): void => {
     .header-controls {
         display: flex;
         align-items: center;
-        gap: var(--stack-sm);
+        gap: var(--space-3);
     }
 }
 
@@ -280,10 +280,10 @@ onUnmounted((): void => {
     .nav-list {
         list-style: none;
         margin: 0;
-        padding: var(--stack-xl);
+        padding: var(--space-12);
         display: flex;
         flex-direction: column;
-        gap: var(--stack-lg);
+        gap: var(--space-8);
         width: 100%;
         max-width: 300px;
         /* Perfect vertical centering */
@@ -299,7 +299,7 @@ onUnmounted((): void => {
                 text-decoration: none;
                 font-size: var(--heading-xs);
                 font-weight: var(--fw-medium);
-                padding: var(--stack-lg);
+                padding: var(--space-8);
                 border-radius: var(--button-radius);
                 text-align: center;
                 border: var(--border-hairline) solid transparent;

@@ -71,13 +71,13 @@ const isRateLimit = result?.error?.code === "TOO_MANY_REQUESTS";
         </div>
 
         <!-- Personal Information -->
-        <fieldset>
+        <fieldset class="personal-fields">
             <legend>{t("contact.personalLegend")}</legend>
-            <div>
+            <div class="field">
                 <label for="firstName">
                     {t("contact.firstName")}*
                 </label>
-                <input
+                    <input
                     type="text"
                     id="firstName"
                     name="firstName"
@@ -88,7 +88,7 @@ const isRateLimit = result?.error?.code === "TOO_MANY_REQUESTS";
                 />
             </div>
 
-            <div>
+            <div class="field">
                 <label for="lastName">
                     {t("contact.lastName")}*
                 </label>
@@ -103,7 +103,7 @@ const isRateLimit = result?.error?.code === "TOO_MANY_REQUESTS";
                 />
             </div>
 
-            <div>
+            <div class="field">
                 <label for="email">
                     {t("contact.email")}*
                 </label>
@@ -117,7 +117,7 @@ const isRateLimit = result?.error?.code === "TOO_MANY_REQUESTS";
                 />
             </div>
 
-            <div>
+            <div class="field">
                 <label for="company">
                     {t("contact.company")}
                 </label>
@@ -130,7 +130,7 @@ const isRateLimit = result?.error?.code === "TOO_MANY_REQUESTS";
                 />
             </div>
 
-            <div>
+            <div class="field">
                 <label for="phone">
                     {t("contact.phone")}
                 </label>
@@ -146,14 +146,14 @@ const isRateLimit = result?.error?.code === "TOO_MANY_REQUESTS";
         </fieldset>
 
         <!-- Message Details -->
-        <fieldset>
+        <fieldset class="message-fields">
             <legend>{t("contact.messageLegend")}</legend>
 
-            <div>
+            <div class="field">
                 <label for="subject">
                     {t("contact.subject")}*
                 </label>
-                <input
+                    <input
                     type="text"
                     id="subject"
                     name="subject"
@@ -163,7 +163,7 @@ const isRateLimit = result?.error?.code === "TOO_MANY_REQUESTS";
                 />
             </div>
 
-            <div>
+            <div class="field field-wide">
                 <label for="message">
                     {t("contact.message")}*
                 </label>
@@ -178,7 +178,7 @@ const isRateLimit = result?.error?.code === "TOO_MANY_REQUESTS";
         </fieldset>
 
         <!-- Privacy Consent -->
-        <fieldset>
+        <fieldset class="privacy-fields">
             <legend>{t("contact.privacyLegend")}</legend>
 
             <div class="privacy-field">
@@ -216,33 +216,33 @@ const isRateLimit = result?.error?.code === "TOO_MANY_REQUESTS";
     section {
         max-width: var(--measure);
         margin: 0 auto;
-        padding: var(--section-y) var(--section-x);
-        margin-bottom: var(--stack-xxl);
+        padding: var(--space-12) var(--gutter);
+        margin-bottom: var(--space-16);
 
         h1 {
             font-size: var(--heading-lg);
             font-weight: var(--fw-semibold);
-            margin-bottom: var(--stack-md);
+            margin-bottom: var(--space-6);
             text-align: left;
         }
 
         p {
             color: var(--color-muted);
-            margin-bottom: var(--stack-lg);
+            margin-bottom: var(--space-8);
             text-align: left;
         }
     }
 
     .message {
-        padding: var(--card-pad);
+        padding: var(--space-6);
         border-radius: var(--card-radius);
-        margin-bottom: var(--stack-lg);
+        margin-bottom: var(--space-8);
         border: 1px solid;
 
         h2 {
             font-size: var(--heading-sm);
             font-weight: var(--fw-semibold);
-            margin-bottom: 0 0 0 0;
+            margin-bottom: 0;
         }
     }
 
@@ -261,7 +261,7 @@ const isRateLimit = result?.error?.code === "TOO_MANY_REQUESTS";
     form {
         display: flex;
         flex-direction: column;
-        gap: var(--stack-lg);
+        gap: var(--space-8);
         color: var(--color-text);
     }
 
@@ -275,25 +275,25 @@ const isRateLimit = result?.error?.code === "TOO_MANY_REQUESTS";
         clip: rect(0, 0, 0, 0);
     }
 
-    fieldset {
+        fieldset {
         border: 1px solid var(--color-border);
         border-radius: var(--card-radius);
-        padding: var(--card-pad);
+        padding: var(--space-6);
         background: var(--color-surface-1);
         margin: 0;
 
         legend {
             font-weight: var(--fw-semibold);
             font-size: var(--heading-xs);
-            padding: 0 var(--stack-sm);
-            margin-bottom: var(--stack-sm);
+            padding: 0 var(--space-3);
+            margin-bottom: var(--space-3);
         }
 
         div {
             display: flex;
             flex-direction: column;
-            gap: var(--label-gap);
-            margin-bottom: var(--form-row);
+            gap: var(--space-2);
+            margin-bottom: var(--space-4);
 
             &:last-child {
                 margin-bottom: 0;
@@ -304,17 +304,17 @@ const isRateLimit = result?.error?.code === "TOO_MANY_REQUESTS";
     .privacy-field {
         display: flex;
         flex-direction: column;
-        gap: var(--stack-sm);
+        gap: var(--space-3);
 
         .checkbox-row {
             display: flex;
             flex-direction: row;
             align-items: center;
-            gap: var(--stack-sm);
+            gap: var(--space-3);
         }
 
         .privacy-link {
-            padding-left: calc(var(--touch-target-min) + var(--stack-sm));
+            padding-left: calc(var(--touch-target-min) + var(--space-3));
         }
     }
 
@@ -327,7 +327,7 @@ const isRateLimit = result?.error?.code === "TOO_MANY_REQUESTS";
     textarea {
         width: 100%;
         height: var(--control-h-md);
-        padding: var(--stack-sm);
+        padding: var(--space-3);
         border: 1px solid var(--color-border);
         border-radius: var(--radius-md);
         background: var(--color-bg);
@@ -335,8 +335,9 @@ const isRateLimit = result?.error?.code === "TOO_MANY_REQUESTS";
         font-family: inherit;
         font-size: var(--text-body);
 
-        &:focus {
-            outline: none;
+        &:focus-visible {
+            outline: var(--focus-ring-width) solid var(--focus-ring-color);
+            outline-offset: var(--focus-ring-offset);
             border-color: var(--color-primary);
         }
     }
@@ -358,7 +359,7 @@ const isRateLimit = result?.error?.code === "TOO_MANY_REQUESTS";
     button {
         width: 100%;
         height: var(--control-h-lg);
-        padding: 0 var(--stack-lg);
+        padding: 0 var(--space-8);
         background: var(--grad-primary-soft);
         color: var(--color-on-primary);
         border: none;
@@ -366,7 +367,7 @@ const isRateLimit = result?.error?.code === "TOO_MANY_REQUESTS";
         font-weight: var(--fw-medium);
         font-size: var(--text-body);
         cursor: pointer;
-        margin-top: var(--stack-md);
+        margin-top: var(--space-6);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -395,11 +396,11 @@ const isRateLimit = result?.error?.code === "TOO_MANY_REQUESTS";
             align-self: flex-end;
         }
 
-        fieldset:first-of-type,
-        fieldset:nth-of-type(2) {
+        .personal-fields,
+        .message-fields {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: var(--card-gap);
+            gap: var(--space-4);
 
             legend {
                 grid-column: 1 / -1;
@@ -411,7 +412,7 @@ const isRateLimit = result?.error?.code === "TOO_MANY_REQUESTS";
         }
 
         /* Full width fields */
-        fieldset:nth-of-type(2) > div:nth-of-type(2) {
+        .field-wide {
             grid-column: 1 / -1;
         }
     }
