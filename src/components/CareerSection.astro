@@ -1,12 +1,13 @@
 ---
 import CareerCard from "@/components/CareerCard.astro";
 import { getCollection } from "astro:content";
+import type { Language, Translator } from "@/i18n/utils";
 
 export interface CareerSectionProps {
   /** Current language (e.g., 'de' or 'en')*/
-  lang: string;
+  lang: Language;
   /** Translation function for UI strings */
-  t: Function;
+  t: Translator;
   /** Section type: 'professional' for work experience, 'education' for education */
   type: "professional" | "education";
   /** Section title (displayed as heading)*/

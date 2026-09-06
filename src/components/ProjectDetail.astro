@@ -1,154 +1,155 @@
 ---
 import ActionButton from "@/components/ActionButton.astro";
 import { Image } from "astro:assets";
+import type { Language, Translator } from "@/i18n/utils";
 
 export interface ProjectDetailProps {
-    /** Project data object */
-    project: any;
-    /** Current language (e.g., 'de' or 'en') */
-    lang: string;
-    /** Translation function for UI strings */
-    t: Function;
-    /** Astro Content component for project details */
-    Content: any;
+  /** Project data object */
+  project: any;
+  /** Current language (e.g., 'de' or 'en') */
+  lang: Language;
+  /** Translation function for UI strings */
+  t: Translator;
+  /** Astro Content component for project details */
+  Content: any;
 }
 
 const { project, lang, t, Content } = Astro.props as ProjectDetailProps;
 ---
 
 <article class="project-detail">
-    <header class="project-header">
-        <div class="project-meta">
-            <div class="project-meta-row">
-                <a href={`/${lang}/projects`} class="back-link">
-                    ← {t("nav.projects")}
-                </a>
-                <span class="project-date">
-                    {
-                        (() => {
-                            if (
-                                typeof project.data.date === "string" &&
-                                /^\d{4}-\d{2}/.test(project.data.date)
-                            ) {
-                                const [year, month] = project.data.date.split("-");
-                                return `${month}/${year}`;
-                            }
-                            return project.data.date;
-                        })()
-                    }
-                </span>
-            </div>
-            <h1 class="project-title">{project.data.title}</h1>
-            <div class="project-cover">
-                <Image
-                    src={project.data.cover}
-                    alt={project.data.title}
-                    decoding="async"
-                    format="webp"
-                    priority
-                    width="1200"
-                    height="675"
-                />
-            </div>
-            {
-                project.data.url && (
-                    <ActionButton
-                        href={project.data.url}
-                        size="l"
-                        text="GitHub Repository"
-                        variant="gradient"
-                    />
-                )
-            }
-        </div>
-    </header>
-    <div class="project-content prose">
-        <Content />
+  <header class="project-header">
+    <div class="project-meta">
+      <div class="project-meta-row">
+        <a href={`/${lang}/projects`} class="back-link">
+          ← {t("nav.projects")}
+        </a>
+        <span class="project-date">
+          {
+            (() => {
+              if (
+                typeof project.data.date === "string" &&
+                /^\d{4}-\d{2}/.test(project.data.date)
+              ) {
+                const [year, month] = project.data.date.split("-");
+                return `${month}/${year}`;
+              }
+              return project.data.date;
+            })()
+          }
+        </span>
+      </div>
+      <h1 class="project-title">{project.data.title}</h1>
+      <div class="project-cover">
+        <Image
+          src={project.data.cover}
+          alt={project.data.title}
+          decoding="async"
+          format="webp"
+          priority
+          width="1200"
+          height="675"
+        />
+      </div>
+      {
+        project.data.url && (
+          <ActionButton
+            href={project.data.url}
+            size="l"
+            text="GitHub Repository"
+            variant="gradient"
+          />
+        )
+      }
     </div>
+  </header>
+  <div class="project-content prose">
+    <Content />
+  </div>
 </article>
 
 <style>
-    .project-detail {
-        max-width: var(--content-max);
-        margin: 0 auto;
-        padding: var(--gutter);
-        background: var(--color-bg);
-        overflow-x: hidden;
-    }
+  .project-detail {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: var(--gutter);
+    background: var(--color-bg);
+    overflow-x: hidden;
+  }
 
-    .project-header {
-        margin-bottom: var(--space-8);
-    }
+  .project-header {
+    margin-bottom: var(--space-8);
+  }
 
-    .project-meta {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: var(--space-2);
-        margin-bottom: var(--space-6);
-        font-size: var(--text-small);
-        color: var(--color-muted);
-    }
+  .project-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+    margin-bottom: var(--space-6);
+    font-size: var(--text-small);
+    color: var(--color-muted);
+  }
 
-    .project-meta-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-        gap: var(--space-2);
-    }
+  .project-meta-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: var(--space-2);
+  }
 
-    .back-link {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-width: var(--touch-target-min);
-        min-height: var(--touch-target-min);
-        padding-inline: var(--space-2);
-        border-radius: var(--radius-sm);
-        font-weight: var(--fw-medium);
-        cursor: pointer;
-    }
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: var(--touch-target-min);
+    min-height: var(--touch-target-min);
+    padding-inline: var(--space-2);
+    border-radius: var(--radius-sm);
+    font-weight: var(--fw-medium);
+    cursor: pointer;
+  }
 
-    .project-date {
-        color: var(--color-muted);
-        text-align: right;
-        font-variant-numeric: tabular-nums;
-        white-space: nowrap;
-    }
+  .project-date {
+    color: var(--color-muted);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
 
+  .project-title {
+    width: 100%;
+    margin: 0;
+    color: var(--color-text);
+    font-size: var(--heading-lg);
+    font-weight: var(--fw-semibold);
+    overflow-wrap: break-word;
+  }
+
+  .project-cover {
+    width: 100%;
+    margin-block: var(--space-6) var(--space-8);
+    overflow: hidden;
+    border-radius: var(--card-radius);
+    box-shadow: var(--elev-1);
+  }
+
+  .project-cover img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: inherit;
+  }
+
+  @media (min-width: 1024px) {
     .project-title {
-        width: 100%;
-        margin: 0;
-        color: var(--color-text);
-        font-size: var(--heading-lg);
-        font-weight: var(--fw-semibold);
-        overflow-wrap: break-word;
+      font-size: var(--display-xl);
+      margin-bottom: var(--space-3);
     }
 
     .project-cover {
-        width: 100%;
-        margin-block: var(--space-6) var(--space-8);
-        overflow: hidden;
-        border-radius: var(--card-radius);
-        box-shadow: var(--elev-1);
+      margin-block: var(--space-2) var(--space-6);
     }
-
-    .project-cover img {
-        display: block;
-        width: 100%;
-        height: auto;
-        border-radius: inherit;
-    }
-
-    @media (min-width: 1024px) {
-        .project-title {
-            font-size: var(--display-xl);
-            margin-bottom: var(--space-3);
-        }
-
-        .project-cover {
-            margin-block: var(--space-2) var(--space-6);
-        }
-    }
+  }
 </style>
