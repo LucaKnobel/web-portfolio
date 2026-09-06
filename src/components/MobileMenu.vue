@@ -3,29 +3,24 @@
         <!-- Mobile Menu Toggle Button -->
         <button class="mobile-menu-toggle" @click="toggleMenu" :aria-label="t('aria.openMenu')" :aria-expanded="isOpen"
             type="button">
-            <Icon :icon="isOpen ? closeIcon : menuIcon" class="burger-icon"  />
+            <Icon :icon="isOpen ? closeIcon : menuIcon" class="burger-icon" />
         </button>
 
         <!-- Mobile Menu Modal Overlay -->
         <Teleport to="body" :disabled="!isMounted">
-            <div v-if="isOpen && isMounted" class="mobile-menu-overlay" @click="handleOverlayClick">
+            <div v-show="isOpen && isMounted" class="mobile-menu-overlay" @click="handleOverlayClick">
                 <div class="mobile-menu-modal" @click="handleModalClick">
 
                     <!-- Modal Header with all controls in one row -->
                     <div class="modal-header">
-                        <div v-if="hasBeenOpened" class="header-controls">
-                            <LanguageSelect />
+                        <div class="header-controls">
+                            <slot />
                             <ThemeToggle />
                             <button class="modal-close" @click="closeMenu" :aria-label="t('aria.closeMenu')"
                                 type="button">
                                 <Icon :icon="closeIcon" class="close-icon" />
                             </button>
                         </div>
-                        <!-- Show only close button until first opened -->
-                        <button v-else class="modal-close" @click="closeMenu" :aria-label="t('aria.closeMenu')"
-                            type="button">
-                            <Icon :icon="closeIcon" class="close-icon" />
-                        </button>
                     </div>
 
                     <!-- Navigation Links -->
@@ -52,9 +47,7 @@ import { Icon } from "@iconify/vue"
 import menuIcon from "@iconify-icons/mdi/menu"
 import closeIcon from "@iconify-icons/mdi/close"
 import ThemeToggle from "./ThemeToggle.vue"
-import LanguageSelect from "./LanguageSelect.vue"
 import { useClientTranslations } from "@/i18n/utils.ts"
-import { closeAllDropdowns } from "@/composables/use-dropdown.ts"
 
 interface NavLink {
     href: string
@@ -74,15 +67,9 @@ const { t } = useClientTranslations();
 
 /* Fix hydration issues by disabling teleport during SSR */
 const isMounted = ref<boolean>(false);
-const hasBeenOpened = ref<boolean>(false);
 
 const toggleMenu = (): void => {
     isOpen.value = !isOpen.value;
-
-    /* Mark as opened once for component loading */
-    if (isOpen.value && !hasBeenOpened.value) {
-        hasBeenOpened.value = true;
-    }
 
     /* Prevent body scroll when menu is open */
     if (isOpen.value) {
@@ -98,22 +85,15 @@ const closeMenu = (): void => {
 }
 
 const handleNavLinkClick = (href: string) => {
-  closeMenu();
-  navigate(href);
+    closeMenu();
+    navigate(href);
 }
 
 const handleOverlayClick = (): void => {
-    closeAllDropdowns();
     closeMenu();
 }
 
 const handleModalClick = (event: Event): void => {
-    /* Check if click is outside any dropdown areas */
-    const target = event.target as HTMLElement;
-    if (!target.closest(".language-select") && !target.closest(".theme-toggle")) {
-        /* Close all dropdowns using modern composable */
-        closeAllDropdowns();
-    }
     /* Stop propagation to prevent modal from closing */
     event.stopPropagation();
 }
