@@ -25,11 +25,11 @@ I use the platform for educational, portfolio, and personal projects. This allow
 
 # Security and Infrastructure
 
-Reducing the exposed attack surface was an important consideration when setting up the environment. Administrative access is provided through secured SSH access, while nftables restricts network access to the services that are actually required.
+When setting up the environment, the focus was on minimizing the attack surface. Administrative access is provided through a hardened SSH configuration, while nftables restricts incoming network traffic to the services that are actually required.
 
-Applications run in Docker containers, allowing their dependencies and runtime environments to be managed separately and deployed reproducibly.
+Applications are deployed as Docker containers and managed through Coolify. This means that, in addition to the applications themselves, I also manage key aspects of their operation, including domains and DNS, TLS/HTTPS, reverse proxying, container networking, persistent data, environment variables, and secrets.
 
-The project also gave me practical experience with DNS, TLS/HTTPS, reverse proxying, container networking, persistent data, and the secure handling of environment variables and secrets.
+Running the applications on my own infrastructure allowed me to gain practical experience not only with application deployment, but also with the underlying Linux, networking, and container infrastructure.
 
 # Key Learnings
 
