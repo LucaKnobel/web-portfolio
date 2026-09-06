@@ -1,4 +1,5 @@
 ---
+import { compareProjectsByDate } from "@/content/project-utils";
 import ProjectCard from "@/components/ProjectCard.astro";
 import { getCollection } from "astro:content";
 import type { Language, Translator } from "@/i18n/utils";
@@ -17,11 +18,7 @@ try {
   const languageProjects = allProjects.filter(
     (project) => project.data.lang === lang,
   );
-  projects = languageProjects.sort((a, b) => {
-    const dateA = new Date(a.data.date);
-    const dateB = new Date(b.data.date);
-    return dateB.getTime() - dateA.getTime();
-  });
+  projects = languageProjects.sort(compareProjectsByDate);
 } catch (err) {
   throw err;
 }

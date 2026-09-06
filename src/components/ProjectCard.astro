@@ -1,23 +1,28 @@
 ---
+import { formatProjectDate } from "@/content/project-utils";
 import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+
+type ProjectData = CollectionEntry<"projects">["data"];
 
 interface ProjectCardProps {
   /** Project title */
-  title: string;
+  title: ProjectData["title"];
   /** Project description */
-  description: string;
+  description: ProjectData["description"];
   /** Project date (YYYY-MM) */
-  date: string;
+  date: ProjectData["date"];
   /** List of tags */
-  tags: string[];
+  tags: ProjectData["tags"];
   /** Cover image source */
-  coverSrc: ImageMetadata;
+  coverSrc: ProjectData["cover"];
   /** Link to project details */
   href: string;
 }
 
-const { title, description, date, tags, coverSrc, href } =
-  Astro.props as ProjectCardProps;
+type Props = ProjectCardProps;
+
+const { title, description, date, tags, coverSrc, href } = Astro.props;
 ---
 
 <a href={href} class="project-card" tabindex="0">
@@ -40,18 +45,7 @@ const { title, description, date, tags, coverSrc, href } =
     <h2 class="project-card-title">{title}</h2>
     <p class="project-card-desc">{description}</p>
     <div class="project-card-meta">
-      <span class="project-card-date"
-        >{
-          (() => {
-            /* expected "YYYY-MM" */
-            if (typeof date === "string" && /^\d{4}-\d{2}/.test(date)) {
-              const [year, month] = date.split("-");
-              return `${month}/${year}`;
-            }
-            return date;
-          })()
-        }</span
-      >
+      <span class="project-card-date">{formatProjectDate(date)}</span>
       <div class="project-card-tags">
         {tags.map((tag) => <span class="project-card-tag">{tag}</span>)}
       </div>
