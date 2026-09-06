@@ -58,3 +58,9 @@ The calculation behind a weighted scoring model is relatively straightforward. T
 Separating business logic from HTTP and infrastructure concerns proved particularly valuable. It simplified further development while also enabling focused unit and integration testing.
 
 In retrospect, the technical scope became larger than strictly necessary for the original project. However, the additional work on architecture, application security, testing, Docker, and CI/CD ultimately became the most valuable part of the project.
+
+# Detailed Documentation
+
+A comprehensive German-language documentation is available for this project, including further details on requirements analysis, architecture, implementation, security, testing, and deployment.
+
+If you are interested, I would be happy to provide the complete documentation as a PDF upon request. Please contact me via the [contact form](/en/contact).

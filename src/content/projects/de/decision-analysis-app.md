@@ -58,3 +58,9 @@ Die eigentliche Berechnung einer Nutzwertanalyse ist vergleichsweise überschaub
 Besonders hilfreich war die Trennung der Geschäftslogik von HTTP- und Infrastrukturdetails. Sie vereinfachte nicht nur die Weiterentwicklung, sondern ermöglichte auch gezielte Unit- und Integrationstests.
 
 Rückblickend wurde der technische Umfang für eine Praxisarbeit teilweise grösser als notwendig. Gerade die zusätzliche Auseinandersetzung mit Architektur, Application Security, Testing, Docker und CI/CD war jedoch der wertvollste Teil des Projekts.
+
+# Ausführliche Dokumentation
+
+Zu diesem Projekt existiert eine ausführliche deutschsprachige Dokumentation mit weiteren Informationen zu Anforderungsanalyse, Architektur, Implementierung, Security, Testing und Deployment.
+
+Bei Interesse stelle ich die vollständige Dokumentation als PDF auf Anfrage gerne zur Verfügung. Kontaktieren Sie mich dazu über das [Kontaktformular](/de/contact).
