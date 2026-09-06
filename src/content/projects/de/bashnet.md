@@ -18,7 +18,7 @@ Neben dem Import strukturierter Wissensdaten implementierte ich eine einfache Su
 
 # Technische Umsetzung
 
-Die Anwendung wurde mit Python entwickelt und modular aufgebaut. Das semantische Netzwerk basiert auf einem gerichteten Graphen mit unterschiedlichen Knotentypen und typisierten Beziehungen. Die Wissensbasis wird aus strukturierten JSON-Dateien aufgebaut und kann anschließend als vollständiges Netzwerk gespeichert und erneut geladen werden.
+Die Anwendung wurde mit Python entwickelt und modular aufgebaut. Das semantische Netzwerk basiert auf einem gerichteten Graphen mit unterschiedlichen Knotentypen und typisierten Beziehungen. Die Wissensbasis wird aus strukturierten JSON-Dateien aufgebaut und kann anschliessend als vollständiges Netzwerk gespeichert und erneut geladen werden.
 
 Eine zentrale Funktion ist die vertiefte Suche. Während die einfache Suche einen einzelnen Begriff direkt ermittelt, berücksichtigt die Deep Search dessen Beziehungen zu weiteren Knoten. Abhängig vom Typ eines gefundenen Knotens werden beispielsweise zugehörige Befehle, Optionen oder verwandte Konzepte ermittelt. Wird kein exakter Treffer gefunden, schlägt ein Fallback-Mechanismus relevante Alternativen vor.
 
