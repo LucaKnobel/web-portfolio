@@ -24,7 +24,7 @@ Das System besteht aus drei zentralen Komponenten: dem Node Service, der Block Q
 
 Die Kommunikation zwischen den Services wurde über gRPC-Schnittstellen realisiert. Die zugehörigen Nachrichten und Service-Verträge werden mit Protocol Buffers definiert und gemeinsam von den beteiligten Komponenten verwendet. Dadurch sind die Schnittstellen zwischen den Services explizit beschrieben und die benötigten Client- und Servertypen können aus den Protobuf-Definitionen generiert werden.
 
-Bei der Verarbeitung wird ein neuer Block zunächst ohne endgültigen Hash in die Block Queue übertragen. Eine andere Node übernimmt den Block, validiert dessen Inhalt und übermittelt ihn bei erfolgreicher Prüfung an den Blockchain Service. Dort werden Index, Hash des vorherigen Blocks und der eigene Hash bestimmt und der Block anschließend in die bestehende Kette aufgenommen.
+Bei der Verarbeitung wird ein neuer Block zunächst ohne endgültigen Hash in die Block Queue übertragen. Eine andere Node übernimmt den Block, validiert dessen Inhalt und übermittelt ihn bei erfolgreicher Prüfung an den Blockchain Service. Dort werden Index, Hash des vorherigen Blocks und der eigene Hash bestimmt und der Block anschliessend in die bestehende Kette aufgenommen.
 
 # Qualitätssicherung
 
