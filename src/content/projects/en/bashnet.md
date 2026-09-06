@@ -41,3 +41,9 @@ The CLI output and interactive visualization were additionally verified manually
 The project gave me practical experience in modeling and processing graph-based data structures. A particularly interesting aspect was exploring how information can be stored not only hierarchically, but also connected through typed relationships and searched based on its context.
 
 At the same time, I was able to deepen my knowledge of Python, object-oriented software development, and automated testing. Structuring the application into clearly separated areas of responsibility also demonstrated in practice how a modular design can improve testability and make an application easier to extend.
+
+# Detailed Documentation
+
+A comprehensive technical documentation is available for this project, including further details on its design, architecture, implementation, and quality assurance.
+
+If you are interested, I would be happy to provide the complete German-language documentation upon request. Please contact me via the [contact form](/en/contact).

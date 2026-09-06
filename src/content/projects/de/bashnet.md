@@ -41,3 +41,9 @@ Die CLI-Ausgabe und die interaktive Visualisierung wurden ergänzend manuell gep
 Das Projekt gab mir einen praktischen Einstieg in die Modellierung und Verarbeitung graphbasierter Datenstrukturen. Besonders interessant war die Frage, wie Informationen nicht nur hierarchisch gespeichert, sondern über typisierte Beziehungen miteinander verknüpft und kontextbezogen durchsucht werden können.
 
 Gleichzeitig konnte ich meine Kenntnisse in Python, objektorientierter Softwareentwicklung und automatisiertem Testing vertiefen. Die Aufteilung der Anwendung in klar abgegrenzte Verantwortungsbereiche zeigte mir zudem praktisch, wie eine modulare Struktur die Testbarkeit und Weiterentwicklung einer Anwendung erleichtert.
+
+# Ausführliche Dokumentation
+
+Zu diesem Projekt existiert eine ausführliche technische Dokumentation mit weiteren Informationen zu Konzeption, Architektur, Implementierung und Qualitätssicherung.
+
+Bei Interesse stelle ich die vollständige Dokumentation auf Anfrage gerne zur Verfügung. Kontaktieren Sie mich dazu über das [Kontaktformular](/de/contact).
