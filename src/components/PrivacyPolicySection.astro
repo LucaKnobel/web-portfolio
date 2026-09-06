@@ -1,45 +1,20 @@
 ---
-import { getCollection, render } from "astro:content";
-
 export interface PrivacyPolicySectionProps {
-    /** Current language (e.g., 'de' or 'en') */
-    lang: string;
+  /** Rendered privacy policy content */
+  Content: any;
 }
 
-const { lang } = Astro.props as PrivacyPolicySectionProps;
-
-let privacyPolicyContent = null;
-
-try {
-    const allPrivacyPolicies = await getCollection("privacyPolicy");
-
-    /* Filter by language using directory structure */
-    privacyPolicyContent = allPrivacyPolicies.find((entry) =>
-        entry.id.startsWith(`${lang}/`),
-    );
-} catch (err) {
-    return Astro.redirect("/500");
-}
-
-if (!privacyPolicyContent) {
-    return Astro.redirect("/404");
-}
-
-const { Content } = await render(privacyPolicyContent);
-
-if (!Content) {
-    return Astro.redirect("/404");
-}
+const { Content } = Astro.props as PrivacyPolicySectionProps;
 ---
 
 <section class="privacy-content prose">
-    <Content />
+  <Content />
 </section>
 
 <style>
-    .privacy-content {
-        max-width: var(--content-max);
-        margin: 0 auto;
-        padding: var(--space-12) var(--gutter);
-    }
+  .privacy-content {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: var(--space-12) var(--gutter);
+  }
 </style>
