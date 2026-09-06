@@ -2,10 +2,16 @@ import { defineCollection } from "astro:content";
 import { z } from "astro/zod";
 import { glob } from "astro/loaders";
 
+const httpsUrl = z
+  .url()
+  .refine((value) => new URL(value).protocol === "https:", {
+    message: "URL must use the https: protocol",
+  });
+
 const careerSchema = z.object({
   id: z.string(),
   organizationName: z.string(),
-  organizationWebsite: z.url(),
+  organizationWebsite: httpsUrl,
   title: z.string(),
   employmentRate: z.string(),
   period: z.object({
@@ -19,7 +25,7 @@ const careerSchema = z.object({
 const educationSchema = z.object({
   id: z.string(),
   organizationName: z.string(),
-  organizationWebsite: z.url(),
+  organizationWebsite: httpsUrl,
   title: z.string(),
   studyMode: z.string(),
   period: z.object({
@@ -57,7 +63,7 @@ const projects = defineCollection({
       lang: z.string(),
       tags: z.array(z.string()),
       cover: image(),
-      url: z.url().optional(),
+      url: httpsUrl.optional(),
     }),
 });
 
