@@ -1,13 +1,40 @@
 ---
+import { getCollection, render } from "astro:content";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import ErrorPage from "@/components/ErrorPage.astro";
 import PrivacyPolicySection from "@/components/PrivacyPolicySection.astro";
 
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
----
-<BaseLayout title="Luca Knobel | Portfolio">
-    <PrivacyPolicySection lang={lang} t={t} />
-</BaseLayout>
 
+let Content;
+try {
+  const entries = await getCollection("privacyPolicy");
+  const entry = entries.find((item) => item.id.startsWith(`${lang}/`));
+
+  if (!entry) {
+    Astro.response.status = 404;
+  } else {
+    ({ Content } = await render(entry));
+  }
+} catch {
+  Astro.response.status = 500;
+}
+const errorStatus = Astro.response.status === 500 ? 500 : 404;
+---
+
+<BaseLayout
+  title={Content
+    ? "Luca Knobel | Portfolio"
+    : `Luca Knobel | ${errorStatus === 500 ? t("500.pageTitle") : t("404.pageTitle")}`}
+>
+  {
+    Content ? (
+      <PrivacyPolicySection Content={Content} />
+    ) : (
+      <ErrorPage status={errorStatus} />
+    )
+  }
+</BaseLayout>
