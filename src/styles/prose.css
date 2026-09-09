@@ -66,11 +66,6 @@
     text-decoration-thickness: 0.12em;
   }
 
-  /* Keep inline links readable on every dark prose surface. */
-  [data-theme="dark"] .prose a {
-    color: var(--color-link-hover);
-  }
-
   .prose strong {
     font-weight: var(--fw-semibold);
   }
