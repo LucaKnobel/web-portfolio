@@ -1,5 +1,6 @@
 ---
 import { actions } from "astro:actions";
+import PageSection from "@/components/PageSection.astro";
 import { rateLimiter } from "@/server/infrastructure/composition.js";
 import type { Language, Translator } from "@/i18n/utils";
 
@@ -24,9 +25,8 @@ const isRateLimit = result?.error?.code === "TOO_MANY_REQUESTS";
 ---
 
 
-<section>
-    <h1>{t("contact.formTitle")}</h1>
-    <p>{t("contact.formDescription")}</p>
+<PageSection title={t("contact.formTitle")}>
+    <p class="form-description">{t("contact.formDescription")}</p>
 
     <!-- Success Message -->
     {isSuccess && (
@@ -211,33 +211,17 @@ const isRateLimit = result?.error?.code === "TOO_MANY_REQUESTS";
         </button>
     </form>
     )}
-</section>
+</PageSection>
 
 <style>
-    section {
-        max-width: var(--measure);
-        margin: 0 auto;
-        padding: var(--space-12) var(--gutter);
-        margin-bottom: var(--space-16);
-
-        h1 {
-            font-size: var(--heading-lg);
-            font-weight: var(--fw-semibold);
-            margin-bottom: var(--space-6);
-            text-align: left;
-        }
-
-        p {
-            color: var(--color-muted);
-            margin-bottom: var(--space-8);
-            text-align: left;
-        }
+    .form-description {
+        margin: 0;
+        color: var(--color-muted);
     }
 
     .message {
         padding: var(--space-6);
         border-radius: var(--card-radius);
-        margin-bottom: var(--space-8);
         border: 1px solid;
 
         h2 {
@@ -263,6 +247,7 @@ const isRateLimit = result?.error?.code === "TOO_MANY_REQUESTS";
         display: flex;
         flex-direction: column;
         gap: var(--space-8);
+        container: contact-form / inline-size;
         color: var(--color-text);
     }
 
@@ -389,11 +374,7 @@ const isRateLimit = result?.error?.code === "TOO_MANY_REQUESTS";
         }
     }
 
-    @media (min-width: 1024px) {
-        section {
-            max-width: var(--content-max);
-        }
-
+    @container contact-form (width >= 45rem) {
         button {
             width: auto;
             align-self: flex-end;

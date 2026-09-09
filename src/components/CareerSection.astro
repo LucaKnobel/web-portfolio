@@ -1,5 +1,6 @@
 ---
 import CareerCard from "@/components/CareerCard.astro";
+import PageSection from "@/components/PageSection.astro";
 import { getCollection } from "astro:content";
 import type { Language, Translator } from "@/i18n/utils";
 
@@ -34,39 +35,15 @@ try {
 }
 ---
 
-<section>
-  <h1 class="section-title">{title}</h1>
-  {entries.map((entry) => <CareerCard t={t} entry={{ ...entry }} />)}
-</section>
+<PageSection title={title} align="center">
+  <div class="career-list stack">
+    {entries.map((entry) => <CareerCard t={t} entry={{ ...entry }} />)}
+  </div>
+</PageSection>
 
 <style>
-  section {
-    max-width: var(--content-max);
-    margin-inline: var(--gutter);
-    padding-block: var(--space-12);
-    display: flex;
-    flex-direction: column;
-    gap: var(--gutter);
-  }
-
-  .section-title {
-    text-align: center;
-    font-size: var(--heading-md);
-    font-weight: var(--fw-semibold);
-    margin-bottom: var(--gutter);
-    color: var(--color-text);
-  }
-
-  @media (min-width: 1024px) {
-    section {
-      max-width: var(--content-max);
-      margin-inline: auto;
-      padding-block: var(--space-16);
-      gap: var(--gutter);
-    }
-    .section-title {
-      font-size: var(--heading-lg);
-      margin-bottom: var(--gutter);
-    }
+  .career-list {
+    inline-size: min(100%, 50rem);
+    margin-inline: auto;
   }
 </style>

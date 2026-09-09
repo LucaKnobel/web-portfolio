@@ -1,5 +1,6 @@
 ---
 import type { Language, Translator } from "@/i18n/utils";
+import PageSection from "@/components/PageSection.astro";
 
 export interface ImprintSectionProps {
   /** Language code for constructing localized links */
@@ -11,71 +12,32 @@ export interface ImprintSectionProps {
 const { lang, t } = Astro.props as ImprintSectionProps;
 ---
 
-<section class="impressum">
-  <div class="impressum-content">
-    <h1>{t("impressum.title")}</h1>
-
-    <div class="impressum-section">
-      <p>
-        {t("impressum.name")}<br />
-        {t("impressum.street")}<br />
-        {t("impressum.zip")}
-        {t("impressum.city")}<br />
-        {t("impressum.country")}<br />
-        <a href="mailto:knobel.konsum@gmail.com">{t("impressum.email")}</a>
-      </p>
-      <a href={`/${lang}/privacy-policy`}>{t("impressum.privacy")}</a>
-    </div>
+<PageSection title={t("impressum.title")} align="center">
+  <div class="impressum-section stack">
+    <p>
+      {t("impressum.name")}<br />
+      {t("impressum.street")}<br />
+      {t("impressum.zip")}
+      {t("impressum.city")}<br />
+      {t("impressum.country")}<br />
+      <a href="mailto:knobel.konsum@gmail.com">{t("impressum.email")}</a>
+    </p>
+    <a href={`/${lang}/privacy-policy`}>{t("impressum.privacy")}</a>
   </div>
-</section>
+</PageSection>
 
 <style>
-  .impressum {
-    max-width: var(--content-max);
-    margin: var(--space-16) auto;
-    padding: var(--space-12) var(--gutter);
-    color: var(--color-text);
-    line-height: var(--lh);
-    text-align: center;
-  }
-
-  .impressum-content {
-    max-width: var(--measure);
-    margin: 0 auto;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-
-  h1 {
-    font-size: var(--heading-lg);
-    font-weight: var(--fw-semibold);
-    margin-bottom: var(--space-8);
-    color: var(--color-text);
-    text-align: center;
-  }
-
   .impressum-section {
-    margin-bottom: var(--space-8);
     text-align: center;
     width: 100%;
-    display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: var(--space-3);
   }
 
   p {
-    margin-bottom: var(--space-6);
+    margin: 0;
     color: var(--color-text);
     font-size: var(--text-body);
     line-height: var(--lh);
-
-    &:last-child {
-      margin-bottom: 0;
-    }
   }
 
   a {

@@ -439,6 +439,18 @@ its own API, and its own scoped styles. Use Astro as the component model — not
 <div class="card">…</div>   <!-- avoid -->
 ```
 
+### Shared page layout
+
+`src/components/ui/PageSection.astro` owns the shared section padding, vertical flow and
+optional page heading. Projects, career, contact, imprint and privacy use this component.
+It composes `.container` and `.stack`; component-specific layouts remain in their owners.
+
+Header, footer, project details and the landing page also use `.container`, so the horizontal
+content boundary is defined once. The landing page retains its viewport-height minimum and
+height-dependent portrait sizing. Typography, gutters and larger spacing scale fluidly in
+`tokens.css`, without breakpoint remaps. Navigation still uses a viewport breakpoint; the
+contact form uses a named container query for its field layout.
+
 ### 8.3 Variants
 
 Use data attributes rather than variant classes. They keep specificity flat and read clearly in

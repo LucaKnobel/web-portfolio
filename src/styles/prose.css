@@ -164,39 +164,11 @@
     border-top: 1px solid var(--divider-subtle);
   }
 
-  @media (min-width: 1024px) {
-    .prose h1 {
-      font-size: var(--display-xl);
-      margin-top: var(--space-12);
-      margin-bottom: var(--space-6);
-    }
+  .prose > :first-child {
+    margin-block-start: 0;
+  }
 
-    .prose h2 {
-      font-size: var(--heading-lg);
-      margin-top: var(--space-8);
-      margin-bottom: var(--space-6);
-    }
-
-    .prose h3 {
-      font-size: var(--heading-md);
-      margin-top: var(--space-6);
-      margin-bottom: var(--space-3);
-    }
-
-    .prose h4 {
-      font-size: var(--heading-sm);
-      margin-top: var(--space-3);
-      margin-bottom: var(--space-2);
-    }
-
-    .prose p,
-    .prose li {
-      text-align: justify;
-      text-justify: inter-word;
-      margin-bottom: var(--space-2);
-      hyphens: auto;
-      -webkit-hyphens: auto;
-      -ms-hyphens: auto;
-    }
+  .prose > :last-child {
+    margin-block-end: 0;
   }
 }

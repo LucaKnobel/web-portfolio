@@ -97,13 +97,11 @@ const {
     border-radius: var(--card-radius);
     box-shadow: var(--elev-1);
     padding: var(--space-6);
-    margin: 0 auto;
     border: 1px solid var(--color-border);
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
-    max-width: 600px;
-    width: 95%;
+    min-inline-size: 0;
     transition:
       box-shadow var(--dur-2) var(--ease-standard),
       border-color var(--dur-1) var(--ease-standard);
@@ -192,9 +190,4 @@ const {
     }
   }
 
-  @media (min-width: 1024px) {
-    .card-base {
-      max-width: 800px;
-    }
-  }
 </style>

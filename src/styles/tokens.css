@@ -125,11 +125,11 @@
     /* TYPE SCALE (primitives) - do not use directly */
     --fs-body: 1rem;
     --fs-caption: 0.875rem;
-    --fs-display: 2.5rem;
-    --fs-h1: 2rem;
-    --fs-h2: 1.625rem;
-    --fs-h3: 1.375rem;
-    --fs-h4: 1.25rem;
+    --fs-display: clamp(2rem, 1.32rem + 3.41vw, 3.5rem);
+    --fs-h1: clamp(2rem, 1.66rem + 1.7vw, 2.75rem);
+    --fs-h2: clamp(1.625rem, 1.4rem + 1.14vw, 2.125rem);
+    --fs-h3: clamp(1.375rem, 1.26rem + 0.57vw, 1.625rem);
+    --fs-h4: clamp(1.25rem, 1.14rem + 0.57vw, 1.5rem);
     --fs-small: 0.9375rem;
     --fw-medium: 500;
     --fw-regular: 400;
@@ -146,23 +146,23 @@
     --text-caption: var(--fs-caption);
     --text-small: var(--fs-small);
 
-    /* SPACING SCALE (primitives) - do not use directly */
+    /* Small spacing stays stable; larger layout spacing scales fluidly. */
     --space-1: 0.25rem;
-    --space-10: 2.5rem;
-    --space-12: 3rem;
-    --space-16: 4rem;
+    --space-10: clamp(2rem, 1.77rem + 1.14vw, 2.5rem);
+    --space-12: clamp(3rem, 2.55rem + 2.27vw, 4rem);
+    --space-16: clamp(4rem, 3.55rem + 2.27vw, 5rem);
     --space-2: 0.5rem;
     --space-3: 0.75rem;
     --space-4: 1rem;
     --space-5: 1.25rem;
-    --space-6: 1.5rem;
-    --space-7: 1.75rem;
-    --space-8: 2rem;
+    --space-6: clamp(1.25rem, 1.14rem + 0.57vw, 1.5rem);
+    --space-7: clamp(1.5rem, 1.39rem + 0.57vw, 1.75rem);
+    --space-8: clamp(1.5rem, 1.27rem + 1.14vw, 2rem);
 
     /* Global layout tokens */
-    --content-max: 1200px;
+    --content-max: 75rem;
     --header-height: 80px;
-    --gutter: var(--space-4);
+    --gutter: clamp(1rem, 0.55rem + 2.27vw, 2rem);
     --measure: 65ch;
 
     /* SHAPE & BORDERS */
@@ -217,29 +217,6 @@
     --layer-modal: 500;
     --layer-overlay: 400;
     --layer-tooltip: 600;
-}
-
-/* RESPONSIVE REMAPS - only semantic aliases scale */
-@media (min-width: 600px) {
-    :root {
-        --display-xl: 3rem;
-        --gutter: var(--space-6);
-        --heading-lg: 2.375rem;
-        --heading-md: 1.875rem;
-        --heading-sm: 1.5rem;
-        --heading-xs: 1.375rem;
-    }
-}
-
-@media (min-width: 1024px) {
-    :root {
-        --display-xl: 3.5rem;
-        --gutter: var(--space-8);
-        --heading-lg: 2.75rem;
-        --heading-md: 2.125rem;
-        --heading-sm: 1.625rem;
-        --heading-xs: 1.5rem;
-    }
 }
 
 /* DARK THEME - role overrides only */
