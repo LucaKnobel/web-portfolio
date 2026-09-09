@@ -25,9 +25,9 @@ type Props = ProjectDetailProps;
 const { project, lang, t, Content } = Astro.props;
 ---
 
-<article class="project-detail">
+<article class="project-detail container stack">
   <header class="project-header">
-    <div class="project-meta">
+    <div class="project-meta stack">
       <div class="project-meta-row">
         <a href={`/${lang}/projects`} class="back-link">
           ← {t("nav.projects")}
@@ -65,23 +65,15 @@ const { project, lang, t, Content } = Astro.props;
 
 <style>
   .project-detail {
-    max-width: var(--content-max);
-    margin: 0 auto;
-    padding: var(--gutter);
+    --flow: var(--space-8);
+    padding-block: var(--space-12);
     background: var(--color-bg);
     overflow-x: hidden;
   }
 
-  .project-header {
-    margin-bottom: var(--space-8);
-  }
-
   .project-meta {
-    display: flex;
-    flex-direction: column;
+    --flow: var(--space-6);
     align-items: flex-start;
-    gap: var(--space-2);
-    margin-bottom: var(--space-6);
     font-size: var(--text-small);
     color: var(--color-muted);
   }
@@ -117,14 +109,13 @@ const { project, lang, t, Content } = Astro.props;
     width: 100%;
     margin: 0;
     color: var(--color-text);
-    font-size: var(--heading-lg);
+    font-size: var(--display-xl);
     font-weight: var(--fw-semibold);
     overflow-wrap: break-word;
   }
 
   .project-cover {
     width: 100%;
-    margin-block: var(--space-6) var(--space-8);
     overflow: hidden;
     border-radius: var(--card-radius);
     box-shadow: var(--elev-1);
@@ -137,14 +128,4 @@ const { project, lang, t, Content } = Astro.props;
     border-radius: inherit;
   }
 
-  @media (min-width: 1024px) {
-    .project-title {
-      font-size: var(--display-xl);
-      margin-bottom: var(--space-3);
-    }
-
-    .project-cover {
-      margin-block: var(--space-2) var(--space-6);
-    }
-  }
 </style>

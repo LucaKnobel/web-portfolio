@@ -1,0 +1,33 @@
+---
+interface Props {
+  title?: string;
+  align?: "start" | "center";
+}
+
+const { title, align = "start" } = Astro.props;
+---
+
+<section class="page-section container stack" data-align={align}>
+  {title && <h1 class="page-title">{title}</h1>}
+  <slot />
+</section>
+
+<style>
+  .page-section {
+    --flow: var(--space-8);
+    padding-block: var(--space-12);
+    min-inline-size: 0;
+  }
+
+  .page-title {
+    margin: 0;
+    font-size: var(--heading-lg);
+    font-weight: var(--fw-semibold);
+    text-align: start;
+    text-wrap: balance;
+  }
+
+  [data-align="center"] > .page-title {
+    text-align: center;
+  }
+</style>

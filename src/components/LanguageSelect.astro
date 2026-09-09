@@ -133,11 +133,6 @@ const languageLinks = Object.entries(languageConfig).map(([code, label]) => ({
     transform: scale(var(--scale-active));
   }
 
-  .language-toggle:focus-visible {
-    outline: 2px solid var(--color-primary);
-    outline-offset: 2px;
-  }
-
   .language-icon {
     width: var(--icon-xs);
     height: var(--icon-xs);
@@ -164,6 +159,8 @@ const languageLinks = Object.entries(languageConfig).map(([code, label]) => ({
   }
 
   .language-option {
+    /* Keep the global ring inside the clipped dropdown. */
+    --focus-ring-offset: calc(-1 * var(--focus-ring-width));
     width: 100%;
     box-sizing: border-box;
     background: transparent;
@@ -184,11 +181,6 @@ const languageLinks = Object.entries(languageConfig).map(([code, label]) => ({
   .language-option[aria-current="page"] {
     background: var(--color-surface-3);
     color: var(--color-primary);
-  }
-
-  .language-option:focus-visible {
-    outline: 2px solid var(--color-primary);
-    outline-offset: -2px;
   }
 
   .label {

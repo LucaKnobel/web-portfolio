@@ -1,6 +1,7 @@
 ---
 import { compareProjectsByDate } from "@/content/project-utils";
 import ProjectCard from "@/components/ProjectCard.astro";
+import PageSection from "@/components/PageSection.astro";
 import { getCollection } from "astro:content";
 import type { Language, Translator } from "@/i18n/utils";
 
@@ -24,8 +25,7 @@ try {
 }
 ---
 
-<section class="project-list-section">
-  <h1 class="project-title">{t("projects.pageTitle")}</h1>
+<PageSection title={t("projects.pageTitle")} align="center">
   <div class="project-card-wrapper">
     {
       projects.map((project) => (
@@ -40,50 +40,12 @@ try {
       ))
     }
   </div>
-</section>
+</PageSection>
 
 <style>
-  .project-list-section {
-    width: 100%;
-    max-width: var(--content-max);
-    margin-inline: auto;
-    padding: var(--space-12) var(--gutter);
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--space-8);
-
-    .project-title {
-      font-size: var(--heading-md);
-      font-weight: var(--fw-semibold);
-      margin: 0 0 var(--space-12) 0;
-      color: var(--color-text);
-      text-wrap: balance;
-      text-align: center;
-      width: 100%;
-    }
-
-    .project-card-wrapper {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-4);
-      width: 100%;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .project-list-section {
-      padding: var(--space-16) var(--gutter);
-      .project-title {
-        font-size: var(--heading-lg);
-      }
-      .project-card-wrapper {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(400px, 500px));
-        justify-content: center;
-        gap: var(--space-6);
-        grid-auto-rows: 1fr;
-      }
-    }
+  .project-card-wrapper {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(25rem, 100%), 1fr));
+    gap: var(--space-6);
   }
 </style>

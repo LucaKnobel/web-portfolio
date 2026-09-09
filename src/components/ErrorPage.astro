@@ -26,7 +26,7 @@ const content =
       };
 ---
 
-<section class="error-page">
+<section class="error-page container stack">
   <h1>{content.title}</h1>
   <p>{content.message}</p>
   <ActionButton
@@ -39,22 +39,19 @@ const content =
 
 <style>
   .error-page {
-    width: min(calc(100% - 2 * var(--gutter)), 420px);
-    margin: 10vh auto 0;
-    padding: var(--space-8) var(--gutter);
+    max-inline-size: 26.25rem;
+    margin-block: 10vh 0;
+    padding: var(--space-6) var(--gutter);
     background: var(--color-surface-1);
     border-radius: var(--card-radius);
     box-shadow: var(--elev-2);
     text-align: center;
     color: var(--color-text);
-    display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: var(--space-6);
   }
 
   .error-page h1 {
-    margin: 0 0 var(--space-3);
+    margin: 0;
     color: var(--color-primary);
     font-size: var(--heading-lg);
     font-weight: var(--fw-semibold);
@@ -62,19 +59,10 @@ const content =
   }
 
   .error-page p {
-    margin: 0 0 var(--space-6);
+    margin: 0;
     color: var(--color-muted);
     font-size: var(--text-body);
     line-height: var(--lh);
   }
 
-  @media (max-width: 1024px) {
-    .error-page {
-      padding: var(--space-6) var(--gutter);
-    }
-
-    .error-page h1 {
-      font-size: var(--heading-md);
-    }
-  }
 </style>

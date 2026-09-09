@@ -1,4 +1,5 @@
 ---
+import PageSection from "@/components/PageSection.astro";
 export interface PrivacyPolicySectionProps {
   /** Rendered privacy policy content */
   Content: any;
@@ -7,14 +8,8 @@ export interface PrivacyPolicySectionProps {
 const { Content } = Astro.props as PrivacyPolicySectionProps;
 ---
 
-<section class="privacy-content prose">
-  <Content />
-</section>
-
-<style>
-  .privacy-content {
-    max-width: var(--content-max);
-    margin: 0 auto;
-    padding: var(--space-12) var(--gutter);
-  }
-</style>
+<PageSection>
+  <div class="prose">
+    <Content />
+  </div>
+</PageSection>

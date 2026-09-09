@@ -35,8 +35,8 @@ const {
 } = Astro.props as IntroProps;
 ---
 
-<section aria-labelledby="intro-title">
-  <div class="intro-container">
+<section class="container" aria-labelledby="intro-title">
+  <div class="intro-container stack">
     <Image
       src={portraitSrc}
       alt={t("intro.portraitAlt") + " " + name}
@@ -46,7 +46,7 @@ const {
       quality={90}
       format="webp"
       priority
-      sizes="(max-width: 600px) 80vw, 450px"
+      sizes="min(80vw, 35dvh, 450px)"
     />
 
     <h1 class="intro-title">
@@ -86,27 +86,24 @@ const {
 
 <style>
   section {
-    padding: var(--space-12) var(--gutter);
+    min-block-size: calc(100dvh - var(--header-height));
+    padding-block: clamp(1.5rem, 4dvh, 3rem);
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: var(--space-3) 0 var(--space-16) 0;
   }
 
   .intro-container {
-    display: flex;
-    flex-direction: column;
+    --flow: clamp(1rem, 3dvh, 3rem);
     align-items: center;
-    gap: var(--space-8);
-    max-width: 700px;
+    max-width: 56.25rem;
     width: 100%;
   }
 
   .intro-portrait {
-    width: 80vw;
-    height: 80vw;
-    max-width: 450px;
-    max-height: 450px;
+    width: min(80vw, 35dvh, 450px);
+    height: auto;
+    aspect-ratio: 1;
     border-radius: 50%;
     object-fit: cover;
     border: none;
@@ -114,7 +111,7 @@ const {
   }
 
   .intro-title {
-    font-size: var(--heading-lg);
+    font-size: var(--display-xl);
     font-weight: var(--fw-semibold);
     margin: 0;
     text-align: center;
@@ -123,7 +120,7 @@ const {
   }
 
   .intro-role {
-    font-size: var(--heading-sm);
+    font-size: var(--heading-md);
     color: var(--color-muted);
     margin: 0;
     text-align: center;
@@ -138,20 +135,6 @@ const {
   }
 
   @media (min-width: 1024px) {
-    section {
-      margin: 0 0 var(--space-16) 0;
-    }
-    .intro-container {
-      max-width: 900px;
-      gap: var(--space-12);
-    }
-
-    .intro-title {
-      font-size: var(--display-xl);
-    }
-    .intro-role {
-      font-size: var(--heading-md);
-    }
     .intro-actions {
       flex-direction: row;
       gap: var(--space-8);

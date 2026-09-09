@@ -1,8 +1,9 @@
 /* Design tokens for minimal professional portfolio system */
 
-@layer reset, base, primitives, prose, syntax, utilities;
+@layer reset, base, prose, syntax, utilities;
 
 :root {
+    color-scheme: light dark;
 
     /* PALETTE (primitives) - do not use directly in components */
 
@@ -41,82 +42,82 @@
     --warning-50: #fef8e7;
     --warning-500: #b8860b;
 
-    /* COLOR ROLES - LIGHT (use these in components) */
+    /* Semantic colour pairs; components never select a theme. */
 
     /* Surfaces */
-    --color-bg: var(--neutral-0);
-    --color-surface-1: var(--neutral-10);
-    --color-surface-2: var(--neutral-25);
-    --color-surface-3: var(--neutral-40);
+    --color-bg: light-dark(var(--neutral-0), #0a0c10);
+    --color-surface-1: light-dark(var(--neutral-10), #111419);
+    --color-surface-2: light-dark(var(--neutral-25), #181c23);
+    --color-surface-3: light-dark(var(--neutral-40), #1f242c);
 
 
     /* Text */
-    --color-muted: var(--neutral-600);
-    --color-text: var(--neutral-900);
+    --color-muted: light-dark(var(--neutral-600), var(--neutral-400));
+    --color-text: light-dark(var(--neutral-900), #f8f9fa);
 
     /* Interactive states */
-    --color-on-primary: var(--neutral-0);
-    --color-primary: var(--primary-600);
-    --color-primary-active: var(--primary-750);
-    --color-primary-hover: var(--primary-700);
+    --color-on-primary: light-dark(var(--neutral-0), var(--neutral-900));
+    --color-primary: light-dark(var(--primary-600), var(--primary-500));
+    --color-primary-active: light-dark(var(--primary-750), var(--primary-400));
+    --color-primary-hover: light-dark(var(--primary-700), var(--primary-400));
 
     /* Links */
-    --color-link: var(--primary-600);
-    --color-link-hover: var(--primary-700);
-    --color-link-visited: var(--primary-500);
+    --color-link: light-dark(var(--primary-600), var(--primary-400));
+    --color-link-hover: light-dark(var(--primary-700), var(--primary-400));
+    --color-link-visited: light-dark(var(--primary-500), #8ba3c7);
 
     /* Borders & dividers */
-    --color-border: var(--neutral-200);
-    --color-border-hairline: var(--neutral-100);
-    --divider-subtle: var(--neutral-150);
+    --color-border: light-dark(var(--neutral-200), rgba(248, 249, 250, 0.12));
+    --color-border-hairline: light-dark(var(--neutral-100), rgba(248, 249, 250, 0.08));
+    --divider-subtle: light-dark(var(--neutral-150), rgba(248, 249, 250, 0.1));
 
     /* Overlays & shadows */
-    --overlay-bg: rgba(26, 33, 41, 0.6);
-    --shadow-color: rgba(26, 33, 41, 0.08);
+    --overlay-bg: light-dark(rgba(26, 33, 41, 0.6), rgba(10, 12, 16, 0.8));
+    --shadow-color: light-dark(rgba(26, 33, 41, 0.08), rgba(248, 249, 250, 0.06));
 
     /* Glassmorphism */
-    --glass-bg: rgba(255, 255, 255, 0.58);
-    --glass-border: rgba(255, 255, 255, 0.6);
+    --glass-bg: light-dark(rgba(255, 255, 255, 0.58), rgba(10, 12, 16, 0.6));
+    --glass-border: light-dark(rgba(255, 255, 255, 0.6), rgba(248, 249, 250, 0.05));
     --glass-blur: blur(64px) saturate(150%);
 
     /* Selection & focus */
-    --focus-ring-color: var(--primary-500);
-    --focus-ring-offset: 1px;
+    --focus-ring-color: light-dark(var(--primary-500), var(--primary-400));
+    --focus-ring-offset: 2px;
     --focus-ring-width: 2px;
-    --selection-bg: rgba(74, 104, 146, 0.15);
+    --selection-bg: light-dark(rgba(74, 104, 146, 0.15), rgba(90, 123, 163, 0.25));
     --selection-fg: var(--color-text);
 
     /* Messages - soft pastels with AA contrast */
-    --msg-error-bg: var(--error-50);
-    --msg-error-border: rgba(200, 85, 85, 0.2);
-    --msg-error-fg: #a34545;
-    --msg-info-bg: var(--info-50);
-    --msg-info-border: rgba(90, 123, 163, 0.2);
-    --msg-info-fg: #3d5578;
-    --msg-success-bg: var(--success-50);
-    --msg-success-border: rgba(74, 138, 92, 0.2);
-    --msg-success-fg: #2d5a3d;
-    --msg-warning-bg: var(--warning-50);
-    --msg-warning-border: rgba(184, 134, 11, 0.2);
-    --msg-warning-fg: #8b6914;
+    --msg-error-bg: light-dark(var(--error-50), rgba(200, 85, 85, 0.15));
+    --msg-error-border: light-dark(rgba(200, 85, 85, 0.2), rgba(240, 140, 140, 0.3));
+    --msg-error-fg: light-dark(#a34545, #f08c8c);
+    --msg-info-bg: light-dark(var(--info-50), rgba(90, 123, 163, 0.15));
+    --msg-info-border: light-dark(rgba(90, 123, 163, 0.2), rgba(139, 163, 199, 0.3));
+    --msg-info-fg: light-dark(#3d5578, #8ba3c7);
+    --msg-success-bg: light-dark(var(--success-50), rgba(74, 138, 92, 0.15));
+    --msg-success-border: light-dark(rgba(74, 138, 92, 0.2), rgba(123, 200, 141, 0.3));
+    --msg-success-fg: light-dark(#2d5a3d, #7bc88d);
+    --msg-warning-bg: light-dark(var(--warning-50), rgba(184, 134, 11, 0.15));
+    --msg-warning-border: light-dark(rgba(184, 134, 11, 0.2), rgba(244, 196, 48, 0.3));
+    --msg-warning-fg: light-dark(#8b6914, #f4c430);
 
     /* Syntax highlighting roles */
-    --syntax-accent: #6cb8e6;
-    --syntax-comment: #4a8a5c;
-    --syntax-code: #66cccc;
-    --syntax-light: #e3eaf2;
+    --syntax-accent: light-dark(#6cb8e6, #8bd3ff);
+    --syntax-comment: light-dark(#4a8a5c, #91d076);
+    --syntax-code: light-dark(#66cccc, #79e2e2);
+    --syntax-light: light-dark(#e3eaf2, #f3f6fa);
     --syntax-list: #f4adf4;
-    --syntax-muted: #8da1b9;
-    --syntax-number: #e6d37a;
-    --syntax-on-accent: #111b27;
-    --syntax-string: #91d076;
-    --syntax-line-bg: rgba(60, 82, 109, 0.37);
-    --syntax-line-bg-end: rgba(60, 82, 109, 0.33);
-    --syntax-line-shadow: rgba(60, 82, 109, 0.37);
-    --syntax-diff-delete: rgba(205, 102, 96, 0.12);
-    --syntax-diff-insert: rgba(145, 208, 118, 0.12);
-    --syntax-panel: rgba(11, 18, 27, 0.48);
-    --syntax-panel-border: #0b121b;
+    --syntax-muted: light-dark(#8da1b9, #a9bad0);
+    --syntax-number: light-dark(#e6d37a, #f3d675);
+    --syntax-on-accent: light-dark(#111b27, #101820);
+    --syntax-string: light-dark(#91d076, #a7e68d);
+    --syntax-line-bg: light-dark(rgba(60, 82, 109, 0.37), rgba(139, 163, 199, 0.28));
+    --syntax-line-bg-end: light-dark(rgba(60, 82, 109, 0.33), rgba(139, 163, 199, 0.2));
+    --syntax-line-shadow: light-dark(rgba(60, 82, 109, 0.37), rgba(139, 163, 199, 0.3));
+    --syntax-diff-delete: light-dark(rgba(205, 102, 96, 0.12), rgba(240, 140, 140, 0.18));
+    --syntax-diff-insert: light-dark(rgba(145, 208, 118, 0.12), rgba(123, 200, 141, 0.18));
+    --syntax-panel: light-dark(rgba(11, 18, 27, 0.48), rgba(10, 12, 16, 0.7));
+    --syntax-panel-border: light-dark(#0b121b, rgba(248, 249, 250, 0.16));
 
     /* FONT FAMILIES - local system fonts only */
     --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -125,11 +126,11 @@
     /* TYPE SCALE (primitives) - do not use directly */
     --fs-body: 1rem;
     --fs-caption: 0.875rem;
-    --fs-display: 2.5rem;
-    --fs-h1: 2rem;
-    --fs-h2: 1.625rem;
-    --fs-h3: 1.375rem;
-    --fs-h4: 1.25rem;
+    --fs-display: clamp(2rem, 1.32rem + 3.41vw, 3.5rem);
+    --fs-h1: clamp(2rem, 1.66rem + 1.7vw, 2.75rem);
+    --fs-h2: clamp(1.625rem, 1.4rem + 1.14vw, 2.125rem);
+    --fs-h3: clamp(1.375rem, 1.26rem + 0.57vw, 1.625rem);
+    --fs-h4: clamp(1.25rem, 1.14rem + 0.57vw, 1.5rem);
     --fs-small: 0.9375rem;
     --fw-medium: 500;
     --fw-regular: 400;
@@ -146,22 +147,23 @@
     --text-caption: var(--fs-caption);
     --text-small: var(--fs-small);
 
-    /* SPACING SCALE (primitives) - do not use directly */
+    /* Small spacing stays stable; larger layout spacing scales fluidly. */
     --space-1: 0.25rem;
-    --space-10: 2.5rem;
-    --space-12: 3rem;
-    --space-16: 4rem;
+    --space-10: clamp(2rem, 1.77rem + 1.14vw, 2.5rem);
+    --space-12: clamp(3rem, 2.55rem + 2.27vw, 4rem);
+    --space-16: clamp(4rem, 3.55rem + 2.27vw, 5rem);
     --space-2: 0.5rem;
     --space-3: 0.75rem;
     --space-4: 1rem;
     --space-5: 1.25rem;
-    --space-6: 1.5rem;
-    --space-7: 1.75rem;
-    --space-8: 2rem;
+    --space-6: clamp(1.25rem, 1.14rem + 0.57vw, 1.5rem);
+    --space-7: clamp(1.5rem, 1.39rem + 0.57vw, 1.75rem);
+    --space-8: clamp(1.5rem, 1.27rem + 1.14vw, 2rem);
 
     /* Global layout tokens */
-    --content-max: 1200px;
-    --gutter: var(--space-4);
+    --content-max: 75rem;
+    --header-height: 80px;
+    --gutter: clamp(1rem, 0.55rem + 2.27vw, 2rem);
     --measure: 65ch;
 
     /* SHAPE & BORDERS */
@@ -193,9 +195,9 @@
     --control-h-lg: 48px;
     --control-h-md: 40px;
     --control-h-sm: 32px;
-    --disabled-bg: var(--neutral-25);
-    --disabled-border: var(--neutral-100);
-    --disabled-fg: var(--neutral-600);
+    --disabled-bg: light-dark(var(--neutral-25), var(--neutral-800));
+    --disabled-border: light-dark(var(--neutral-100), var(--neutral-700));
+    --disabled-fg: light-dark(var(--neutral-600), var(--neutral-400));
     --disabled-opacity: 0.45;
     --icon-lg: 32px;
     --icon-md: 28px;
@@ -204,10 +206,12 @@
     --touch-target-min: 44px;
 
     /* GRADIENTS */
-    --grad-hero-spot: radial-gradient(60% 40% at top center, rgba(118, 145, 179, 0.35) 0%, transparent 70%);
-    --grad-overlay-fade-b: linear-gradient(180deg, transparent 0%, rgba(26, 33, 41, 0.60) 100%);
-    --grad-overlay-fade-t: linear-gradient(0deg, transparent 0%, rgba(26, 33, 41, 0.60) 100%);
-    --grad-primary-soft: linear-gradient(180deg, var(--primary-500) 0%, var(--primary-700) 100%);
+    --color-glow: light-dark(rgb(118 145 179 / 35%), rgb(139 163 199 / 25%));
+    --color-sheen: light-dark(rgb(255 255 255 / 20%), rgb(255 255 255 / 8%));
+    --grad-hero-spot: radial-gradient(60% 40% at top center, var(--color-glow) 0%, transparent 70%);
+    --grad-overlay-fade-b: linear-gradient(180deg, transparent 0%, var(--overlay-bg) 100%);
+    --grad-overlay-fade-t: linear-gradient(0deg, transparent 0%, var(--overlay-bg) 100%);
+    --grad-primary-soft: linear-gradient(180deg, var(--primary-500) 0%, var(--color-primary-hover) 100%);
     --grad-surface-contrast: linear-gradient(180deg, var(--color-surface-2) 0%, var(--color-surface-3) 100%);
     --grad-surface-soft: linear-gradient(180deg, var(--color-surface-1) 0%, var(--color-surface-2) 100%);
 
@@ -218,115 +222,20 @@
     --layer-tooltip: 600;
 }
 
-/* RESPONSIVE REMAPS - only semantic aliases scale */
-@media (min-width: 600px) {
-    :root {
-        --display-xl: 3rem;
-        --gutter: var(--space-6);
-        --heading-lg: 2.375rem;
-        --heading-md: 1.875rem;
-        --heading-sm: 1.5rem;
-        --heading-xs: 1.375rem;
-    }
+/* Explicit choices override the operating system. Only the filter is non-colour. */
+:root[data-theme="light"] {
+    color-scheme: light;
 }
 
-@media (min-width: 1024px) {
-    :root {
-        --display-xl: 3.5rem;
-        --gutter: var(--space-8);
-        --heading-lg: 2.75rem;
-        --heading-md: 2.125rem;
-        --heading-sm: 1.625rem;
-        --heading-xs: 1.5rem;
-    }
-}
-
-/* DARK THEME - role overrides only */
-[data-theme="dark"] {
-    /* Surfaces */
-    --color-bg: #0a0c10;
-    --color-inverse: #0a0c10;
-    --color-surface-1: #111419;
-    --color-surface-2: #181c23;
-    --color-surface-3: #1f242c;
-
-    /* Text */
-    --color-muted: var(--neutral-400);
-    --color-text: #f8f9fa;
-
-    /* Interactive */
-    --color-on-primary: var(--neutral-900);
-    --color-primary: var(--primary-500);
-    --color-primary-active: var(--primary-400);
-    --color-primary-hover: var(--primary-400);
-
-    /* Links */
-    --color-link: var(--primary-500);
-    --color-link-hover: var(--primary-400);
-    --color-link-visited: #8ba3c7;
-
-    /* Borders & dividers */
-    --color-border: rgba(248, 249, 250, 0.12);
-    --color-border-hairline: rgba(248, 249, 250, 0.08);
-    --divider-subtle: rgba(248, 249, 250, 0.1);
-
-    /* Overlays & shadows */
-    --overlay-bg: rgba(10, 12, 16, 0.8);
-    --shadow-color: rgba(248, 249, 250, 0.06);
-
-    /* Glassmorphism - dark theme variants */
-    --glass-bg: rgba(10, 12, 16, 0.6);
-    --glass-border: rgba(248, 249, 250, 0.05);
+:root[data-theme="dark"] {
+    color-scheme: dark;
     --glass-blur: blur(20px);
+}
 
-    /* Selection & focus */
-    --focus-ring-color: var(--primary-400);
-    --selection-bg: rgba(90, 123, 163, 0.25);
-    --selection-fg: var(--color-text);
-
-    /* Messages - enhanced contrast for dark backgrounds */
-    --msg-error-bg: rgba(200, 85, 85, 0.15);
-    --msg-error-border: rgba(240, 140, 140, 0.3);
-    --msg-error-fg: #f08c8c;
-    --msg-info-bg: rgba(90, 123, 163, 0.15);
-    --msg-info-border: rgba(139, 163, 199, 0.3);
-    --msg-info-fg: #8ba3c7;
-    --msg-success-bg: rgba(74, 138, 92, 0.15);
-    --msg-success-border: rgba(123, 200, 141, 0.3);
-    --msg-success-fg: #7bc88d;
-    --msg-warning-bg: rgba(184, 134, 11, 0.15);
-    --msg-warning-border: rgba(244, 196, 48, 0.3);
-    --msg-warning-fg: #f4c430;
-
-    /* Disabled states */
-    --disabled-bg: var(--neutral-800);
-    --disabled-border: var(--neutral-700);
-    --disabled-fg: var(--neutral-400);
-
-    /* Gradients - dark theme variants */
-    --grad-hero-spot: radial-gradient(60% 40% at top center, rgba(139, 163, 199, 0.25) 0%, transparent 70%);
-    --grad-overlay-fade-b: linear-gradient(180deg, transparent 0%, rgba(10, 12, 16, 0.80) 100%);
-    --grad-overlay-fade-t: linear-gradient(0deg, transparent 0%, rgba(10, 12, 16, 0.80) 100%);
-    --grad-primary-soft: linear-gradient(180deg, var(--primary-500) 0%, var(--primary-400) 100%);
-    --grad-surface-contrast: linear-gradient(180deg, var(--color-surface-2) 0%, var(--color-surface-3) 100%);
-    --grad-surface-soft: linear-gradient(180deg, var(--color-surface-1) 0%, var(--color-surface-2) 100%);
-
-    --syntax-accent: #8bd3ff;
-    --syntax-comment: #91d076;
-    --syntax-code: #79e2e2;
-    --syntax-light: #f3f6fa;
-    --syntax-list: #f4adf4;
-    --syntax-muted: #a9bad0;
-    --syntax-number: #f3d675;
-    --syntax-on-accent: #101820;
-    --syntax-string: #a7e68d;
-    --syntax-line-bg: rgba(139, 163, 199, 0.28);
-    --syntax-line-bg-end: rgba(139, 163, 199, 0.2);
-    --syntax-line-shadow: rgba(139, 163, 199, 0.3);
-    --syntax-diff-delete: rgba(240, 140, 140, 0.18);
-    --syntax-diff-insert: rgba(123, 200, 141, 0.18);
-    --syntax-panel: rgba(10, 12, 16, 0.7);
-    --syntax-panel-border: rgba(248, 249, 250, 0.16);
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --glass-blur: blur(20px);
+    }
 }
 
 /* Reduced motion keeps state feedback, without animated or scaled controls. */

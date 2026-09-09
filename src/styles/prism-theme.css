@@ -23,20 +23,6 @@
     box-shadow: var(--elev-2);
   }
 
-  [data-theme="light"] .prose pre,
-  [data-theme="light"] pre[class*="language-"] {
-    background: var(--color-surface-2);
-  }
-
-  [data-theme="dark"] .prose pre,
-  [data-theme="dark"] pre[class*="language-"] {
-    background-color: var(--color-surface-2);
-  }
-
-  [data-theme="dark"] .prose pre[class*="language-"] {
-    background-color: var(--color-surface-2);
-  }
-
   :not(pre) > code[class*="language-"] {
     padding: 0.1em 0.3em;
     border-radius: var(--radius-sm);
@@ -98,7 +84,4 @@
     font-style: italic;
   }
 
-  ::selection {
-    background: var(--selection-bg);
-  }
 }

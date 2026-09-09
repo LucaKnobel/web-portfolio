@@ -103,6 +103,10 @@ SCOPED
 All global stylesheets are imported once in
 [`src/layouts/BaseLayout.astro`](../src/layouts/BaseLayout.astro).
 
+`primitives.css` has been removed. Bare-element typography, form fundamentals, selection, focus
+and the global reduced-motion override live in `base.css`. Button surfaces and dimensions stay
+in the existing UI components; there is no global button skin or `.icon` class.
+
 ### 3.1 Global vs. component-scoped
 
 This table is the primary orientation when adding new styles.
@@ -310,17 +314,21 @@ Hover and active variants are computed, not hand-maintained:
 
 ### 6.4 Remaining theme block
 
-`light-dark()` only accepts colour values. Non-colour tokens (gradients, glass blur, shadow
-colours) keep a `[data-theme="dark"]` override block. Explicit theme overrides should be limited to
-values that cannot be expressed cleanly through the shared semantic colour-token system — the block
-is judged by responsibility, not by line count.
+Use `light-dark()` for colour pairs, including the colours consumed by gradients and shadows.
+The current gradients and shadows therefore need no separate theme overrides. The non-colour
+`--glass-blur` filter retains an explicit dark override and a system-preference fallback in
+`tokens.css`. Explicit theme overrides should be limited to values that cannot be expressed
+cleanly through the shared semantic colour-token system.
 
 ### 6.5 Theme selection
 
 The theme is resolved server-side from the `theme` cookie in
 [`BaseLayout.astro`](../src/layouts/BaseLayout.astro) and written to `<html data-theme="...">`.
 This avoids a flash of unstyled theme. Without a cookie, `color-scheme: light dark` makes the page
-follow the operating system preference.
+follow the operating system preference. Invalid cookie values are treated like an absent cookie.
+The theme toggle resolves the effective choice before switching and synchronises both of its
+instances, including their icons, when the system preference changes. Icon visibility is interaction
+state; it does not introduce component-scoped theme colours.
 
 ---
 
@@ -439,6 +447,18 @@ its own API, and its own scoped styles. Use Astro as the component model — not
 <div class="card">…</div>   <!-- avoid -->
 ```
 
+### Shared page layout
+
+`src/components/ui/PageSection.astro` owns the shared section padding, vertical flow and
+optional page heading. Projects, career, contact, imprint and privacy use this component.
+It composes `.container` and `.stack`; component-specific layouts remain in their owners.
+
+Header, footer, project details and the landing page also use `.container`, so the horizontal
+content boundary is defined once. The landing page retains its viewport-height minimum and
+height-dependent portrait sizing. Typography, gutters and larger spacing scale fluidly in
+`tokens.css`, without breakpoint remaps. Navigation still uses a viewport breakpoint; the
+contact form uses a named container query for its field layout.
+
 ### 8.3 Variants
 
 Use data attributes rather than variant classes. They keep specificity flat and read clearly in
@@ -489,7 +509,10 @@ Defined once, globally:
 ```
 
 `:focus-visible` avoids showing focus rings on mouse click. Components must not define their own
-focus rings.
+focus rings. `base.css` owns the outline declaration and consumes `--focus-ring-color`,
+`--focus-ring-width` and `--focus-ring-offset`. A component may override only the offset when
+its clipping requires an inset ring (the language dropdown uses the negative ring width).
+Colour and width stay global.
 
 ### 9.2 Reduced motion
 
