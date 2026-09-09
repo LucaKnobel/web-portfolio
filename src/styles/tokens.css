@@ -161,6 +161,7 @@
 
     /* Global layout tokens */
     --content-max: 1200px;
+    --header-height: 80px;
     --gutter: var(--space-4);
     --measure: 65ch;
 
