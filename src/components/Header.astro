@@ -74,9 +74,19 @@ const headerLinks = [
       inset: 0;
       z-index: 0;
       pointer-events: none;
-      background: var(--glass-bg);
-      backdrop-filter: var(--glass-blur);
-      -webkit-backdrop-filter: var(--glass-blur);
+      background: var(--color-bg);
+
+      /* Keep the prefixed and standard declarations separate: Lightning CSS
+       * otherwise drops one when both use the same custom property. */
+      @supports (-webkit-backdrop-filter: blur(1px)) {
+        background: var(--glass-bg);
+        -webkit-backdrop-filter: var(--glass-blur);
+      }
+
+      @supports (backdrop-filter: blur(1px)) {
+        background: var(--glass-bg);
+        backdrop-filter: var(--glass-blur);
+      }
     }
 
     .header-container {
