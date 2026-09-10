@@ -10,8 +10,11 @@ const isDark = Astro.cookies.get("theme")?.value === "dark";
 
 <IconControl
   class="theme-toggle"
+  variant="ghost"
   data-theme-toggle
-  label={t("aria.themeSelect")}
+  role="switch"
+  aria-checked={isDark ? "true" : "false"}
+  label={t("aria.themeDarkMode")}
 >
   <span class="icon-container" aria-hidden="true">
     <Icon name="mdi:white-balance-sunny" class="theme-icon" data-theme-icon="light" data-hidden={isDark} />
@@ -35,6 +38,9 @@ const isDark = Astro.cookies.get("theme")?.value === "dark";
     const theme = getCurrentTheme();
     document.querySelectorAll<SVGElement>("[data-theme-icon]").forEach((icon) => {
       icon.dataset.hidden = String(icon.dataset.themeIcon !== theme);
+    });
+    document.querySelectorAll<HTMLButtonElement>("[data-theme-toggle]").forEach((toggle) => {
+      toggle.setAttribute("aria-checked", String(theme === "dark"));
     });
   };
 

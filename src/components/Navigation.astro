@@ -12,6 +12,9 @@ interface Props {
 }
 
 const { links } = Astro.props;
+const currentPath = Astro.url.pathname;
+const isActive = (href: string) =>
+  currentPath === href || currentPath.startsWith(`${href}/`);
 ---
 
 <nav class="main-nav">
@@ -19,7 +22,11 @@ const { links } = Astro.props;
     {
       links.map((item) => (
         <li class="nav-item">
-          <a href={item.href} class="nav-link">
+          <a
+            href={item.href}
+            class="nav-link"
+            aria-current={isActive(item.href) ? "page" : undefined}
+          >
             {item.label}
           </a>
         </li>
@@ -64,16 +71,22 @@ const { links } = Astro.props;
       text-align: center;
       font-weight: var(--fw-medium);
       border-radius: var(--button-radius);
+      border-bottom: var(--border-strong) solid transparent;
       transition:
         background-color var(--dur-2) var(--ease-standard),
         color var(--dur-2) var(--ease-standard),
-        transform var(--dur-2) var(--ease-standard);
+        border-color var(--dur-2) var(--ease-standard);
       box-sizing: border-box;
 
       &:hover {
         background: var(--color-surface-2);
         color: var(--color-primary);
-        transform: scale(var(--scale-focus));
+      }
+
+      &[aria-current="page"] {
+        color: var(--color-primary);
+        font-weight: var(--fw-semibold);
+        border-bottom-color: var(--color-primary);
       }
     }
   }

@@ -22,10 +22,12 @@ const languageLinks = Object.entries(languageConfig).map(([code, label]) => ({
   <IconControl
     as="summary"
     class="language-toggle"
+    variant="ghost"
     label={t("aria.languageSelect")}
     aria-expanded="false"
   >
-    <Icon name="mdi:translate" class="language-icon" />
+    <span class="language-code" aria-hidden="true">{currentLang.toUpperCase()}</span>
+    <Icon name="mdi:chevron-down" class="language-chevron" aria-hidden="true" />
   </IconControl>
 
   <nav class="dropdown" aria-label={t("aria.languageSelect")}>
@@ -94,9 +96,24 @@ const languageLinks = Object.entries(languageConfig).map(([code, label]) => ({
     display: inline-block;
   }
 
-  .language-icon {
-    width: var(--icon-xs);
-    height: var(--icon-xs);
+  .language-toggle {
+    gap: var(--space-1);
+  }
+
+  .language-code {
+    font-size: var(--text-small);
+    font-weight: var(--fw-semibold);
+    letter-spacing: 0.02em;
+  }
+
+  .language-chevron {
+    width: 14px;
+    height: 14px;
+    transition: transform var(--dur-2) var(--ease-standard);
+  }
+
+  .language-toggle[aria-expanded="true"] .language-chevron {
+    transform: rotate(180deg);
   }
 
   .dropdown {
@@ -145,6 +162,10 @@ const languageLinks = Object.entries(languageConfig).map(([code, label]) => ({
   .label {
     font-size: var(--text-small);
     font-weight: var(--fw-medium);
+  }
+
+  .language-option[aria-current="page"] .label {
+    font-weight: var(--fw-semibold);
   }
 
 </style>
