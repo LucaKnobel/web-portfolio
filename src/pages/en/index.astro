@@ -1,6 +1,8 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import Intro from "@/components/Intro.astro";
+import AboutSection from "@/components/AboutSection.astro";
+import ContactCtaSection from "@/components/ContactCtaSection.astro";
 
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 
@@ -9,5 +11,7 @@ const t = useTranslations(lang);
 ---
 
 <BaseLayout title="Luca Knobel | Portfolio">
-  <Intro lang={lang} t={t} role="Application Engineer" />
+  <Intro t={t} />
+  <AboutSection lang={lang} t={t} />
+  <ContactCtaSection lang={lang} t={t} />
 </BaseLayout>

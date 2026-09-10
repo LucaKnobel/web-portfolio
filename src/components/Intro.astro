@@ -1,17 +1,14 @@
 ---
 import portrait from "@/assets/portrait-photo.jpg";
-import ActionButton from "@/components/ActionButton.astro";
 import { Image } from "astro:assets";
-import type { Language, Translator } from "@/i18n/utils";
+import type { Translator } from "@/i18n/utils";
 
 export interface IntroProps {
-  /** Current language (e.g., 'de' or 'en') */
-  lang: Language;
   /** Translation function for UI strings */
   t: Translator;
-  /** Name to display in intro */
+  /** Name to display in the hero */
   name?: string;
-  /** Role or subtitle */
+  /** Role or job title */
   role?: string;
   /** Portrait image source */
   portraitSrc?: ImageMetadata;
@@ -19,125 +16,147 @@ export interface IntroProps {
   githubUrl?: string;
   /** LinkedIn profile URL */
   linkedinUrl?: string;
-  /** Contact page href */
-  contactHref?: string;
 }
 
 const {
-  lang,
   t,
   name = "Luca Knobel",
-  role = "",
+  role = "Software Engineer",
   portraitSrc = portrait,
   githubUrl = "https://github.com/LucaKnobel",
   linkedinUrl = "https://linkedin.com/in/luca-knobel-14b4a7221",
-  contactHref = `/${lang}/contact`,
 } = Astro.props as IntroProps;
 ---
 
-<section class="container" aria-labelledby="intro-title">
-  <div class="intro-container stack">
+<section class="hero" aria-labelledby="hero-name">
+  <div class="hero-grid container">
+    <div class="hero-heading">
+      <h1 id="hero-name" class="hero-name">{name}</h1>
+      <p class="hero-role">{role}</p>
+    </div>
+
     <Image
       src={portraitSrc}
       alt={t("intro.portraitAlt") + " " + name}
-      class="intro-portrait"
+      class="hero-portrait"
       loading="eager"
       decoding="async"
       quality={90}
       format="webp"
       priority
-      sizes="min(80vw, 35dvh, 450px)"
+      sizes="(min-width: 1024px) 18rem, 48vw"
     />
 
-    <h1 class="intro-title">
-      {t("intro.welcome")}<br />
-      {t("intro.intro")}
-      {name}
-    </h1>
-    <p class="intro-role">{role}</p>
+    <p class="hero-positioning">{t("intro.positioning")}</p>
 
-    <div class="intro-actions">
-      <ActionButton
-        href={contactHref}
-        text={t("intro.contact")}
-        variant="primary"
-        size="m"
-      />
-      <ActionButton
-        href={githubUrl}
-        icon="mdi:github"
-        ariaLabel="GitHub"
-        variant="gradient"
-        text="GitHub"
-        size="m"
-      />
-
-      <ActionButton
-        href={linkedinUrl}
-        icon="mdi:linkedin"
-        ariaLabel="LinkedIn"
-        variant="gradient"
-        text="LinkedIn"
-        size="m"
-      />
+    <div class="hero-links cluster">
+      <a href={githubUrl} target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+      <a href={linkedinUrl} target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
     </div>
   </div>
 </section>
 
 <style>
-  section {
+  .hero {
     min-block-size: calc(100dvh - var(--header-height));
-    padding-block: clamp(1.5rem, 4dvh, 3rem);
+    padding-block: clamp(2rem, 6dvh, 4rem);
     display: flex;
-    justify-content: center;
     align-items: center;
   }
 
-  .intro-container {
-    --flow: clamp(1rem, 3dvh, 3rem);
-    align-items: center;
-    max-width: 56.25rem;
-    width: 100%;
+  /* Mobile / tablet: the portrait sits in its own row above the name, so it
+     can be a proper, clearly visible size without competing with the
+     heading for horizontal space. */
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "portrait"
+      "heading"
+      "positioning"
+      "links";
+    row-gap: var(--space-5);
   }
 
-  .intro-portrait {
-    width: min(80vw, 35dvh, 450px);
+  .hero-heading {
+    grid-area: heading;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .hero-name {
+    margin: 0;
+    font-size: var(--display-xl);
+    font-weight: var(--fw-semibold);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    color: var(--color-text);
+  }
+
+  .hero-role {
+    margin-block: var(--space-2) 0;
+    font-size: var(--heading-xs);
+    font-weight: var(--fw-medium);
+    color: var(--color-muted);
+  }
+
+  .hero-positioning {
+    grid-area: positioning;
+    margin: 0;
+    max-width: 52ch;
+    text-align: left;
+    font-size: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+    line-height: 1.7;
+    color: var(--color-text);
+  }
+
+  .hero-links {
+    grid-area: links;
+    justify-content: flex-start;
+    gap: var(--space-6);
+    font-weight: var(--fw-medium);
+  }
+
+  .hero-links a {
+    color: var(--color-link);
+    text-decoration: none;
+    padding: var(--space-1);
+  }
+
+  .hero-links a:hover,
+  .hero-links a:focus-visible {
+    color: var(--color-link-hover);
+    text-decoration: underline;
+  }
+
+  .hero-portrait {
+    grid-area: portrait;
+    justify-self: start;
+    margin-block-end: var(--space-1);
+    width: clamp(11rem, 48vw, 15rem);
     height: auto;
     aspect-ratio: 1;
     border-radius: 50%;
     object-fit: cover;
     border: none;
-    box-shadow: var(--elev-2);
-  }
-
-  .intro-title {
-    font-size: var(--display-xl);
-    font-weight: var(--fw-semibold);
-    margin: 0;
-    text-align: center;
-    line-height: 1.15;
-    color: var(--color-text);
-  }
-
-  .intro-role {
-    font-size: var(--heading-md);
-    color: var(--color-muted);
-    margin: 0;
-    text-align: center;
-  }
-
-  .intro-actions {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
-    align-items: center;
-    justify-content: center;
+    box-shadow: none;
   }
 
   @media (min-width: 1024px) {
-    .intro-actions {
-      flex-direction: row;
-      gap: var(--space-8);
+    .hero-grid {
+      grid-template-columns: minmax(0, 38rem) auto;
+      grid-template-areas:
+        "heading      portrait"
+        "positioning  portrait"
+        "links        portrait";
+      column-gap: clamp(3rem, 7vw, 6rem);
+      row-gap: var(--space-6);
+      align-items: center;
+    }
+
+    .hero-portrait {
+      align-self: center;
+      width: clamp(15rem, 20vw, 18rem);
     }
   }
 </style>

@@ -1,0 +1,82 @@
+---
+import type { Language, Translator } from "@/i18n/utils";
+
+export interface AboutSectionProps {
+  /** Current language (e.g., 'de' or 'en') */
+  lang: Language;
+  /** Translation function for UI strings */
+  t: Translator;
+}
+
+const { lang, t } = Astro.props as AboutSectionProps;
+---
+
+<section class="about" aria-labelledby="about-heading">
+  <div class="container about-grid">
+    <h2 id="about-heading" class="about-eyebrow">{t("home.about.eyebrow")}</h2>
+
+    <div class="about-copy stack">
+      <p>{t("home.about.paragraph1")}</p>
+      <p>{t("home.about.paragraph2")}</p>
+      <a href={`/${lang}/career`} class="about-link">{t("home.about.careerLink")} →</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about {
+    padding-block: var(--space-16);
+  }
+
+  .about-grid {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .about-eyebrow {
+    margin: 0;
+    font-size: var(--text-small);
+    font-weight: var(--fw-semibold);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .about-copy {
+    --flow: var(--space-4);
+    max-width: 62ch;
+  }
+
+  .about-copy p {
+    margin: 0;
+    color: var(--color-text);
+    font-size: var(--text-body);
+    line-height: 1.7;
+  }
+
+  .about-link {
+    color: var(--color-link);
+    font-weight: var(--fw-medium);
+    text-decoration: none;
+    padding: var(--space-1);
+    margin-inline-start: calc(var(--space-1) * -1);
+  }
+
+  .about-link:hover,
+  .about-link:focus-visible {
+    color: var(--color-link-hover);
+    text-decoration: underline;
+  }
+
+  @media (min-width: 1024px) {
+    .about-grid {
+      grid-template-columns: 12rem 1fr;
+      gap: var(--space-10);
+      align-items: start;
+    }
+
+    .about-eyebrow {
+      padding-block-start: var(--space-1);
+    }
+  }
+</style>
