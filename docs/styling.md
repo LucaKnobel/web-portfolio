@@ -459,6 +459,18 @@ height-dependent portrait sizing. Typography, gutters and larger spacing scale f
 `tokens.css`, without breakpoint remaps. Navigation still uses a viewport breakpoint; the
 contact form uses a named container query for its field layout.
 
+### Shared icon controls
+
+`IconControl.astro` owns the shared target size, surface, border and interaction states for
+the theme toggle, language selector, menu trigger and close button. Its default element is
+`button type="button"`; the language selector explicitly uses `as="summary"` inside native
+`details`. Event hooks, ARIA attributes and autofocus are forwarded to that element.
+
+The `surface` and `ghost` variants use `data-variant`. `ActionButton.astro` remains a link
+component, with the used `primary` / `gradient` variants and `m` / `l` / `square` sizes,
+expressed through `data-variant` and `data-size`. Cards retain their own components and use
+flat selectors for their owned elements.
+
 ### 8.3 Variants
 
 Use data attributes rather than variant classes. They keep specificity flat and read clearly in
@@ -727,38 +739,22 @@ Second rule:
 
 ## 14. Guardrails
 
-Conventions decay without enforcement. Stylelint encodes the rules above:
+Run `npm run lint` to check every CSS file and Astro style block under `src/`.
+The same command runs in PR CI before the typecheck.
 
-```jsonc
-// .stylelintrc.json
-{
-  "extends": ["stylelint-config-standard"],
-  "rules": {
-    "max-nesting-depth": 2,
-    "selector-max-specificity": "0,3,0",
-    "selector-max-id": 0,
-    "declaration-no-important": true,
-    "color-no-hex": true,
-    "declaration-property-value-no-unknown": true,
-  },
-}
-```
+[`stylelint.config.mjs`](../stylelint.config.mjs) extends the recommended correctness rules
+and uses `postcss-html` for `.astro` files. Project rules enforce:
 
-The intent behind the configuration matters more than the exact rule names:
+- nesting depth ≤ 2 and specificity ≤ `0,3,0`
+- no ID selectors or ordinary `!important` declarations
+- no literal colours or primitive palette references outside `tokens.css`
+- no theme selectors outside `tokens.css`
+- no local outline definitions outside `base.css`
 
-- no IDs for styling
-- no `!important` in normal styling
-- controlled specificity
-- limited nesting
-- no hardcoded colours outside the token definitions
-
-`color-no-hex` is the most valuable single rule: it makes it impossible for a hardcoded colour to
-slip into a component, which is the most common cause of a broken dark mode.
-
-Before committing the config, verify it against the installed Stylelint version and confirm that
-`.astro` files are linted (Astro `<style>` blocks need a custom syntax/override). Required
-exemptions: `tokens.css` for `color-no-hex`, and the documented reduced-motion block for
-`declaration-no-important`.
+The reduced-motion block has a narrowly scoped, documented `!important` exemption.
+Token definitions are exempt from colour restrictions. Tests in
+`tests/stylelint-config.test.ts` verify that Astro styles are actually checked and
+that the exemptions do not disable the normal rules.
 
 ---
 

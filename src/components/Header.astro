@@ -47,7 +47,7 @@ const headerLinks = [
       </div>
 
       <!-- Mobile menu toggle - visible on small screens -->
-      <div class="mobile-menu-toggle">
+      <div class="mobile-controls">
         <MobileMenu links={headerLinks}>
           <LanguageSelect />
           <ThemeToggle />
@@ -140,22 +140,13 @@ const headerLinks = [
     }
 
     /* Mobile menu - only visible on small screens */
-    .mobile-menu-toggle {
+    .mobile-controls {
       display: block;
     }
   }
 
   /* Desktop layout */
   @media (min-width: 1024px) {
-    .site-header {
-      padding-block: 0;
-      min-height: var(--header-height);
-    }
-
-    .header-container {
-      height: var(--header-height);
-    }
-
     .desktop-nav {
       display: flex;
     }
@@ -168,7 +159,7 @@ const headerLinks = [
         gap: var(--space-3);
       }
 
-      .mobile-menu-toggle {
+      .mobile-controls {
         display: none;
       }
     }

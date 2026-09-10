@@ -2,7 +2,7 @@
   .prose {
     line-height: var(--lh);
     color: var(--color-text);
-    word-break: break-word;
+    overflow-wrap: anywhere;
   }
 
   .prose h1,
@@ -16,7 +16,7 @@
     margin-top: var(--space-8);
     margin-bottom: var(--space-3);
     line-height: 1.2;
-    word-break: break-word;
+    overflow-wrap: anywhere;
     hyphens: auto;
   }
 
@@ -48,7 +48,7 @@
   .prose li {
     margin-bottom: var(--space-2);
     hyphens: auto;
-    word-break: break-word;
+    overflow-wrap: anywhere;
   }
 
   .prose a {
