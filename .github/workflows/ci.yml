@@ -19,7 +19,7 @@ permissions:
 
 jobs:
   quality:
-    name: Quality - Typecheck, Tests, Build
+    name: Quality - Lint, Typecheck, Tests, Build
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -35,6 +35,9 @@ jobs:
 
       # Install dependencies including dev packages needed for checks and tests.
       - run: npm ci
+
+      - name: Styling guidelines
+        run: npm run lint
 
       - name: Typecheck
         run: npm run typecheck

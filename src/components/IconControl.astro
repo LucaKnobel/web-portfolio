@@ -1,0 +1,76 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+type Props = {
+  label: string;
+  variant?: "surface" | "ghost";
+  class?: string;
+} & (
+  | ({ as?: "button" } & Omit<HTMLAttributes<"button">, "type" | "class" | "aria-label">)
+  | ({ as: "summary" } & Omit<HTMLAttributes<"summary">, "class" | "aria-label">)
+);
+
+const { as: Tag = "button", label, variant = "surface", class: className, ...attributes } = Astro.props;
+---
+
+<Tag
+  {...attributes}
+  type={Tag === "button" ? "button" : undefined}
+  class:list={["icon-control", className]}
+  data-variant={variant}
+  aria-label={label}
+>
+  <slot />
+</Tag>
+
+<style>
+  .icon-control {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-inline-size: var(--touch-target-min);
+    min-block-size: var(--touch-target-min);
+    padding: 0;
+    border: var(--border-hairline) solid var(--color-border-hairline);
+    border-radius: var(--button-radius);
+    background: var(--grad-surface-soft);
+    box-shadow: var(--elev-1);
+    color: var(--color-text);
+    cursor: pointer;
+    list-style: none;
+    transition:
+      background-color var(--dur-2) var(--ease-standard),
+      border-color var(--dur-2) var(--ease-standard),
+      color var(--dur-2) var(--ease-standard),
+      transform var(--dur-2) var(--ease-standard);
+  }
+
+  .icon-control::-webkit-details-marker {
+    display: none;
+  }
+
+  .icon-control[data-variant="ghost"] {
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+  }
+
+  .icon-control:hover,
+  .icon-control[aria-expanded="true"] {
+    background: var(--color-surface-3);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  .icon-control:focus-visible {
+    color: var(--color-primary);
+  }
+
+  .icon-control:hover {
+    transform: scale(var(--scale-hover));
+  }
+
+  .icon-control:active {
+    transform: scale(var(--scale-active));
+  }
+</style>

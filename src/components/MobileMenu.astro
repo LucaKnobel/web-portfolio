@@ -1,5 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
+import IconControl from "@/components/IconControl.astro";
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 
 export interface NavLink {
@@ -11,36 +12,44 @@ export interface Props {
   links: NavLink[];
 }
 
-const { links } = Astro.props;
+const { links }: Props = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const dialogId = "mobile-navigation";
+const currentPath = Astro.url.pathname;
+const isActive = (href: string) =>
+  currentPath === href || currentPath.startsWith(`${href}/`);
 ---
 
-<button
+<IconControl
   class="mobile-menu-toggle"
   data-mobile-menu-open
   aria-controls={dialogId}
-  aria-label={t("aria.openMenu")}
-  type="button"
+  aria-expanded="false"
+  label={t("aria.openMenu")}
+  variant="ghost"
 >
   <Icon name="mdi:menu" class="burger-icon" />
-</button>
+</IconControl>
 
 <dialog class="mobile-menu-dialog" id={dialogId}>
   <div class="mobile-menu-modal">
     <div class="modal-header">
+      <a href={`/${lang}`} class="modal-brand">Luca Knobel</a>
+
       <div class="header-controls">
-        <slot />
-        <button
+        <div class="settings-group">
+          <slot />
+        </div>
+        <IconControl
           class="modal-close"
+          variant="ghost"
           data-mobile-menu-close
-          aria-label={t("aria.closeMenu")}
+          label={t("aria.closeMenu")}
           autofocus
-          type="button"
         >
           <Icon name="mdi:close" class="close-icon" />
-        </button>
+        </IconControl>
       </div>
     </div>
 
@@ -49,7 +58,11 @@ const dialogId = "mobile-navigation";
         {
           links.map((link) => (
             <li>
-              <a href={link.href} class="nav-link">
+              <a
+                href={link.href}
+                class="nav-link"
+                aria-current={isActive(link.href) ? "page" : undefined}
+              >
                 {link.label}
               </a>
             </li>
@@ -68,6 +81,8 @@ const dialogId = "mobile-navigation";
     const dialog = document.getElementById(dialogId);
     if (dialog instanceof HTMLDialogElement && !dialog.open) {
       dialog.showModal();
+      target.setAttribute("aria-expanded", "true");
+      document.documentElement.style.overflow = "hidden";
     }
   };
 
@@ -85,6 +100,8 @@ const dialogId = "mobile-navigation";
 
   if (dialog instanceof HTMLDialogElement) {
     dialog.addEventListener("close", () => {
+      trigger?.setAttribute("aria-expanded", "false");
+      document.documentElement.style.overflow = "";
       setTimeout(() => trigger?.focus(), 0);
     });
   }
@@ -104,31 +121,6 @@ const dialogId = "mobile-navigation";
 </script>
 
 <style>
-  .mobile-menu-toggle,
-  .modal-close {
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: var(--touch-target-min);
-    min-width: var(--touch-target-min);
-    padding: 0;
-  }
-
-  .mobile-menu-toggle {
-    background: none;
-    border: transparent;
-    border-radius: var(--button-radius);
-    color: var(--color-text);
-  }
-
-  .mobile-menu-toggle:hover,
-  .mobile-menu-toggle:active {
-    background: var(--color-surface-3);
-    border-color: var(--color-primary);
-    color: var(--color-primary);
-  }
-
   .burger-icon {
     width: var(--icon-lg);
     height: var(--icon-lg);
@@ -162,30 +154,31 @@ const dialogId = "mobile-navigation";
     z-index: 1;
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: space-between;
+    gap: var(--space-4);
     padding: var(--space-3) var(--gutter);
     min-height: 60px;
+  }
+
+  .modal-brand {
+    color: var(--color-text);
+    text-decoration: none;
+    font-weight: var(--fw-semibold);
+    font-size: var(--heading-xs);
+    line-height: 1.1;
+    min-width: 0;
   }
 
   .header-controls {
     display: flex;
     align-items: center;
-    gap: var(--space-3);
+    gap: var(--space-5);
   }
 
-  .modal-close {
-    background: var(--grad-surface-soft);
-    border: var(--border-hairline) solid var(--color-border-hairline);
-    border-radius: var(--button-radius);
-    box-shadow: var(--elev-1);
-    color: var(--color-text);
-  }
-
-  .modal-close:hover,
-  .modal-close:active {
-    background: var(--color-surface-3);
-    border-color: var(--color-primary);
-    color: var(--color-primary);
+  .settings-group {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
   }
 
   .close-icon {
@@ -229,5 +222,10 @@ const dialogId = "mobile-navigation";
     background: var(--color-surface-2);
     border-color: var(--color-border);
     color: var(--color-primary);
+  }
+
+  .nav-link[aria-current="page"] {
+    color: var(--color-primary);
+    font-weight: var(--fw-semibold);
   }
 </style>

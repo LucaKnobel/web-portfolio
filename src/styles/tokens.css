@@ -190,11 +190,9 @@
     --scale-disabled: 0.95;
 
     /* A11Y & TOUCH */
-    --control-h-xxl: 64px;
     --control-h-xl: 56px;
     --control-h-lg: 48px;
     --control-h-md: 40px;
-    --control-h-sm: 32px;
     --disabled-bg: light-dark(var(--neutral-25), var(--neutral-800));
     --disabled-border: light-dark(var(--neutral-100), var(--neutral-700));
     --disabled-fg: light-dark(var(--neutral-600), var(--neutral-400));

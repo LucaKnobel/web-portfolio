@@ -89,6 +89,7 @@
   }
 
   /* Global accessibility override, including animations with literal durations. */
+  /* stylelint-disable declaration-no-important -- Accessibility must override component motion. */
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
       animation-duration: 0.01ms !important;
@@ -97,4 +98,5 @@
       scroll-behavior: auto !important;
     }
   }
+  /* stylelint-enable declaration-no-important */
 }

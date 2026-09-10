@@ -1,5 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
+import IconControl from "@/components/IconControl.astro";
 import { languages as languageConfig } from "@/i18n/ui";
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 
@@ -18,13 +19,16 @@ const languageLinks = Object.entries(languageConfig).map(([code, label]) => ({
 ---
 
 <details class="language-select" data-language-select>
-  <summary
+  <IconControl
+    as="summary"
     class="language-toggle"
-    aria-label={t("aria.languageSelect")}
+    variant="ghost"
+    label={t("aria.languageSelect")}
     aria-expanded="false"
   >
-    <Icon name="mdi:translate" class="language-icon" />
-  </summary>
+    <span class="language-code" aria-hidden="true">{currentLang.toUpperCase()}</span>
+    <Icon name="mdi:chevron-down" class="language-chevron" aria-hidden="true" />
+  </IconControl>
 
   <nav class="dropdown" aria-label={t("aria.languageSelect")}>
     {
@@ -93,51 +97,23 @@ const languageLinks = Object.entries(languageConfig).map(([code, label]) => ({
   }
 
   .language-toggle {
-    background: var(--grad-surface-soft);
-    border: var(--border-hairline) solid var(--color-border-hairline);
-    border-radius: var(--button-radius);
-    box-shadow: var(--elev-1);
-    color: var(--color-text);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: var(--touch-target-min);
-    min-width: var(--touch-target-min);
-    padding: 0;
-    transition:
-      background-color var(--dur-2) var(--ease-standard),
-      border-color var(--dur-2) var(--ease-standard),
-      transform var(--dur-2) var(--ease-standard);
-    list-style: none;
-    position: relative;
-    overflow: hidden;
+    gap: var(--space-1);
   }
 
-  .language-toggle::-webkit-details-marker {
-    display: none;
+  .language-code {
+    font-size: var(--text-small);
+    font-weight: var(--fw-semibold);
+    letter-spacing: 0.02em;
   }
 
-  .language-toggle:hover,
-  .language-select[open] .language-toggle {
-    background: var(--color-surface-3);
-    border-color: var(--color-primary);
+  .language-chevron {
+    width: 14px;
+    height: 14px;
+    transition: transform var(--dur-2) var(--ease-standard);
   }
 
-  .language-toggle:hover .language-icon,
-  .language-select[open] .language-icon {
-    color: var(--color-primary);
-  }
-
-  .language-toggle:active {
-    transform: scale(var(--scale-active));
-  }
-
-  .language-icon {
-    width: var(--icon-xs);
-    height: var(--icon-xs);
-    color: var(--color-text);
-    transition: color var(--dur-2) var(--ease-standard);
+  .language-toggle[aria-expanded="true"] .language-chevron {
+    transform: rotate(180deg);
   }
 
   .dropdown {
@@ -186,6 +162,10 @@ const languageLinks = Object.entries(languageConfig).map(([code, label]) => ({
   .label {
     font-size: var(--text-small);
     font-weight: var(--fw-medium);
+  }
+
+  .language-option[aria-current="page"] .label {
+    font-weight: var(--fw-semibold);
   }
 
 </style>

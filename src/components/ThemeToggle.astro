@@ -1,5 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
+import IconControl from "@/components/IconControl.astro";
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
@@ -7,17 +8,19 @@ const t = useTranslations(lang);
 const isDark = Astro.cookies.get("theme")?.value === "dark";
 ---
 
-<button
+<IconControl
   class="theme-toggle"
+  variant="ghost"
   data-theme-toggle
-  type="button"
-  aria-label={t("aria.themeSelect")}
+  role="switch"
+  aria-checked={isDark ? "true" : "false"}
+  label={t("aria.themeDarkMode")}
 >
   <span class="icon-container" aria-hidden="true">
     <Icon name="mdi:white-balance-sunny" class="theme-icon" data-theme-icon="light" data-hidden={isDark} />
     <Icon name="mdi:brightness-3" class="theme-icon" data-theme-icon="dark" data-hidden={!isDark} />
   </span>
-</button>
+</IconControl>
 
 <script>
   type Theme = "light" | "dark";
@@ -35,6 +38,9 @@ const isDark = Astro.cookies.get("theme")?.value === "dark";
     const theme = getCurrentTheme();
     document.querySelectorAll<SVGElement>("[data-theme-icon]").forEach((icon) => {
       icon.dataset.hidden = String(icon.dataset.themeIcon !== theme);
+    });
+    document.querySelectorAll<HTMLButtonElement>("[data-theme-toggle]").forEach((toggle) => {
+      toggle.setAttribute("aria-checked", String(theme === "dark"));
     });
   };
 
@@ -62,42 +68,6 @@ const isDark = Astro.cookies.get("theme")?.value === "dark";
 </script>
 
 <style>
-  .theme-toggle {
-    background: var(--grad-surface-soft);
-    border: var(--border-hairline) solid var(--color-border-hairline);
-    border-radius: var(--button-radius);
-    box-shadow: var(--elev-1);
-    color: var(--color-text);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: var(--touch-target-min);
-    min-width: var(--touch-target-min);
-    padding: 0;
-    transition:
-      background-color var(--dur-2) var(--ease-standard),
-      border-color var(--dur-2) var(--ease-standard),
-      transform var(--dur-2) var(--ease-standard);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .theme-toggle:hover {
-    background: var(--color-surface-3);
-    transform: scale(var(--scale-hover));
-    border-color: var(--color-primary);
-  }
-
-  .theme-toggle:hover .theme-icon,
-  .theme-toggle:focus-visible .theme-icon {
-    color: var(--color-primary);
-  }
-
-  .theme-toggle:active {
-    transform: scale(var(--scale-active));
-  }
-
   .icon-container {
     position: relative;
     width: var(--icon-xs);
@@ -109,8 +79,6 @@ const isDark = Astro.cookies.get("theme")?.value === "dark";
     inset: 0;
     width: 100%;
     height: 100%;
-    color: var(--color-text);
-    transition: color var(--dur-2) var(--ease-standard);
   }
 
   .theme-icon[data-hidden="true"] {

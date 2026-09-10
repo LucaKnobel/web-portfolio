@@ -24,7 +24,8 @@
         "vitest.explorer",
         "EditorConfig.EditorConfig",
         "oxc.oxc-vscode",
-        "openai.chatgpt"
+        "openai.chatgpt",
+        "anthropic.claude-code"
       ],
       "mcp": {
         "servers": {

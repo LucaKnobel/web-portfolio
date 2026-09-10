@@ -47,7 +47,7 @@ const headerLinks = [
       </div>
 
       <!-- Mobile menu toggle - visible on small screens -->
-      <div class="mobile-menu-toggle">
+      <div class="mobile-controls">
         <MobileMenu links={headerLinks}>
           <LanguageSelect />
           <ThemeToggle />
@@ -57,16 +57,36 @@ const headerLinks = [
   </div>
 </header>
 
+<script>
+  const initStickyHeader = () => {
+    const header = document.querySelector<HTMLElement>(".site-header");
+    if (!header) return;
+
+    const updateScrolled = () => {
+      const scrolled = window.scrollY > 4;
+      if (header.dataset.scrolled !== String(scrolled)) {
+        header.dataset.scrolled = String(scrolled);
+      }
+    };
+
+    updateScrolled();
+    window.addEventListener("scroll", updateScrolled, { passive: true });
+  };
+
+  initStickyHeader();
+  document.addEventListener("astro:page-load", initStickyHeader);
+</script>
+
 <style>
   .site-header {
-    border-bottom: var(--border-hairline) solid var(--color-border-hairline);
-    box-shadow: var(--elev-2);
     position: sticky;
     top: 0;
     z-index: var(--layer-header);
     padding-block: 0;
     min-height: var(--header-height);
     isolation: isolate;
+    border-bottom: var(--border-hairline) solid transparent;
+    transition: border-color var(--dur-2) var(--ease-standard);
 
     &::before {
       content: "";
@@ -74,25 +94,21 @@ const headerLinks = [
       inset: 0;
       z-index: 0;
       pointer-events: none;
-      background: var(--color-bg);
+      background: transparent;
+      transition: background-color var(--dur-2) var(--ease-standard);
+    }
 
-      /* Keep the prefixed and standard declarations separate: Lightning CSS
-       * otherwise drops one when both use the same custom property. */
-      @supports (-webkit-backdrop-filter: blur(1px)) {
-        background: var(--glass-bg);
-        -webkit-backdrop-filter: var(--glass-blur);
-      }
-
-      @supports (backdrop-filter: blur(1px)) {
-        background: var(--glass-bg);
-        backdrop-filter: var(--glass-blur);
-      }
+    /* Once the page has scrolled, the header separates from the content
+       beneath it with a readable surface and a faint divider. At rest on
+       the landing page it stays flush with the hero underneath it. */
+    &[data-scrolled="true"] {
+      border-bottom-color: var(--color-border-hairline);
     }
 
     .header-container {
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
       align-items: center;
-      justify-content: space-between;
       gap: var(--space-4);
       height: var(--header-height);
       position: relative;
@@ -100,9 +116,27 @@ const headerLinks = [
     }
   }
 
+  .site-header[data-scrolled="true"]::before {
+    background: var(--color-bg);
+
+    /* Keep the prefixed and standard declarations separate: Lightning CSS
+     * otherwise drops one when both use the same custom property. */
+    @supports (-webkit-backdrop-filter: blur(1px)) {
+      background: var(--glass-bg);
+      -webkit-backdrop-filter: var(--glass-blur);
+    }
+
+    @supports (backdrop-filter: blur(1px)) {
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+    }
+  }
+
   /* Brand/Logo section */
   .header-brand {
-    flex-shrink: 0;
+    grid-column: 1;
+    justify-self: start;
+    min-width: 0;
 
     .brand-link {
       color: var(--color-text);
@@ -118,19 +152,22 @@ const headerLinks = [
     }
   }
 
-  /* Desktop navigation - hidden on mobile */
+  /* Desktop navigation - hidden on mobile. Placed in the middle grid track
+     so it is truly centered in the header, independent of how wide the
+     brand and utility groups are. */
   .desktop-nav {
     display: none;
-    flex: 1;
-    justify-content: center;
+    grid-column: 2;
   }
 
   /* Header controls section */
   .header-controls {
+    grid-column: 3;
+    justify-self: end;
     display: flex;
     align-items: center;
     gap: var(--space-2);
-    flex-shrink: 0;
+    min-width: 0;
 
     /* Desktop controls - hidden on mobile */
     .desktop-controls {
@@ -140,35 +177,24 @@ const headerLinks = [
     }
 
     /* Mobile menu - only visible on small screens */
-    .mobile-menu-toggle {
+    .mobile-controls {
       display: block;
     }
   }
 
   /* Desktop layout */
   @media (min-width: 1024px) {
-    .site-header {
-      padding-block: 0;
-      min-height: var(--header-height);
-    }
-
-    .header-container {
-      height: var(--header-height);
-    }
-
     .desktop-nav {
       display: flex;
+      justify-content: center;
     }
 
     .header-controls {
-      gap: var(--space-3);
-
       .desktop-controls {
         display: flex;
-        gap: var(--space-3);
       }
 
-      .mobile-menu-toggle {
+      .mobile-controls {
         display: none;
       }
     }

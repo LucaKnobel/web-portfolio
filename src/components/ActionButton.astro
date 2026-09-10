@@ -9,20 +9,20 @@ export interface Props {
   /** Icon name from iconify (optional) */
   icon?: string;
   /** Visual variant of the button */
-  variant?: "primary" | "secondary" | "ghost" | "link" | "gradient";
+  variant?: "primary" | "gradient";
   /** Additional CSS classes */
   class?: string;
   /** Aria label for accessibility (auto-generated if not provided) */
   ariaLabel?: string;
-  /** Button size: xs, s, m, l, xl, square */
-  size?: "xs" | "s" | "m" | "l" | "xl" | "square";
+  /** Button size: m, l, square */
+  size?: "m" | "l" | "square";
 }
 
 const {
   href,
   text,
   icon,
-  variant = "secondary",
+  variant = "primary",
   class: customClass = "",
   ariaLabel,
   size = "m",
@@ -34,29 +34,16 @@ const isExternal = href.startsWith("http") || href.startsWith("//");
 /* Auto-generate aria-label if not provided */
 const computedAriaLabel = ariaLabel || text || `Navigate to ${href}`;
 
-/* Determine if it's text-only, icon-only, or combined */
+/* Render the supplied text and icon. */
 const hasText = !!text;
 const hasIcon = !!icon;
-const isIconOnly = hasIcon && !hasText;
-
-/* Size mapping for CSS classes */
-const sizeClass = `btn-size-${size}`;
-
-/* Build CSS classes */
-const classes = [
-  "action-button",
-  `variant-${variant}`,
-  isIconOnly ? "icon-only" : "",
-  customClass,
-  sizeClass,
-]
-  .filter(Boolean)
-  .join(" ");
 ---
 
 <a
   href={href}
-  class={classes}
+  class:list={["action-button", customClass]}
+  data-variant={variant}
+  data-size={size}
   aria-label={computedAriaLabel}
   target={isExternal ? "_blank" : undefined}
   rel={isExternal ? "noopener noreferrer" : undefined}
@@ -71,10 +58,8 @@ const classes = [
     align-items: center;
     justify-content: center;
     gap: var(--space-1);
-    box-sizing: border-box;
     border: var(--border-hairline) solid var(--color-border-hairline);
     border-radius: var(--button-radius);
-    background: transparent;
     color: var(--color-text);
     font-weight: var(--fw-medium);
     text-decoration: none;
@@ -87,187 +72,78 @@ const classes = [
       transform var(--dur-2) var(--ease-standard);
   }
 
-  /* Size classes */
-  .btn-size-xs {
-    width: 100px;
-    height: var(--control-h-sm);
-  }
-  .btn-size-s {
-    width: 120px;
-    height: var(--control-h-md);
-  }
-  .btn-size-m {
-    width: 150px;
-    height: var(--control-h-lg);
-  }
-  .btn-size-l {
-    width: 180px;
-    height: var(--control-h-xl);
-  }
-  .btn-size-xl {
-    width: 220px;
-    height: var(--control-h-xxl);
-  }
-  .btn-size-square {
-    width: var(--touch-target-min);
-    height: var(--touch-target-min);
+  .action-button[data-size="m"] {
+    inline-size: 150px;
+    block-size: var(--control-h-lg);
   }
 
-  /* Primary */
-  .variant-primary {
+  .action-button[data-size="l"] {
+    inline-size: 180px;
+    block-size: var(--control-h-xl);
+  }
+
+  .action-button[data-size="square"] {
+    inline-size: var(--touch-target-min);
+    block-size: var(--touch-target-min);
+  }
+
+  .action-button:hover {
+    transform: scale(var(--scale-hover));
+  }
+
+  .action-button:active {
+    transform: scale(var(--scale-active));
+  }
+
+  .action-button[data-variant="primary"] {
     background: var(--grad-primary-soft);
     border-color: var(--color-primary);
     color: var(--color-on-primary);
-
-    &:hover {
-      background: linear-gradient(
-        180deg,
-        var(--color-primary-hover) 0%,
-        var(--color-primary) 100%
-      );
-      transform: scale(var(--scale-hover));
-    }
-
-    &:active {
-      transform: scale(var(--scale-active));
-    }
   }
 
-  /* Secondary */
-  .variant-secondary {
-    background: var(--grad-surface-soft);
-    border-color: var(--color-border-hairline);
-    color: var(--color-text);
-
-    &:hover {
-      background: var(--color-surface-3);
-      border-color: var(--color-primary);
-      color: var(--color-primary);
-      transform: scale(var(--scale-hover));
-    }
-
-    &:active {
-      transform: scale(var(--scale-active));
-    }
+  .action-button[data-variant="primary"]:hover {
+    background: linear-gradient(180deg, var(--color-primary-hover), var(--color-primary));
   }
 
-  /* Ghost */
-  .variant-ghost {
-    background: transparent;
-    border-color: transparent;
-    color: var(--color-text);
-
-    &:hover {
-      background: var(--color-surface-2);
-      color: var(--color-primary);
-      transform: scale(var(--scale-hover));
-    }
-
-    &:active {
-      transform: scale(var(--scale-active));
-    }
-  }
-
-  /* Link */
-  .variant-link {
-    background: transparent;
-    border: none;
-    color: var(--color-link);
-    padding: 0;
-    min-height: auto;
-    text-decoration: underline;
-    text-decoration-color: transparent;
-
-    &:hover {
-      color: var(--color-link-hover);
-      text-decoration-color: currentColor;
-    }
-  }
-
-  /* Gradient surface, using theme-independent colour roles. */
-  .variant-gradient {
-    background: linear-gradient(
-      135deg,
-      var(--color-surface-1) 0%,
-      var(--color-surface-2) 50%,
-      var(--color-surface-3) 100%
-    );
-    border-color: var(--color-border-hairline);
-    color: var(--color-text);
+  .action-button[data-variant="gradient"] {
+    background: linear-gradient(135deg, var(--color-surface-1), var(--color-surface-2) 50%, var(--color-surface-3));
     box-shadow: var(--elev-1);
     position: relative;
     overflow: hidden;
+  }
 
-    /* Shine effect overlay */
-    &::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(
-        135deg,
-        transparent 0%,
-        var(--color-sheen) 50%,
-        transparent 100%
-      );
-      transition: left var(--dur-2) var(--ease-standard);
-      z-index: 1;
-    }
+  .action-button[data-variant="gradient"]::before {
+    content: "";
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: -100%;
+    inline-size: 100%;
+    block-size: 100%;
+    background: linear-gradient(135deg, transparent, var(--color-sheen) 50%, transparent);
+    transition: inset-inline-start var(--dur-2) var(--ease-standard);
+    z-index: 1;
+  }
 
-    /* Content layering */
-    .button-icon,
-    .button-text {
-      position: relative;
-      z-index: 2;
-    }
+  .action-button[data-variant="gradient"]:hover {
+    background: linear-gradient(135deg, var(--color-surface-2), var(--color-surface-3));
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+    box-shadow: var(--elev-2);
+  }
 
-    /* Hover state */
-    &:hover {
-      background: linear-gradient(
-        135deg,
-        var(--color-surface-2) 0%,
-        var(--color-surface-3) 100%
-      );
-      color: var(--color-primary);
-      border-color: var(--color-primary);
-      transform: scale(var(--scale-hover));
-      box-shadow: var(--elev-2);
+  .action-button:hover::before {
+    inset-inline-start: 100%;
+  }
 
-      &::before {
-        left: 100%;
-      }
-    }
-
-    &:active {
-      transform: scale(var(--scale-active));
-    }
+  .button-icon,
+  .button-text {
+    position: relative;
+    z-index: 2;
   }
 
   .button-icon {
     flex-shrink: 0;
-    transition:
-      color var(--dur-2) var(--ease-standard),
-      transform var(--dur-2) var(--ease-standard);
-    /* Icon-Grösse proportional zur Button-Höhe, aber mit min/max für Lesbarkeit */
-    width: calc(
-      clamp(
-        var(--icon-sm),
-        0.6 * var(--action-btn-height, 40px),
-        var(--icon-lg)
-      )
-    );
-    height: calc(
-      clamp(
-        var(--icon-sm),
-        0.6 * var(--action-btn-height, 40px),
-        var(--icon-lg)
-      )
-    );
-  }
-
-  .button-text {
-    transition: color var(--dur-2) var(--ease-standard);
+    inline-size: var(--icon-sm);
+    block-size: var(--icon-sm);
   }
 </style>

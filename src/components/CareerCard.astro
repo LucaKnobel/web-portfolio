@@ -57,7 +57,7 @@ const {
       <div class="meta-row">
         {employmentRate && <span>{employmentRate}</span>}
         {studyMode && <span>{studyMode}</span>}
-        <span class="date-chip">{period.start} – {period.end}</span>
+        <span>{period.start} – {period.end}</span>
       </div>
       {
         finalGrade && (
@@ -102,92 +102,90 @@ const {
     flex-direction: column;
     gap: var(--space-3);
     min-inline-size: 0;
-    transition:
-      box-shadow var(--dur-2) var(--ease-standard),
-      border-color var(--dur-1) var(--ease-standard);
-
-    header {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-2);
-
-      h4 {
-        font-size: var(--heading-sm);
-        font-weight: var(--fw-medium);
-        margin: 0;
-        color: var(--color-text);
-      }
-
-      a {
-        color: var(--color-link);
-        text-decoration: none;
-        font-size: var(--text-body);
-        transition: color var(--dur-1) var(--ease-standard);
-        &:hover {
-          color: var(--color-link-hover);
-          text-decoration: underline;
-        }
-      }
-    }
-
-    .meta {
-      display: flex;
-      flex-direction: column;
-      gap: 0.1em;
-      color: var(--color-muted);
-      font-size: var(--text-small);
-
-      .meta-row {
-        display: flex;
-        flex-direction: row;
-        gap: var(--space-2);
-        align-items: center;
-      }
-      .final-grade {
-        display: block;
-        margin-top: 2px;
-        color: var(--color-primary);
-        font-weight: var(--fw-medium);
-      }
-    }
-
-    details {
-      margin-top: var(--space-2);
-      border-top: 1px solid var(--color-border-hairline);
-      padding-top: var(--space-2);
-
-      summary {
-        cursor: pointer;
-        font-size: var(--text-small);
-        color: var(--color-primary);
-        padding: var(--space-2) 0;
-        font-weight: var(--fw-medium);
-        border-radius: var(--radius-sm);
-        transition: background var(--dur-1) var(--ease-standard);
-        background: none;
-        &:focus,
-        &:hover {
-          background: var(--color-surface-2);
-          color: var(--color-primary-hover);
-        }
-      }
-
-      .details-content {
-        margin-top: var(--space-2);
-        font-size: var(--text-body);
-        color: var(--color-text);
-
-        ul {
-          margin: 0 0 var(--space-2) 0;
-          padding-left: 1.2em;
-          list-style: disc;
-        }
-        strong {
-          font-weight: var(--fw-medium);
-          color: var(--color-primary);
-        }
-      }
-    }
   }
 
+  .card-base header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .card-base h4 {
+    font-size: var(--heading-sm);
+    font-weight: var(--fw-medium);
+    margin: 0;
+    color: var(--color-text);
+  }
+
+  .card-base header a {
+    color: var(--color-link);
+    text-decoration: none;
+    font-size: var(--text-body);
+    transition: color var(--dur-1) var(--ease-standard);
+  }
+
+  .card-base header a:hover {
+    color: var(--color-link-hover);
+    text-decoration: underline;
+  }
+
+  .meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1em;
+    color: var(--color-muted);
+    font-size: var(--text-small);
+  }
+
+  .meta-row {
+    display: flex;
+    gap: var(--space-2);
+    align-items: center;
+  }
+
+  .final-grade {
+    display: block;
+    margin-block-start: 2px;
+    color: var(--color-primary);
+    font-weight: var(--fw-medium);
+  }
+
+  .card-base details {
+    margin-block-start: var(--space-2);
+    border-block-start: 1px solid var(--color-border-hairline);
+    padding-block-start: var(--space-2);
+  }
+
+  .card-base summary {
+    cursor: pointer;
+    font-size: var(--text-small);
+    color: var(--color-primary);
+    padding-block: var(--space-2);
+    font-weight: var(--fw-medium);
+    border-radius: var(--radius-sm);
+    transition: background var(--dur-1) var(--ease-standard);
+  }
+
+  .card-base summary:focus,
+  .card-base summary:hover {
+    background: var(--color-surface-2);
+    color: var(--color-primary-hover);
+  }
+
+  .details-content {
+    margin-block-start: var(--space-2);
+    font-size: var(--text-body);
+    color: var(--color-text);
+  }
+
+  .details-content ul {
+    margin: 0 0 var(--space-2);
+    padding-inline-start: 1.2em;
+    list-style: disc;
+  }
+
+  .details-content strong {
+    font-weight: var(--fw-medium);
+    color: var(--color-primary);
+  }
 </style>

@@ -12,7 +12,7 @@
     "test:run": "vitest run",
     "test:watch": "vitest --watch",
     "typecheck": "astro check",
-    "lint": "echo 'Add ESLint/Prettier here'"
+    "lint": "stylelint \"src/**/*.{css,astro}\""
   },
   "dependencies": {
     "@astrojs/check": "^0.9.10",
@@ -26,6 +26,9 @@
   "devDependencies": {
     "@types/nodemailer": "^8.0.1",
     "@vitest/coverage-v8": "4.1.11",
+    "postcss-html": "2.0.0",
+    "stylelint": "17.15.0",
+    "stylelint-config-recommended": "18.0.0",
     "typescript": "^6.0.3",
     "vitest": "^4.1.10"
   }
