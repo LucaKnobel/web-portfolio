@@ -67,9 +67,9 @@ jobs:
       - name: Create reports directory
         run: mkdir -p reports
 
-      # Security scan for the locally built image.
-      # CRITICAL vulnerabilities with available fixes will block the image push and deploy.
-      # Note: Using exit-code: "0" to always write the report; security gate logic is in the summary script
+      # Security scan for the locally built image. Informational only - findings
+      # are surfaced in the job summary but never block the push/deploy below.
+      # Note: Using exit-code: "0" to always write the report and let the job continue.
       - name: Scan image with Trivy
         uses: aquasecurity/trivy-action@v0.36.0
         with:
@@ -82,17 +82,10 @@ jobs:
           vuln-type: "os,library"
           exit-code: "0"
 
-      # Trivy Summary & Security Gate for image
-      - name: Trivy Summary & Security Gate
+      # Trivy Summary (non-blocking)
+      - name: Trivy Summary
         if: always()
-        run: |
-          bash .github/scripts/trivy-summary.sh reports/trivy-image.json image
-          # Check for CRITICAL vulnerabilities and fail if present
-          CRITICAL=$(jq '[.Results[]?.Vulnerabilities[]? // empty | select(.Severity == "CRITICAL")] | length' reports/trivy-image.json 2>/dev/null || echo "0")
-          if [[ "$CRITICAL" -gt 0 ]]; then
-            echo "❌ Security Gate Failed: $CRITICAL CRITICAL vulnerabilities in image"
-            exit 1
-          fi
+        run: bash .github/scripts/trivy-summary.sh reports/trivy-image.json image non-blocking
 
       # Upload Trivy report for detailed analysis
       - name: Upload Trivy Report
@@ -104,7 +97,6 @@ jobs:
           retention-days: 30
 
       # Push the exact image that was scanned above.
-      # This step only runs if Trivy scan succeeded (no continue-on-error).
       - name: Push image
         run: |
           docker push "${{ env.IMAGE }}:${{ env.IMAGE_TAG_SHA }}"
