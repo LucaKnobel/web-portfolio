@@ -9,7 +9,7 @@ export interface Props {
   /** Icon name from iconify (optional) */
   icon?: string;
   /** Visual variant of the button */
-  variant?: "primary" | "gradient";
+  variant?: "primary" | "secondary";
   /** Additional CSS classes */
   class?: string;
   /** Aria label for accessibility (auto-generated if not provided) */
@@ -48,7 +48,7 @@ const hasIcon = !!icon;
   target={isExternal ? "_blank" : undefined}
   rel={isExternal ? "noopener noreferrer" : undefined}
 >
-  {hasIcon && <Icon name={icon} class="button-icon" />}
+  {hasIcon && <Icon name={icon} class="button-icon" aria-hidden="true" />}
   {hasText && <span class="button-text">{text}</span>}
 </a>
 
@@ -57,7 +57,9 @@ const hasIcon = !!icon;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: var(--space-1);
+    gap: var(--space-2);
+    max-inline-size: 100%;
+    padding: var(--space-2) var(--space-4);
     border: var(--border-hairline) solid var(--color-border-hairline);
     border-radius: var(--button-radius);
     color: var(--color-text);
@@ -65,80 +67,61 @@ const hasIcon = !!icon;
     text-decoration: none;
     cursor: pointer;
     transition:
-      background-color var(--dur-2) var(--ease-standard),
-      border-color var(--dur-2) var(--ease-standard),
-      color var(--dur-2) var(--ease-standard),
-      box-shadow var(--dur-2) var(--ease-standard),
-      transform var(--dur-2) var(--ease-standard);
+      background-color var(--dur-1) var(--ease-standard),
+      border-color var(--dur-1) var(--ease-standard),
+      color var(--dur-1) var(--ease-standard);
   }
 
   .action-button[data-size="m"] {
-    inline-size: 150px;
-    block-size: var(--control-h-lg);
+    min-inline-size: min(150px, 100%);
+    min-block-size: var(--control-h-lg);
   }
 
   .action-button[data-size="l"] {
-    inline-size: 180px;
-    block-size: var(--control-h-xl);
+    min-inline-size: min(180px, 100%);
+    min-block-size: var(--control-h-xl);
   }
 
   .action-button[data-size="square"] {
     inline-size: var(--touch-target-min);
     block-size: var(--touch-target-min);
-  }
-
-  .action-button:hover {
-    transform: scale(var(--scale-hover));
-  }
-
-  .action-button:active {
-    transform: scale(var(--scale-active));
+    padding: 0;
   }
 
   .action-button[data-variant="primary"] {
-    background: var(--grad-primary-soft);
+    background: var(--color-primary);
     border-color: var(--color-primary);
     color: var(--color-on-primary);
   }
 
-  .action-button[data-variant="primary"]:hover {
-    background: linear-gradient(180deg, var(--color-primary-hover), var(--color-primary));
+  .action-button[data-variant="secondary"] {
+    background: var(--color-surface-1);
   }
 
-  .action-button[data-variant="gradient"] {
-    background: linear-gradient(135deg, var(--color-surface-1), var(--color-surface-2) 50%, var(--color-surface-3));
-    box-shadow: var(--elev-1);
-    position: relative;
-    overflow: hidden;
+  @media (hover: hover) {
+    .action-button[data-variant="primary"]:hover {
+      background: var(--color-primary-hover);
+    }
+
+    .action-button[data-variant="secondary"]:hover {
+      background: var(--color-surface-2);
+      color: var(--color-link);
+      border-color: var(--color-border);
+    }
   }
 
-  .action-button[data-variant="gradient"]::before {
-    content: "";
-    position: absolute;
-    inset-block-start: 0;
-    inset-inline-start: -100%;
-    inline-size: 100%;
-    block-size: 100%;
-    background: linear-gradient(135deg, transparent, var(--color-sheen) 50%, transparent);
-    transition: inset-inline-start var(--dur-2) var(--ease-standard);
-    z-index: 1;
+  .action-button[data-variant="primary"]:active {
+    background: var(--color-primary-active);
   }
 
-  .action-button[data-variant="gradient"]:hover {
-    background: linear-gradient(135deg, var(--color-surface-2), var(--color-surface-3));
-    color: var(--color-primary);
-    border-color: var(--color-primary);
-    box-shadow: var(--elev-2);
+  .action-button[data-variant="secondary"]:active {
+    background: var(--color-surface-3);
   }
 
-  .action-button:hover::before {
-    inset-inline-start: 100%;
-  }
-
-  .button-icon,
   .button-text {
-    position: relative;
-    z-index: 2;
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+    text-align: center;
   }
 
   .button-icon {

@@ -33,16 +33,14 @@ const { as: Tag = "button", label, variant = "surface", class: className, ...att
     padding: 0;
     border: var(--border-hairline) solid var(--color-border-hairline);
     border-radius: var(--button-radius);
-    background: var(--grad-surface-soft);
-    box-shadow: var(--elev-1);
+    background: var(--color-surface-1);
     color: var(--color-text);
     cursor: pointer;
     list-style: none;
     transition:
-      background-color var(--dur-2) var(--ease-standard),
-      border-color var(--dur-2) var(--ease-standard),
-      color var(--dur-2) var(--ease-standard),
-      transform var(--dur-2) var(--ease-standard);
+      background-color var(--dur-1) var(--ease-standard),
+      border-color var(--dur-1) var(--ease-standard),
+      color var(--dur-1) var(--ease-standard);
   }
 
   .icon-control::-webkit-details-marker {
@@ -55,22 +53,25 @@ const { as: Tag = "button", label, variant = "surface", class: className, ...att
     box-shadow: none;
   }
 
-  .icon-control:hover,
   .icon-control[aria-expanded="true"] {
-    background: var(--color-surface-3);
-    border-color: var(--color-primary);
-    color: var(--color-primary);
+    background: var(--color-surface-2);
+    border-color: var(--color-border-hairline);
+    color: var(--color-link);
   }
 
   .icon-control:focus-visible {
-    color: var(--color-primary);
+    color: var(--color-link);
   }
 
-  .icon-control:hover {
-    transform: scale(var(--scale-hover));
+  @media (hover: hover) {
+    .icon-control:hover {
+      background: var(--color-surface-2);
+      border-color: var(--color-border-hairline);
+      color: var(--color-link);
+    }
   }
 
   .icon-control:active {
-    transform: scale(var(--scale-active));
+    background: var(--color-surface-3);
   }
 </style>
