@@ -25,7 +25,7 @@ type Props = ProjectCardProps;
 const { title, description, date, tags, coverSrc, href } = Astro.props;
 ---
 
-<a href={href} class="project-card" tabindex="0">
+<a href={href} class="project-card">
   {
     coverSrc && (
       <Image
@@ -45,7 +45,9 @@ const { title, description, date, tags, coverSrc, href } = Astro.props;
     <h2 class="project-card-title">{title}</h2>
     <p class="project-card-desc">{description}</p>
     <div class="project-card-meta">
-      <span class="project-card-date">{formatProjectDate(date)}</span>
+      <time class="project-card-date" datetime={date}
+        >{formatProjectDate(date)}</time
+      >
       <div class="project-card-tags">
         {tags.map((tag) => <span class="project-card-tag">{tag}</span>)}
       </div>
@@ -57,59 +59,55 @@ const { title, description, date, tags, coverSrc, href } = Astro.props;
   .project-card {
     display: flex;
     flex-direction: column;
-    background: var(--color-surface-3);
+    min-inline-size: 0;
+    background: var(--color-surface-1);
     border-radius: var(--card-radius);
-    box-shadow: var(--elev-2);
+    box-shadow: var(--elev-1);
     text-decoration: none;
     color: var(--color-text);
-    transition:
-      box-shadow var(--dur-2) var(--ease-standard),
-      scale var(--dur-2) var(--ease-standard);
+    transition: border-color var(--dur-1) var(--ease-standard);
     cursor: pointer;
     overflow: hidden;
-    padding-block-end: var(--space-2);
-    border: var(--border-strong) solid var(--color-border);
+    border: var(--border-hairline) solid var(--color-border-hairline);
   }
 
-  .project-card:hover,
   .project-card:focus-visible {
-    box-shadow: var(--elev-3);
+    border-color: var(--color-link);
   }
 
-  @media (prefers-reduced-motion: no-preference) {
-    .project-card:hover,
-    .project-card:focus-visible {
-      scale: 1.012;
+  @media (hover: hover) {
+    .project-card:hover {
+      border-color: var(--color-link);
     }
   }
 
   .project-card-cover {
-    width: 100%;
+    inline-size: 100%;
+    block-size: auto;
     aspect-ratio: 16 / 9;
     object-fit: cover;
     display: block;
-    border-radius: var(--card-radius) var(--card-radius) 0 0;
-    box-shadow: var(--elev-1);
-    border: none;
+    border-block-end: var(--border-hairline) solid var(--color-border-hairline);
     margin: 0;
-    max-height: 500px;
   }
 
   .project-card-content {
-    width: 100%;
+    inline-size: 100%;
+    flex: 1;
     padding: var(--space-6);
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: var(--space-2);
+    gap: var(--space-3);
+    overflow-wrap: anywhere;
   }
 
   .project-card-title {
     margin: 0;
-    font-size: var(--heading-sm);
+    font-size: 1.375rem;
     font-weight: var(--fw-semibold);
     color: var(--color-text);
-    letter-spacing: 0.01em;
+    letter-spacing: 0;
   }
 
   .project-card-desc {
@@ -121,19 +119,19 @@ const { title, description, date, tags, coverSrc, href } = Astro.props;
   }
 
   .project-card-meta {
-    width: 100%;
+    inline-size: 100%;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: var(--space-2);
     font-size: var(--text-small);
-    margin-block-start: var(--space-2);
+    margin-block-start: auto;
+    padding-block-start: var(--space-5);
   }
 
   .project-card-date {
     color: var(--color-muted);
-    font-style: italic;
-    margin-block-end: var(--space-2);
+    font-variant-numeric: tabular-nums;
   }
 
   .project-card-tags {
@@ -143,12 +141,19 @@ const { title, description, date, tags, coverSrc, href } = Astro.props;
   }
 
   .project-card-tag {
-    background: var(--grad-primary-soft);
-    color: var(--color-on-primary);
-    border-radius: 999px;
-    padding: 0.12em 0.8em;
+    background: color-mix(
+      in srgb,
+      var(--color-link) 8%,
+      var(--color-surface-1)
+    );
+    color: color-mix(in srgb, var(--color-link) 65%, var(--color-text));
+    border: var(--border-hairline) solid
+      color-mix(in srgb, var(--color-link) 20%, var(--color-border-hairline));
+    border-radius: var(--radius-md);
+    padding: var(--space-1) var(--space-3);
+    font-size: var(--text-caption);
     font-weight: var(--fw-medium);
-    letter-spacing: 0.01em;
-    white-space: nowrap;
+    letter-spacing: 0;
+    max-inline-size: 100%;
   }
 </style>
