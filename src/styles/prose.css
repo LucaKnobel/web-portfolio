@@ -125,32 +125,40 @@
   }
 
   .prose table {
-    width: 100%;
-    margin: var(--space-8) 0;
-    border: var(--border-strong) solid var(--color-border);
+    display: block;
+    inline-size: fit-content;
+    max-inline-size: 100%;
+    margin-block: var(--space-8);
+    overflow-x: auto;
+    border: var(--border-hairline) solid var(--color-border);
+    border-radius: var(--radius-lg);
     border-collapse: separate;
     border-spacing: 0;
-    border-radius: var(--radius-lg);
-    overflow: hidden;
     font-family: var(--font-sans);
+    font-size: var(--text-small);
+    overflow-wrap: normal;
   }
 
   .prose th,
   .prose td {
     padding: var(--space-2) var(--space-3);
-    border-bottom: 1px solid var(--color-border);
-    text-align: left;
+    border-block-end: var(--border-hairline) solid var(--color-border-hairline);
+    text-align: start;
     vertical-align: top;
-    hyphens: auto;
+    hyphens: none;
   }
 
   .prose th {
-    background: var(--color-surface-3);
+    background: var(--color-surface-2);
     font-weight: var(--fw-semibold);
   }
 
   .prose tbody tr:nth-child(even) {
     background: var(--color-surface-1);
+  }
+
+  .prose tbody tr:last-child td {
+    border-block-end: 0;
   }
 
   .prose hr {

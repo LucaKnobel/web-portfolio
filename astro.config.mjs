@@ -2,6 +2,8 @@ import { defineConfig, envField } from "astro/config";
 import icon from "astro-icon";
 import node from "@astrojs/node";
 
+import { SITE_URL, sitemapIntegration } from "./sitemap.config.mjs";
+
 export default defineConfig({
   env: {
     schema: {
@@ -26,7 +28,7 @@ export default defineConfig({
     mode: "standalone",
   }),
 
-  site: "https://lucaknobel.ch",
+  site: SITE_URL,
 
   security: {
     /* Astro's built-in check derives the request protocol from the raw socket
@@ -99,7 +101,14 @@ export default defineConfig({
     prefetchAll: true
   },
 
-  integrations: [icon({
-    iconDir: "src/assets/icons",
-  })],
+  integrations: [
+    icon({
+      iconDir: "src/assets/icons",
+    }),
+    sitemapIntegration,
+  ],
+
+  redirects: {
+    "/security.txt": "/.well-known/security.txt",
+  },
 });

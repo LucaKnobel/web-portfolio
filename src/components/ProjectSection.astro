@@ -25,6 +25,7 @@ try {
 }
 ---
 
+<div class="projects-page">
 <PageSection title={t("projects.pageTitle")} align="center">
   <div class="project-card-wrapper">
     {
@@ -41,11 +42,16 @@ try {
     }
   </div>
 </PageSection>
+</div>
 
 <style>
+  .projects-page {
+    padding-block: var(--space-6) var(--space-12);
+  }
+
   .project-card-wrapper {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(min(25rem, 100%), 1fr));
-    gap: var(--space-6);
+    gap: var(--space-8);
   }
 </style>

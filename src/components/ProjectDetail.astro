@@ -52,7 +52,8 @@ const { project, lang, t, Content } = Astro.props;
             href={project.data.url}
             size="l"
             text="GitHub Repository"
-            variant="gradient"
+            icon="mdi:github"
+            variant="secondary"
           />
         )
       }
@@ -68,7 +69,6 @@ const { project, lang, t, Content } = Astro.props;
     --flow: var(--space-8);
     padding-block: var(--space-12);
     background: var(--color-bg);
-    overflow-x: hidden;
   }
 
   .project-meta {
@@ -76,6 +76,10 @@ const { project, lang, t, Content } = Astro.props;
     align-items: flex-start;
     font-size: var(--text-small);
     color: var(--color-muted);
+  }
+
+  .project-content {
+    min-inline-size: 0;
   }
 
   .project-meta-row {

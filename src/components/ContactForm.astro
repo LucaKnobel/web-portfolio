@@ -1,6 +1,6 @@
 ---
 import { actions } from "astro:actions";
-import PageSection from "@/components/PageSection.astro";
+import { Icon } from "astro-icon/components";
 import { rateLimiter } from "@/server/infrastructure/composition.js";
 import type { Language, Translator } from "@/i18n/utils";
 
@@ -25,32 +25,35 @@ const isRateLimit = result?.error?.code === "TOO_MANY_REQUESTS";
 ---
 
 
-<PageSection title={t("contact.formTitle")}>
+<section class="contact-page container" aria-labelledby="contact-title">
+    <header class="contact-header">
+    <h1 id="contact-title">{t("contact.pageTitle")}</h1>
     <p class="form-description">{t("contact.formDescription")}</p>
+    </header>
 
     <!-- Success Message -->
     {isSuccess && (
-        <div class="message success">
-            <h2>{t("contact.successMessage")}</h2>
+        <div class="message success" role="status">
+            <p>{t("contact.successMessage")}</p>
         </div>
     )}
 
     <!-- Rate Limit Reached (on page load) -->
     {rateLimitReached && !isSuccess && (
-        <div class="message error">
-            <h2>{t("contact.rateLimit")}</h2>
+        <div class="message error" role="alert">
+            <p>{t("contact.rateLimit")}</p>
         </div>
     )}
 
     <!-- Error Message (only for actual submission errors) -->
     {isError && !rateLimitReached && (
-        <div class="message error">
-            <h2>
+        <div class="message error" role="alert">
+            <p>
                 {isRateLimit 
                     ? t("contact.rateLimit")
                     : t("contact.errorMessage")
                 }
-            </h2>
+            </p>
         </div>
     )}
 
@@ -74,6 +77,7 @@ const isRateLimit = result?.error?.code === "TOO_MANY_REQUESTS";
         <!-- Personal Information -->
         <fieldset class="personal-fields">
             <legend>{t("contact.personalLegend")}</legend>
+            <div class="personal-grid">
             <div class="field">
                 <label for="firstName">
                     {t("contact.firstName")}*
@@ -104,7 +108,7 @@ const isRateLimit = result?.error?.code === "TOO_MANY_REQUESTS";
                 />
             </div>
 
-            <div class="field">
+            <div class="field field-wide">
                 <label for="email">
                     {t("contact.email")}*
                 </label>
@@ -144,6 +148,7 @@ const isRateLimit = result?.error?.code === "TOO_MANY_REQUESTS";
                     maxlength="20"
                 />
             </div>
+            </div>
         </fieldset>
 
         <!-- Message Details -->
@@ -159,6 +164,7 @@ const isRateLimit = result?.error?.code === "TOO_MANY_REQUESTS";
                     id="subject"
                     name="subject"
                     required
+                    minlength="1"
                     maxlength="100"
                     placeholder={t("contact.subjectPlaceholder")}
                 />
@@ -172,6 +178,7 @@ const isRateLimit = result?.error?.code === "TOO_MANY_REQUESTS";
                     id="message"
                     name="message"
                     required
+                    minlength="1"
                     rows="6"
                     maxlength="3000"
                     placeholder={t("contact.messagePlaceholder")}></textarea>
@@ -207,28 +214,47 @@ const isRateLimit = result?.error?.code === "TOO_MANY_REQUESTS";
         </fieldset>
 
         <button type="submit">
+            <Icon name="mdi:send-outline" aria-hidden="true" />
             {t("contact.send")}
         </button>
     </form>
     )}
-</PageSection>
+</section>
 
 <style>
+    .contact-page {
+        max-inline-size: 48rem;
+        display: grid;
+        gap: var(--space-10);
+        padding-block: var(--space-16) calc(var(--space-16) + var(--space-12));
+        overflow-wrap: anywhere;
+    }
+
+    .contact-header {
+        display: grid;
+        gap: var(--space-4);
+    }
+
+    .contact-header h1 {
+        margin: 0;
+        font-size: 2.5rem;
+        letter-spacing: 0;
+    }
+
     .form-description {
         margin: 0;
+        max-inline-size: var(--measure);
         color: var(--color-muted);
     }
 
     .message {
-        padding: var(--space-6);
-        border-radius: var(--card-radius);
-        border: 1px solid;
+        padding: var(--space-5);
+        border-radius: var(--radius-md);
+        border: var(--border-hairline) solid;
+    }
 
-        h2 {
-            font-size: var(--heading-sm);
-            font-weight: var(--fw-semibold);
-            margin-bottom: 0;
-        }
+    .message p {
+        margin: 0;
     }
 
     .success {
@@ -246,145 +272,162 @@ const isRateLimit = result?.error?.code === "TOO_MANY_REQUESTS";
     form {
         display: flex;
         flex-direction: column;
-        gap: var(--space-8);
+        gap: var(--space-10);
         container: contact-form / inline-size;
-        color: var(--color-text);
+        min-inline-size: 0;
     }
 
-        fieldset {
-        border: 1px solid var(--color-border);
-        border-radius: var(--card-radius);
-        padding: var(--space-6);
-        background: var(--color-surface-1);
+    fieldset {
+        min-inline-size: 0;
+        border: 0;
         margin: 0;
-
-        legend {
-            font-weight: var(--fw-semibold);
-            font-size: var(--heading-xs);
-            padding: 0 var(--space-3);
-            margin-bottom: var(--space-3);
-        }
-
-        div {
-            display: flex;
-            flex-direction: column;
-            gap: var(--space-2);
-            margin-bottom: var(--space-4);
-
-            &:last-child {
-                margin-bottom: 0;
-            }
-        }
+        padding: 0;
     }
 
-    .privacy-field {
+    legend {
+        padding: 0;
+        margin-block-end: var(--space-5);
+        font-size: 1.125rem;
+        font-weight: var(--fw-semibold);
+        letter-spacing: 0;
+    }
+
+    .personal-grid {
+        display: grid;
+        gap: var(--space-5);
+    }
+
+    .field {
         display: flex;
         flex-direction: column;
-        gap: var(--space-3);
+        gap: var(--space-2);
+        min-inline-size: 0;
+    }
 
-        .checkbox-row {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            gap: var(--space-3);
-        }
-
-        .privacy-link {
-            padding-left: calc(var(--touch-target-min) + var(--space-3));
-        }
+    .message-fields .field + .field {
+        margin-block-start: var(--space-5);
     }
 
     label {
+        font-size: var(--text-small);
         font-weight: var(--fw-medium);
-        color: var(--color-text);
     }
 
-    input,
+    input:not([type="checkbox"]),
     textarea {
-        width: 100%;
-        height: var(--control-h-md);
+        inline-size: 100%;
+        min-block-size: var(--control-h-lg);
         padding: var(--space-3);
-        border: 1px solid var(--color-border);
+        border: var(--border-hairline) solid var(--color-border);
         border-radius: var(--radius-md);
-        background: var(--color-bg);
+        background: var(--color-surface-1);
         color: var(--color-text);
         font-size: var(--text-body);
-
-        &:focus-visible {
-            border-color: var(--color-primary);
-        }
+        transition: border-color var(--dur-1) var(--ease-standard);
     }
 
     textarea {
-        height: auto;
-        min-height: calc(var(--control-h-md) * 5);
+        min-block-size: 12rem;
+        resize: vertical;
+    }
+
+    input:focus-visible,
+    textarea:focus-visible {
+        border-color: var(--color-link);
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+        color: var(--color-muted);
+        opacity: 1;
+    }
+
+    .privacy-fields {
+        border-block-start: var(--border-hairline) solid var(--color-border-hairline);
+        padding-block-start: var(--space-5);
+    }
+
+    .privacy-fields legend {
+        margin: 0;
+        padding-inline-end: var(--space-3);
+    }
+
+    .checkbox-row {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--space-3);
     }
 
     input[type="checkbox"] {
-        width: var(--touch-target-min);
-        height: var(--touch-target-min);
-        margin: 0;
-        cursor: pointer;
+        flex-shrink: 0;
+        inline-size: var(--icon-xs);
+        block-size: var(--icon-xs);
+        margin: var(--space-3) 0 0;
         accent-color: var(--color-primary);
+        cursor: pointer;
+    }
+
+    .checkbox-row label {
+        min-block-size: var(--touch-target-min);
+        padding-block: var(--space-3);
+        font-weight: var(--fw-regular);
+        cursor: pointer;
+    }
+
+    .privacy-link {
+        padding-inline-start: calc(var(--icon-xs) + var(--space-3));
+    }
+
+    .privacy-link a {
+        display: inline-flex;
+        align-items: center;
+        min-block-size: var(--touch-target-min);
+        font-size: var(--text-small);
+        text-decoration: underline;
+        text-underline-offset: var(--space-1);
     }
 
     button {
-        width: 100%;
-        height: var(--control-h-lg);
-        padding: 0 var(--space-8);
-        background: var(--grad-primary-soft);
-        color: var(--color-on-primary);
-        border: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-2);
+        min-block-size: var(--control-h-lg);
+        padding: var(--space-3) var(--space-6);
+        border: var(--border-hairline) solid transparent;
         border-radius: var(--button-radius);
+        background: var(--color-primary);
+        color: var(--color-on-primary);
         font-weight: var(--fw-medium);
         font-size: var(--text-body);
         cursor: pointer;
-        margin-top: var(--space-6);
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        transition: background-color var(--dur-1) var(--ease-standard);
+    }
 
-        @media (prefers-reduced-motion: no-preference) {
-            &:hover {
-                transform: translateY(-1px);
-            }
+    button [data-icon] {
+        inline-size: var(--icon-xs);
+        block-size: var(--icon-xs);
+        flex-shrink: 0;
+    }
+
+    @media (hover: hover) {
+        button:hover {
+            background: var(--color-primary-hover);
         }
     }
 
-    a {
-        color: var(--color-link);
-        text-decoration: underline;
-
-        &:hover {
-            color: var(--color-link-hover);
-        }
-    }
-
-    @container contact-form (width >= 45rem) {
-        button {
-            width: auto;
-            align-self: flex-end;
+    @container contact-form (width >= 36rem) {
+        .personal-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
         }
 
-        .personal-fields,
-        .message-fields {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: var(--space-4);
-
-            legend {
-                grid-column: 1 / -1;
-            }
-
-            div {
-                margin-bottom: 0;
-            }
-        }
-
-        /* Full width fields */
         .field-wide {
             grid-column: 1 / -1;
         }
+
+        button {
+            align-self: flex-start;
+            min-inline-size: 10rem;
+        }
     }
 </style>
-

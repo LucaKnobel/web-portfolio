@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import CareerSection from "@/components/CareerSection.astro";
+import CareerPage from "@/components/CareerPage.astro";
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 
 
@@ -9,6 +9,5 @@ const t = useTranslations(lang);
 ---
 
 <BaseLayout title={`Luca Knobel | ${t("career.pageTitle")}`}>
-  <CareerSection lang={lang} t={t} type="professional" title={t("career.professionalCareer")}/>
-  <CareerSection lang={lang} t={t} type="education" title={t("career.education")}/>
+  <CareerPage lang={lang} t={t} />
 </BaseLayout>
