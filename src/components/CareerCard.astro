@@ -1,191 +1,216 @@
 ---
+import { Icon } from "astro-icon/components";
+import type { CollectionEntry } from "astro:content";
 import type { Translator } from "@/i18n/utils";
 
 export interface CareerCardProps {
-  /** Translation function for UI strings */
   t: Translator;
-  /** Entry object containing all career/education data */
-  entry: {
-    /** Name of the organization */
-    organizationName: string;
-    /** Website of the organization */
-    organizationWebsite: string;
-    /** Job or education title */
-    title: string;
-    /** Employment rate (e.g., full-time, part-time) */
-    employmentRate?: string;
-    /** List of responsibilities */
-    responsibilities?: string[];
-    /** Study mode (e.g., on-site, remote) */
-    studyMode?: string;
-    /** Final grade (string or number) */
-    finalGrade?: string | number;
-    /** Period of employment or study */
-    period: {
-      /** Start date */
-      start: string;
-      /** End date */
-      end: string;
-    };
-    /** List of key skills */
-    keySkills: string[];
-  };
+  type: "professional" | "education";
+  entry: CollectionEntry<"career">["data"][number] | CollectionEntry<"education">["data"][number];
 }
 
-const { t, entry } = Astro.props as CareerCardProps;
-
-const {
-  organizationName,
-  organizationWebsite,
-  title,
-  employmentRate,
-  studyMode,
-  finalGrade,
-  period,
-  responsibilities,
-  keySkills,
-} = entry;
+const { t, entry, type } = Astro.props as CareerCardProps;
+const { id, organizationName, organizationWebsite, title, period, keySkills } = entry;
+const responsibilities = "responsibilities" in entry ? entry.responsibilities : [];
+const mode = "employmentRate" in entry ? entry.employmentRate : entry.studyMode;
+const finalGrade = "finalGrade" in entry ? entry.finalGrade : undefined;
+const headingId = `${type}-${id}`;
 ---
 
-<article class="card-base">
-  <header>
-    <h4>{title}</h4>
-    <a href={organizationWebsite} target="_blank" rel="noopener noreferrer"
-      >{organizationName}</a
-    >
-    <div class="meta">
-      <div class="meta-row">
-        {employmentRate && <span>{employmentRate}</span>}
-        {studyMode && <span>{studyMode}</span>}
-        <span>{period.start} – {period.end}</span>
-      </div>
-      {
-        finalGrade && (
-          <span class="final-grade">
-            {t("career.finalGrade")}: {finalGrade}
-          </span>
-        )
-      }
-    </div>
-  </header>
-  <details>
-    <summary>{t("career.detailsSummary")}</summary>
-    <section class="details-content">
-      {
-        responsibilities && responsibilities.length > 0 && (
-          <>
-            <strong>{t("career.responsibilities")}:</strong>
-            <ul>
-              {responsibilities.map((item) => (
-                <li>{item}</li>
-              ))}
-            </ul>
-          </>
-        )
-      }
-      <strong>{t("career.keySkills")}:</strong>
-      <ul>
+<article class="career-entry" aria-labelledby={headingId}>
+  <div class="career-period">
+    <span>{period.start} – {period.end}</span>
+    {mode && <span class="career-mode">{mode}</span>}
+  </div>
+  <div class="career-content">
+    <header class="career-heading">
+      <a class="career-organization" href={organizationWebsite} target="_blank" rel="noopener noreferrer">
+        <span>{organizationName}</span>
+        <Icon name="mdi:open-in-new" aria-hidden="true" />
+      </a>
+      <h3 id={headingId}>{title}</h3>
+      {finalGrade !== undefined && finalGrade !== "" && (
+        <p class="final-grade">{t("career.finalGrade")}: <strong>{finalGrade}</strong></p>
+      )}
+    </header>
+    {keySkills.length > 0 && (
+      <ul class:list={["career-skills", { "career-skills-tags": type === "professional" }]}
+        aria-label={t("career.keySkills")} role="list">
         {keySkills.map((skill) => <li>{skill}</li>)}
       </ul>
-    </section>
-  </details>
+    )}
+    {responsibilities.length > 0 && (
+      <details class="career-details">
+        <summary>
+          <Icon name="mdi:chevron-down" aria-hidden="true" />
+          <span>{t("career.responsibilities")}</span>
+        </summary>
+        <ul class="career-responsibilities">
+          {responsibilities.map((item) => <li>{item}</li>)}
+        </ul>
+      </details>
+    )}
+  </div>
 </article>
 
 <style>
-  .card-base {
-    background: var(--color-surface-1);
-    border-radius: var(--card-radius);
-    box-shadow: var(--elev-1);
-    padding: var(--space-6);
-    border: 1px solid var(--color-border);
+  .career-entry {
+    display: grid;
+    gap: var(--space-4);
+    padding-block: var(--space-8);
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .career-period {
     display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-2) var(--space-4);
+    font-size: var(--text-small);
+    font-weight: var(--fw-medium);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .career-mode {
+    color: var(--color-muted);
+    font-weight: var(--fw-regular);
+  }
+
+  .career-content {
+    display: grid;
+    gap: var(--space-4);
     min-inline-size: 0;
   }
 
-  .card-base header {
-    display: flex;
-    flex-direction: column;
+  .career-heading {
+    display: grid;
+    justify-items: start;
     gap: var(--space-2);
   }
 
-  .card-base h4 {
-    font-size: var(--heading-sm);
+  .career-organization {
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--space-2);
     font-weight: var(--fw-medium);
+    text-underline-offset: var(--space-1);
+  }
+
+  .career-organization [data-icon] {
+    inline-size: 0.875rem;
+    block-size: 0.875rem;
+    flex-shrink: 0;
+  }
+
+  .career-heading h3 {
     margin: 0;
-    color: var(--color-text);
+    font-size: 1.25rem;
+    font-weight: var(--fw-semibold);
+    line-height: 1.4;
+    letter-spacing: 0;
+    text-wrap: pretty;
   }
 
-  .card-base header a {
-    color: var(--color-link);
-    text-decoration: none;
-    font-size: var(--text-body);
-    transition: color var(--dur-1) var(--ease-standard);
-  }
-
-  .card-base header a:hover {
-    color: var(--color-link-hover);
-    text-decoration: underline;
-  }
-
-  .meta {
-    display: flex;
-    flex-direction: column;
-    gap: 0.1em;
+  .final-grade {
+    margin: 0;
     color: var(--color-muted);
     font-size: var(--text-small);
   }
 
-  .meta-row {
-    display: flex;
-    gap: var(--space-2);
-    align-items: center;
-  }
-
-  .final-grade {
-    display: block;
-    margin-block-start: 2px;
-    color: var(--color-primary);
-    font-weight: var(--fw-medium);
-  }
-
-  .card-base details {
-    margin-block-start: var(--space-2);
-    border-block-start: 1px solid var(--color-border-hairline);
-    padding-block-start: var(--space-2);
-  }
-
-  .card-base summary {
-    cursor: pointer;
-    font-size: var(--text-small);
-    color: var(--color-primary);
-    padding-block: var(--space-2);
-    font-weight: var(--fw-medium);
-    border-radius: var(--radius-sm);
-    transition: background var(--dur-1) var(--ease-standard);
-  }
-
-  .card-base summary:focus,
-  .card-base summary:hover {
-    background: var(--color-surface-2);
-    color: var(--color-primary-hover);
-  }
-
-  .details-content {
-    margin-block-start: var(--space-2);
-    font-size: var(--text-body);
+  .final-grade strong {
     color: var(--color-text);
-  }
-
-  .details-content ul {
-    margin: 0 0 var(--space-2);
-    padding-inline-start: 1.2em;
-    list-style: disc;
-  }
-
-  .details-content strong {
     font-weight: var(--fw-medium);
-    color: var(--color-primary);
+  }
+
+  .career-skills {
+    display: grid;
+    gap: var(--space-2);
+    margin: 0;
+    padding-inline-start: var(--space-4);
+    list-style: disc;
+    color: var(--color-muted);
+    font-size: var(--text-small);
+  }
+
+  .career-skills-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    padding: 0;
+    list-style: none;
+  }
+
+  .career-skills-tags li {
+    max-inline-size: 100%;
+    padding: var(--space-1) var(--space-3);
+    border: var(--border-hairline) solid var(--color-border-hairline);
+    border-radius: var(--radius-md);
+    background: var(--color-surface-2);
+    color: var(--color-text);
+    font-size: var(--text-caption);
+  }
+
+  .career-details summary {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    inline-size: fit-content;
+    min-block-size: var(--touch-target-min);
+    padding-inline: var(--space-2);
+    border-radius: var(--radius-sm);
+    color: var(--color-link);
+    font-size: var(--text-small);
+    font-weight: var(--fw-medium);
+    list-style: none;
+    cursor: pointer;
+  }
+
+  .career-details summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .career-details summary [data-icon] {
+    inline-size: var(--icon-xs);
+    block-size: var(--icon-xs);
+    flex-shrink: 0;
+  }
+
+  .career-details[open] [data-icon] {
+    rotate: 180deg;
+  }
+
+  @media (hover: hover) {
+    .career-details summary:hover {
+      background: var(--color-surface-2);
+    }
+  }
+
+  .career-responsibilities {
+    display: grid;
+    gap: var(--space-2);
+    margin-block: var(--space-3) 0;
+    padding-inline-start: var(--space-6);
+    max-inline-size: var(--measure);
+    list-style: disc;
+    font-size: var(--text-small);
+  }
+
+  @container (min-width: 42rem) {
+    .career-entry {
+      grid-template-columns: 11rem minmax(0, 1fr);
+      gap: var(--space-8);
+      padding-block: var(--space-10);
+    }
+
+    .career-period {
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .career-content {
+      border-inline-start: var(--border-hairline) solid var(--color-border-hairline);
+      padding-inline-start: var(--space-8);
+    }
   }
 </style>

@@ -1,6 +1,5 @@
 ---
 import CareerCard from "@/components/CareerCard.astro";
-import PageSection from "@/components/PageSection.astro";
 import { getCollection } from "astro:content";
 import type { Language, Translator } from "@/i18n/utils";
 
@@ -35,15 +34,36 @@ try {
 }
 ---
 
-<PageSection title={title} align="center">
-  <div class="career-list stack">
-    {entries.map((entry) => <CareerCard t={t} entry={{ ...entry }} />)}
-  </div>
-</PageSection>
+<section class="career-section" id={type} aria-labelledby={`${type}-heading`}>
+  <h2 id={`${type}-heading`}>{title}</h2>
+  <ol class="career-list" role="list">
+    {entries.map((entry) => (
+      <li><CareerCard t={t} entry={entry} type={type} /></li>
+    ))}
+  </ol>
+</section>
 
 <style>
+  .career-section {
+    min-inline-size: 0;
+    scroll-margin-block-start: calc(var(--header-height) + var(--space-6));
+  }
+
+  .career-section h2 {
+    margin: 0 0 var(--space-8);
+    font-size: 1.5rem;
+    letter-spacing: 0;
+  }
+
   .career-list {
-    inline-size: min(100%, 50rem);
-    margin-inline: auto;
+    container-type: inline-size;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-block-start: var(--border-hairline) solid var(--color-border);
+  }
+
+  .career-list > li {
+    border-block-end: var(--border-hairline) solid var(--color-border-hairline);
   }
 </style>
