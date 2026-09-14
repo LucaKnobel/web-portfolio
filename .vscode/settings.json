@@ -2,5 +2,12 @@
   "snyk.advanced.autoSelectOrganization": true,
   "files.associations": {
     "**/.dockerignore": "ignore"
-  }
+  },
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "astro"
+  ]
 }

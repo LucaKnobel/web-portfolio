@@ -16,22 +16,19 @@ export interface CareerSectionProps {
 
 const { lang, t, type, title } = Astro.props as CareerSectionProps;
 
-let entries = [];
-try {
-  if (type === "education") {
-    const allEducationEntries = await getCollection("education");
-    const educationFile = allEducationEntries.find(
-      (entry) => entry.id === lang,
-    );
-    entries = educationFile?.data || [];
-  } else {
-    const allCareerEntries = await getCollection("career");
-    const careerFile = allCareerEntries.find((entry) => entry.id === lang);
-    entries = careerFile?.data || [];
-  }
-} catch (err) {
-  throw err;
+let entries;
+if (type === "education") {
+  const allEducationEntries = await getCollection("education");
+  const educationFile = allEducationEntries.find(
+    (entry) => entry.id === lang,
+  );
+  entries = educationFile?.data || [];
+} else {
+  const allCareerEntries = await getCollection("career");
+  const careerFile = allCareerEntries.find((entry) => entry.id === lang);
+  entries = careerFile?.data || [];
 }
+
 ---
 
 <section class="career-section" id={type} aria-labelledby={`${type}-heading`}>

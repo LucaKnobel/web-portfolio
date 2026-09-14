@@ -74,6 +74,16 @@ Dark and light themes are implemented using CSS custom properties. The interface
 
 Changes are checked through automated CI workflows before being merged. The project uses automated testing, type checking, linting, and security analysis to detect regressions and implementation issues early.
 
+Linting uses ESLint with the recommended JavaScript, TypeScript, and Astro rules, plus Stylelint for CSS and Astro styles. Generated output is excluded from ESLint.
+
+- `npm run lint`: run both linters (also used by CI).
+- `npm run lint:code`: check JavaScript, TypeScript, and Astro components.
+- `npm run lint:styles`: check CSS and Astro styles.
+- `npm run lint:fix`: apply available automatic fixes; review the resulting diff.
+- `npm run typecheck`: run Astro's separate type checks.
+
+VS Code recommends the ESLint extension and enables linting for Astro and TypeScript files.
+
 The application is continuously developed and serves as both my public portfolio and a practical environment for improving my knowledge of Astro, TypeScript, web security, accessibility, performance, and software architecture.
 
 ## Deployment

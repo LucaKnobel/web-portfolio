@@ -1,8 +1,9 @@
 ---
+import type { getPrivacyPolicy } from "@/content/get-privacy-policy";
 import PageSection from "@/components/PageSection.astro";
 export interface PrivacyPolicySectionProps {
   /** Rendered privacy policy content */
-  Content: any;
+  Content: NonNullable<Awaited<ReturnType<typeof getPrivacyPolicy>>>["Content"];
 }
 
 const { Content } = Astro.props as PrivacyPolicySectionProps;

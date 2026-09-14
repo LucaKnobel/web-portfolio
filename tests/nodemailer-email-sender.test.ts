@@ -43,7 +43,7 @@ describe("createNodemailerEmailSender", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.mocked(nodemailer.createTransport).mockReturnValue(
-      mockTransporter as any,
+      mockTransporter as unknown as ReturnType<typeof nodemailer.createTransport>,
     );
 
     process.env = {

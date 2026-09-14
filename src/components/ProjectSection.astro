@@ -13,16 +13,13 @@ export interface ProjectSectionProps {
 }
 const { lang, t } = Astro.props as ProjectSectionProps;
 
-let projects = [];
-try {
-  const allProjects = await getCollection("projects");
-  const languageProjects = allProjects.filter(
-    (project) => project.data.lang === lang,
-  );
-  projects = languageProjects.sort(compareProjectsByDate);
-} catch (err) {
-  throw err;
-}
+let projects;
+const allProjects = await getCollection("projects");
+const languageProjects = allProjects.filter(
+  (project) => project.data.lang === lang,
+);
+projects = languageProjects.sort(compareProjectsByDate);
+
 ---
 
 <div class="projects-page">

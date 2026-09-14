@@ -43,8 +43,8 @@ describe("handleActionError", () => {
       handleActionError(rateErr);
     } catch (err) {
       expect(err).toBeInstanceOf(ActionError);
-      expect((err as any).code).toBe("TOO_MANY_REQUESTS");
-      expect((err as any).message).toBe("Limit reached");
+      expect((err as ActionError).code).toBe("TOO_MANY_REQUESTS");
+      expect((err as ActionError).message).toBe("Limit reached");
     }
   });
 
@@ -55,8 +55,8 @@ describe("handleActionError", () => {
       handleActionError(appErr);
     } catch (err) {
       expect(err).toBeInstanceOf(ActionError);
-      expect((err as any).code).toBe("BAD_REQUEST");
-      expect((err as any).message).toBe("Invalid domain state");
+      expect((err as ActionError).code).toBe("BAD_REQUEST");
+      expect((err as ActionError).message).toBe("Invalid domain state");
     }
   });
 
@@ -67,8 +67,8 @@ describe("handleActionError", () => {
       handleActionError(unknownErr);
     } catch (err) {
       expect(err).toBeInstanceOf(ActionError);
-      expect((err as any).code).toBe("INTERNAL_SERVER_ERROR");
-      expect((err as any).message).toBe(
+      expect((err as ActionError).code).toBe("INTERNAL_SERVER_ERROR");
+      expect((err as ActionError).message).toBe(
         "An unexpected error occurred. Please try again later.",
       );
     }

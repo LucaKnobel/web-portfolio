@@ -17,7 +17,7 @@ const t = useTranslations(lang);
 let detail;
 try {
   detail = await getProjectDetail(lang, slug ?? "");
-} catch (err) {
+} catch {
   Astro.response.status = 500;
 }
 
