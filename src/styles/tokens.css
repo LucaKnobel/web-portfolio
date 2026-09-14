@@ -57,7 +57,7 @@
 
     /* Interactive states */
     --color-on-primary: light-dark(var(--neutral-0), var(--neutral-900));
-    --color-primary: light-dark(var(--primary-600), var(--primary-500));
+    --color-primary: light-dark(var(--primary-600), var(--primary-400));
     --color-primary-active: light-dark(var(--primary-750), var(--primary-400));
     --color-primary-hover: light-dark(var(--primary-700), var(--primary-400));
 
@@ -102,15 +102,15 @@
     --msg-warning-fg: light-dark(#8b6914, #f4c430);
 
     /* Syntax highlighting roles */
-    --syntax-accent: light-dark(#6cb8e6, #8bd3ff);
-    --syntax-comment: light-dark(#4a8a5c, #91d076);
-    --syntax-code: light-dark(#66cccc, #79e2e2);
+    --syntax-accent: light-dark(#27658a, #8bd3ff);
+    --syntax-comment: light-dark(#356b3f, #91d076);
+    --syntax-code: light-dark(#216969, #79e2e2);
     --syntax-light: light-dark(#e3eaf2, #f3f6fa);
     --syntax-list: #f4adf4;
     --syntax-muted: light-dark(#8da1b9, #a9bad0);
-    --syntax-number: light-dark(#e6d37a, #f3d675);
+    --syntax-number: light-dark(#776116, #f3d675);
     --syntax-on-accent: light-dark(#111b27, #101820);
-    --syntax-string: light-dark(#91d076, #a7e68d);
+    --syntax-string: light-dark(#356b3f, #a7e68d);
     --syntax-line-bg: light-dark(rgba(60, 82, 109, 0.37), rgba(139, 163, 199, 0.28));
     --syntax-line-bg-end: light-dark(rgba(60, 82, 109, 0.33), rgba(139, 163, 199, 0.2));
     --syntax-line-shadow: light-dark(rgba(60, 82, 109, 0.37), rgba(139, 163, 199, 0.3));

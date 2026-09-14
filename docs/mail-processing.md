@@ -37,7 +37,7 @@ sequenceDiagram
             Sender-->>UseCase: { success: false, error }
             UseCase->>Limiter: release(reservation)
             UseCase-->>Action: Throw EmailSendError
-            Action-->>User: 400 BAD_REQUEST
+            Action-->>User: 500 INTERNAL_SERVER_ERROR
         end
     end
 ```
