@@ -11,12 +11,12 @@ import {
   useTranslations,
   type Language,
 } from "@/i18n/utils";
-import Footer from "@/components/Footer.astro";
-import Header from "@/components/Header.astro";
+import Footer from "@/components/layout/Footer.astro";
+import Header from "@/components/layout/Header.astro";
 /* import { ClientRouter } from "astro:transitions"; */
 import portrait from "@/assets/portrait-photo.jpg";
 
-export interface BaseLayoutProps {
+export interface Props {
   /** Page title (for <title> and meta tags) */
   title?: string;
   /** Meta description */
@@ -53,7 +53,7 @@ const {
         ).href,
       }))
     : [],
-} = Astro.props as BaseLayoutProps;
+} = Astro.props;
 
 const themeCookie = Astro.cookies.get("theme")?.value;
 const theme = themeCookie === "dark" || themeCookie === "light" ? themeCookie : undefined;

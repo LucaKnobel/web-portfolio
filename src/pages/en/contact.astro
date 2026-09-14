@@ -3,7 +3,7 @@ import { actions } from "astro:actions";
 import { rateLimiter } from "@/server/infrastructure/composition";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
-import ContactSection from "@/components/ContactSection.astro";
+import ContactSection from "@/components/contact/ContactSection.astro";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);

@@ -1,6 +1,6 @@
 ---
 import { formatProjectDate } from "@/content/project-utils";
-import ActionButton from "@/components/ActionButton.astro";
+import ActionButton from "@/components/ui/ActionButton.astro";
 import { Image } from "astro:assets";
 import type { render } from "astro:content";
 import type { CollectionEntry } from "astro:content";
@@ -9,7 +9,7 @@ import type { Language, Translator } from "@/i18n/utils";
 type Project = CollectionEntry<"projects">;
 type ProjectContent = Awaited<ReturnType<typeof render>>["Content"];
 
-export interface ProjectDetailProps {
+export interface Props {
   /** Project data object */
   project: Project;
   /** Current language (e.g., 'de' or 'en') */
@@ -19,8 +19,6 @@ export interface ProjectDetailProps {
   /** Astro Content component for project details */
   Content: ProjectContent;
 }
-
-type Props = ProjectDetailProps;
 
 const { project, lang, t, Content } = Astro.props;
 ---

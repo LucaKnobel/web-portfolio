@@ -10,8 +10,14 @@ This document describes the overall system architecture of the web portfolio, co
 src/
 ├── actions/             # Astro Actions (Type-safe Controllers)
 ├── assets/              # Static & processed media assets (Images, Icons)
-├── components/          # Astro UI components & UI framework islands (Vue)
-├── composables/         # Reusable client-side logic & UI state
+├── components/          # Astro components grouped by responsibility
+│   ├── layout/          # Header, footer, navigation and their controls
+│   ├── ui/              # Shared page frames, buttons and utility views
+│   ├── home/            # Landing page sections
+│   ├── contact/         # Contact section, form and fields
+│   ├── career/          # Career page, sections and entries
+│   ├── projects/        # Project listing, cards and details
+│   └── legal/           # Imprint and privacy content
 ├── content/             # Astro Content Collections (Markdown & JSON data)
 ├── content.config.ts    # Content Collections Schema Definitions
 ├── i18n/                # Internationalization dictionaries & helpers
@@ -42,6 +48,7 @@ The frontend follows official **Astro architectural patterns**, focusing on serv
 
 - **Components (`src/components/`)**:
   - **Astro Components (`.astro`)**: Server-rendered templates with small, local scripts only where native browser behavior needs enhancement.
+  - Components with inputs declare a local `Props` type; callers are checked by `astro check`.
   - Interactive controls use native HTML elements such as `<dialog>` and `<details>` instead of a client-side UI framework.
 
 - **Content Collections (`src/content/` & `src/content.config.ts`)**:

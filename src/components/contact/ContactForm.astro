@@ -1,6 +1,7 @@
 ---
+import "@/styles/buttons.css";
 import { Icon } from "astro-icon/components";
-import FormField from "@/components/FormField.astro";
+import FormField from "@/components/contact/FormField.astro";
 import type { Language, Translator } from "@/i18n/utils";
 
 interface Props {
@@ -53,8 +54,8 @@ const { lang, t, action } = Astro.props;
     </div>
   </fieldset>
 
-  <button type="submit">
-    <Icon name="mdi:send-outline" aria-hidden="true" />
+  <button type="submit" class="button contact-submit" data-variant="primary">
+    <Icon name="mdi:send-outline" class="button-icon" aria-hidden="true" />
     {t("contact.send")}
   </button>
 
@@ -136,33 +137,14 @@ const { lang, t, action } = Astro.props;
       text-underline-offset: var(--space-1);
   }
 
-  button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: var(--space-2);
-      min-block-size: var(--control-h-lg);
-      padding: var(--space-3) var(--space-6);
-      border: var(--border-hairline) solid transparent;
-      border-radius: var(--button-radius);
-      background: var(--color-primary);
-      color: var(--color-on-primary);
-      font-weight: var(--fw-medium);
-      font-size: var(--text-body);
-      cursor: pointer;
-      transition: background-color var(--dur-1) var(--ease-standard);
+  .contact-submit {
+    min-block-size: var(--control-h-lg);
+    padding: var(--space-3) var(--space-6);
   }
 
-  button [data-icon] {
-      inline-size: var(--icon-xs);
-      block-size: var(--icon-xs);
-      flex-shrink: 0;
-  }
-
-  @media (hover: hover) {
-      button:hover {
-          background: var(--color-primary-hover);
-      }
+  .contact-submit :global(.button-icon) {
+    inline-size: var(--icon-xs);
+    block-size: var(--icon-xs);
   }
 
   @container contact-form (width >= 36rem) {

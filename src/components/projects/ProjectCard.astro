@@ -5,7 +5,7 @@ import type { CollectionEntry } from "astro:content";
 
 type ProjectData = CollectionEntry<"projects">["data"];
 
-interface ProjectCardProps {
+interface Props {
   /** Project title */
   title: ProjectData["title"];
   /** Project description */
@@ -19,8 +19,6 @@ interface ProjectCardProps {
   /** Link to project details */
   href: string;
 }
-
-type Props = ProjectCardProps;
 
 const { title, description, date, tags, coverSrc, href } = Astro.props;
 ---

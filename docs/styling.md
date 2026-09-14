@@ -155,7 +155,7 @@ precedence over normal author styles inside layers; within the layers, the decla
 That cascade behaviour — not the scoping mechanism itself — is why a component can override a
 global default without inflating selector specificity.
 
-`syntax` sits after `prose` so that `prism-theme.css` wins for Prism-highlighted code blocks.
+`syntax` sits after `prose` and owns code colours and token emphasis. Code block layout, typography, overflow and spacing live in `prose.css`; the syntax layer does not reset their margins.
 `prose.css` must therefore exclude them:
 
 ```css
@@ -369,7 +369,7 @@ Choose `auto-fill` or `auto-fit` according to the intended behaviour of empty tr
   exist.
 - **`auto-fit`** collapses empty tracks. Existing items expand to fill the available space.
 
-For [`ProjectSection`](../src/components/ProjectSection.astro), `auto-fill` is recommended because
+For [`ProjectSection`](../src/components/projects/ProjectSection.astro), `auto-fill` is recommended because
 cards should keep their width with few projects. That is a component decision, not a global rule.
 
 ### 7.3 Container queries
@@ -451,7 +451,7 @@ its own API, and its own scoped styles. Use Astro as the component model — not
 
 `src/components/ui/PageSection.astro` owns the shared section padding, vertical flow and
 optional page heading. Projects, career, contact, imprint and privacy use this component.
-It composes `.container` and `.stack`; component-specific layouts remain in their owners.
+It uses `.container` with a grid. `width` (`full`, `narrow`, `wide`), `spacing` (`normal`, `roomy`) and `gap` (`normal`, `large`) cover the existing layouts. The named `header` slot accepts a description or section navigation; component-specific layouts remain in their owners.
 
 Header, footer, project details and the landing page also use `.container`, so the horizontal
 content boundary is defined once. The landing page retains its viewport-height minimum and
@@ -461,13 +461,13 @@ contact form uses a named container query for its field layout.
 
 ### Shared icon controls
 
-`IconControl.astro` owns the shared target size, surface, border and interaction states for
+`src/styles/buttons.css` owns the shared `.button` base, primary/secondary states, sizes and icon/text styling. Link buttons, icon controls and the native contact submit button import it. `IconControl.astro` adds target size, surface and interaction states for
 the theme toggle, language selector, menu trigger and close button. Its default element is
 `button type="button"`; the language selector explicitly uses `as="summary"` inside native
 `details`. Event hooks, ARIA attributes and autofocus are forwarded to that element.
 
 The `surface` and `ghost` variants use `data-variant`. `ActionButton.astro` remains a link
-component, with the used `primary` / `gradient` variants and `m` / `l` / `square` sizes,
+component, with the `primary` / `secondary` variants and `m` / `l` / `square` sizes,
 expressed through `data-variant` and `data-size`. Cards retain their own components and use
 flat selectors for their owned elements.
 

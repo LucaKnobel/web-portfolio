@@ -1,18 +1,18 @@
 ---
-import Navigation from "@/components/Navigation.astro";
-import ThemeToggle from "@/components/ThemeToggle.astro";
-import LanguageSelect from "@/components/LanguageSelect.astro";
-import MobileMenu from "@/components/MobileMenu.astro";
+import Navigation from "@/components/layout/Navigation.astro";
+import ThemeToggle from "@/components/layout/ThemeToggle.astro";
+import LanguageSelect from "@/components/layout/LanguageSelect.astro";
+import MobileMenu from "@/components/layout/MobileMenu.astro";
 import type { Language, Translator } from "@/i18n/utils";
 
-export interface HeaderProps {
+export interface Props {
   /** Current language (e.g., 'de' or 'en') */
   lang: Language;
   /** Translation function for UI strings */
   t: Translator;
 }
 
-const { lang, t } = Astro.props as HeaderProps;
+const { lang, t } = Astro.props;
 
 /* Main navigation links */
 const headerLinks = [

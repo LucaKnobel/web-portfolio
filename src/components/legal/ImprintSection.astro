@@ -1,15 +1,15 @@
 ---
 import type { Language, Translator } from "@/i18n/utils";
-import PageSection from "@/components/PageSection.astro";
+import PageSection from "@/components/ui/PageSection.astro";
 
-export interface ImprintSectionProps {
+export interface Props {
   /** Language code for constructing localized links */
   lang: Language;
   /** Translation function for UI strings */
   t: Translator;
 }
 
-const { lang, t } = Astro.props as ImprintSectionProps;
+const { lang, t } = Astro.props;
 ---
 
 <PageSection title={t("impressum.title")} align="center">

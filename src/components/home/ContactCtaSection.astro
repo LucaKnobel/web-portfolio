@@ -1,14 +1,14 @@
 ---
 import type { Language, Translator } from "@/i18n/utils";
 
-export interface ContactCtaSectionProps {
+export interface Props {
   /** Current language (e.g., 'de' or 'en') */
   lang: Language;
   /** Translation function for UI strings */
   t: Translator;
 }
 
-const { lang, t } = Astro.props as ContactCtaSectionProps;
+const { lang, t } = Astro.props;
 ---
 
 <section class="contact-cta" aria-labelledby="contact-cta-heading">

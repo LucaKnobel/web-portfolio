@@ -1,0 +1,58 @@
+---
+interface Props {
+  title?: string;
+  titleId?: string;
+  align?: "start" | "center";
+  width?: "full" | "narrow" | "wide";
+  spacing?: "normal" | "roomy";
+  gap?: "normal" | "large";
+}
+
+const { title, titleId, align = "start", width = "full", spacing = "normal", gap = "normal" } = Astro.props;
+---
+
+<section class="page-section container" data-align={align} data-width={width} data-spacing={spacing} data-gap={gap} aria-labelledby={titleId}>
+  {title && (
+    <header class="page-header">
+      <h1 class="page-title" id={titleId}>{title}</h1>
+      <slot name="header" />
+    </header>
+  )}
+  <slot />
+</section>
+
+<style>
+  .page-section {
+    display: grid;
+    gap: var(--space-8);
+    padding-block: var(--space-12);
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+
+  [data-width="narrow"] { max-inline-size: 48rem; }
+  [data-width="wide"] { max-inline-size: 64rem; }
+
+  [data-spacing="roomy"] {
+    gap: var(--space-10);
+    padding-block: var(--space-16) calc(var(--space-16) + var(--space-12));
+  }
+
+  [data-gap="large"] { gap: var(--space-16); }
+
+  .page-header {
+    display: grid;
+    gap: var(--space-4);
+    text-align: start;
+  }
+
+  .page-title {
+    margin: 0;
+    font-size: var(--heading-lg);
+    font-weight: var(--fw-semibold);
+    text-wrap: balance;
+  }
+
+  [data-spacing="roomy"] .page-title { font-size: 2.5rem; }
+  [data-align="center"] .page-header { text-align: center; }
+</style>

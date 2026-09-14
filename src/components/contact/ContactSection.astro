@@ -1,5 +1,6 @@
 ---
-import ContactForm from "@/components/ContactForm.astro";
+import PageSection from "@/components/ui/PageSection.astro";
+import ContactForm from "@/components/contact/ContactForm.astro";
 import type { Language, Translator, TranslationKey } from "@/i18n/utils";
 
 interface Props {
@@ -17,39 +18,17 @@ const messages = {
 } satisfies Record<Exclude<Props["state"], "ready">, TranslationKey>;
 ---
 
-<section class="contact-page container" aria-labelledby="contact-title">
-  <header class="contact-header">
-    <h1 id="contact-title">{t("contact.pageTitle")}</h1>
-    <p class="form-description">{t("contact.formDescription")}</p>
-  </header>
+<PageSection title={t("contact.pageTitle")} titleId="contact-title" width="narrow" spacing="roomy">
+  <p slot="header" class="form-description">{t("contact.formDescription")}</p>
   {state !== "ready" && (
     <div class:list={["message", state === "success" ? "success" : "error"]} role={state === "success" ? "status" : "alert"}>
       <p>{t(messages[state])}</p>
     </div>
   )}
   {(state === "ready" || state === "error") && <ContactForm lang={lang} t={t} action={action} />}
-</section>
+</PageSection>
 
 <style>
-  .contact-page {
-      max-inline-size: 48rem;
-      display: grid;
-      gap: var(--space-10);
-      padding-block: var(--space-16) calc(var(--space-16) + var(--space-12));
-      overflow-wrap: anywhere;
-  }
-
-  .contact-header {
-      display: grid;
-      gap: var(--space-4);
-  }
-
-  .contact-header h1 {
-      margin: 0;
-      font-size: 2.5rem;
-      letter-spacing: 0;
-  }
-
   .form-description {
       margin: 0;
       max-inline-size: var(--measure);

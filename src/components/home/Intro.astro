@@ -3,7 +3,7 @@ import portrait from "@/assets/portrait-photo.jpg";
 import { Image } from "astro:assets";
 import type { Translator } from "@/i18n/utils";
 
-export interface IntroProps {
+export interface Props {
   /** Translation function for UI strings */
   t: Translator;
   /** Name to display in the hero */
@@ -25,7 +25,7 @@ const {
   portraitSrc = portrait,
   githubUrl = "https://github.com/LucaKnobel",
   linkedinUrl = "https://linkedin.com/in/luca-knobel-14b4a7221",
-} = Astro.props as IntroProps;
+} = Astro.props;
 ---
 
 <section class="hero" aria-labelledby="hero-name">

@@ -1,9 +1,9 @@
 ---
-import CareerCard from "@/components/CareerCard.astro";
+import CareerCard from "@/components/career/CareerCard.astro";
 import { getCollection } from "astro:content";
 import type { Language, Translator } from "@/i18n/utils";
 
-export interface CareerSectionProps {
+export interface Props {
   /** Current language (e.g., 'de' or 'en')*/
   lang: Language;
   /** Translation function for UI strings */
@@ -14,7 +14,7 @@ export interface CareerSectionProps {
   title: string;
 }
 
-const { lang, t, type, title } = Astro.props as CareerSectionProps;
+const { lang, t, type, title } = Astro.props;
 
 let entries;
 if (type === "education") {

@@ -1,9 +1,9 @@
 ---
 import { getProjectDetail } from "@/content/get-project-detail.ts";
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import ErrorPage from "@/components/ErrorPage.astro";
+import ErrorPage from "@/components/ui/ErrorPage.astro";
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
-import ProjectDetail from "@/components/ProjectDetail.astro";
+import ProjectDetail from "@/components/projects/ProjectDetail.astro";
 
 const { slug } = Astro.params;
 const lang = getLangFromUrl(Astro.url);

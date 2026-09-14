@@ -3,13 +3,13 @@ import { Icon } from "astro-icon/components";
 import type { CollectionEntry } from "astro:content";
 import type { Translator } from "@/i18n/utils";
 
-export interface CareerCardProps {
+export interface Props {
   t: Translator;
   type: "professional" | "education";
   entry: CollectionEntry<"career">["data"][number] | CollectionEntry<"education">["data"][number];
 }
 
-const { t, entry, type } = Astro.props as CareerCardProps;
+const { t, entry, type } = Astro.props;
 const { id, organizationName, organizationWebsite, title, period, keySkills } = entry;
 const responsibilities = "responsibilities" in entry ? entry.responsibilities : [];
 const mode = "employmentRate" in entry ? entry.employmentRate : entry.studyMode;

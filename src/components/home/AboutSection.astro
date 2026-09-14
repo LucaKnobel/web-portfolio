@@ -1,14 +1,14 @@
 ---
 import type { Language, Translator } from "@/i18n/utils";
 
-export interface AboutSectionProps {
+export interface Props {
   /** Current language (e.g., 'de' or 'en') */
   lang: Language;
   /** Translation function for UI strings */
   t: Translator;
 }
 
-const { lang, t } = Astro.props as AboutSectionProps;
+const { lang, t } = Astro.props;
 ---
 
 <section class="about" aria-labelledby="about-heading">

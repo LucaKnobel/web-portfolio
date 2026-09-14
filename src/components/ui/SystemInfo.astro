@@ -1,14 +1,14 @@
 ---
 import { APP_VERSION } from "astro:env/server";
 import { SERVER_STARTED_AT } from "@/server/config/runtime-info";
-import PageSection from "@/components/PageSection.astro";
+import PageSection from "@/components/ui/PageSection.astro";
 import type { Translator } from "@/i18n/utils";
 
-export interface SystemInfoProps {
+export interface Props {
   t: Translator;
 }
 
-const { t } = Astro.props as SystemInfoProps;
+const { t } = Astro.props;
 
 /* APP_VERSION is the full git commit SHA in built images (see Dockerfile /
  * .github/workflows/cd.yml) and "dev" locally - only shorten the former. */

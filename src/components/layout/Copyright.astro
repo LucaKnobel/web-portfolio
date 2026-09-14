@@ -1,14 +1,14 @@
 ---
 import type { Translator } from "@/i18n/utils";
 
-export interface CopyrightProps {
+export interface Props {
   /** Translation function for UI strings */
   t: Translator;
   /** Name/entity for copyright (optional - uses translation if not provided) */
   name?: string;
 }
 
-const { t, name } = Astro.props as CopyrightProps;
+const { t, name } = Astro.props;
 
 /* Use provided name or fallback to translation */
 const displayName = name || t("footer.copyright");

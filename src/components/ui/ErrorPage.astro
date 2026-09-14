@@ -1,15 +1,15 @@
 ---
 import { Icon } from "astro-icon/components";
-import ActionButton from "@/components/ActionButton.astro";
+import ActionButton from "@/components/ui/ActionButton.astro";
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 
 export type ErrorStatus = 404 | 500;
 
-export interface ErrorPageProps {
+export interface Props {
   status: ErrorStatus;
 }
 
-const { status } = Astro.props as ErrorPageProps;
+const { status } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
