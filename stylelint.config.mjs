@@ -16,7 +16,13 @@ export default {
     },
   },
   overrides: [
-    { files: ["**/*.astro"], customSyntax: "postcss-html" },
+    {
+      files: ["**/*.astro"],
+      customSyntax: "postcss-html",
+      rules: {
+        "selector-pseudo-class-no-unknown": [true, { ignorePseudoClasses: ["global"] }],
+      },
+    },
     {
       files: ["src/styles/tokens.css"],
       rules: {

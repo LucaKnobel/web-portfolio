@@ -1,0 +1,67 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+type Props = HTMLAttributes<"input"> & {
+  name: string;
+  label: string;
+  wide?: boolean;
+};
+
+const { name, id = name, label, wide = false, type = "text", required, ...attributes } = Astro.props;
+---
+
+<div class:list={["field", { "field-wide": wide }]}>
+  <label for={id}>{label}{required && "*"}</label>
+  <slot>
+    <input {...attributes} id={id} name={name} type={type} required={required} />
+  </slot>
+</div>
+
+<style>
+  .field {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      min-inline-size: 0;
+  }
+
+  label {
+      font-size: var(--text-small);
+      font-weight: var(--fw-medium);
+  }
+
+  .field :global(input),
+  .field :global(textarea) {
+      inline-size: 100%;
+      min-block-size: var(--control-h-lg);
+      padding: var(--space-3);
+      border: var(--border-hairline) solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface-1);
+      color: var(--color-text);
+      font-size: var(--text-body);
+      transition: border-color var(--dur-1) var(--ease-standard);
+  }
+
+  .field :global(textarea) {
+      min-block-size: 12rem;
+      resize: vertical;
+  }
+
+  .field :global(input:focus-visible),
+  .field :global(textarea:focus-visible) {
+      border-color: var(--color-link);
+  }
+
+  .field :global(input::placeholder),
+  .field :global(textarea::placeholder) {
+      color: var(--color-muted);
+      opacity: 1;
+  }
+
+  @container contact-form (width >= 36rem) {
+      .field-wide {
+          grid-column: 1 / -1;
+      }
+  }
+</style>

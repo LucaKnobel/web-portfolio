@@ -1,13 +1,20 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import ProjectSection from "@/components/ProjectSection.astro";
-
+import ErrorPage from "@/components/ErrorPage.astro";
+import { getProjects } from "@/content/get-projects";
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+let projects;
+try {
+  projects = await getProjects(lang);
+} catch {
+  Astro.response.status = 500;
+}
 ---
 
-<BaseLayout title={`Luca Knobel | ${t("projects.pageTitle")}`}>
-    <ProjectSection lang={lang} t={t} />
+<BaseLayout title={`Luca Knobel | ${t(projects ? "projects.pageTitle" : "500.pageTitle")}`}>
+  {projects ? <ProjectSection lang={lang} t={t} projects={projects} /> : <ErrorPage status={500} />}
 </BaseLayout>

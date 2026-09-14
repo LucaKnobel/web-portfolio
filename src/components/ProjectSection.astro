@@ -1,24 +1,16 @@
 ---
-import { compareProjectsByDate } from "@/content/project-utils";
 import ProjectCard from "@/components/ProjectCard.astro";
 import PageSection from "@/components/PageSection.astro";
-import { getCollection } from "astro:content";
+import type { CollectionEntry } from "astro:content";
 import type { Language, Translator } from "@/i18n/utils";
 
-export interface ProjectSectionProps {
-  /** Current language (e.g., 'de' or 'en') */
+interface Props {
   lang: Language;
-  /** Translation function for UI strings */
   t: Translator;
+  projects: CollectionEntry<"projects">[];
 }
-const { lang, t } = Astro.props as ProjectSectionProps;
 
-let projects;
-const allProjects = await getCollection("projects");
-const languageProjects = allProjects.filter(
-  (project) => project.data.lang === lang,
-);
-projects = languageProjects.sort(compareProjectsByDate);
+const { lang, t, projects } = Astro.props;
 
 ---
 

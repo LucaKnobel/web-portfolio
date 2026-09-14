@@ -1,12 +1,18 @@
 ---
+import { actions } from "astro:actions";
+import { rateLimiter } from "@/server/infrastructure/composition";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
-import ContactForm from "@/components/ContactForm.astro";
+import ContactSection from "@/components/ContactSection.astro";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+const result = Astro.getActionResult(actions.sendMail);
+const state = result?.data?.success ? "success"
+  : !rateLimiter.getStatus().allowed || result?.error?.code === "TOO_MANY_REQUESTS" ? "rate-limited"
+  : result?.error ? "error" : "ready";
 ---
 
 <BaseLayout title={`Luca Knobel | ${t("contact.pageTitle")}`}>
-  <ContactForm lang={lang} t={t} />
+  <ContactSection lang={lang} t={t} action={actions.sendMail.toString()} state={state} />
 </BaseLayout>
