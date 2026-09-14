@@ -24,8 +24,8 @@ const { title, titleId, align = "start", width = "full", spacing = "normal", gap
 <style>
   .page-section {
     display: grid;
-    gap: var(--space-8);
-    padding-block: var(--space-12);
+    gap: var(--space-xl);
+    padding-block: var(--space-3xl);
     min-inline-size: 0;
     overflow-wrap: anywhere;
   }
@@ -34,21 +34,21 @@ const { title, titleId, align = "start", width = "full", spacing = "normal", gap
   [data-width="wide"] { max-inline-size: 64rem; }
 
   [data-spacing="roomy"] {
-    gap: var(--space-10);
-    padding-block: var(--space-16) calc(var(--space-16) + var(--space-12));
+    gap: var(--space-2xl);
+    padding-block: var(--space-4xl) calc(var(--space-4xl) + var(--space-3xl));
   }
 
-  [data-gap="large"] { gap: var(--space-16); }
+  [data-gap="large"] { gap: var(--space-4xl); }
 
   .page-header {
     display: grid;
-    gap: var(--space-4);
+    gap: var(--space-md);
     text-align: start;
   }
 
   .page-title {
     margin: 0;
-    font-size: var(--heading-lg);
+    font-size: var(--text-3xl);
     font-weight: var(--fw-semibold);
     text-wrap: balance;
   }

@@ -36,17 +36,17 @@ const { lang, t } = Astro.props;
   p {
     margin: 0;
     color: var(--color-text);
-    font-size: var(--text-body);
+    font-size: var(--text-md);
     line-height: var(--lh);
   }
 
   a {
     color: var(--color-link);
     text-decoration: underline;
-    transition: color var(--dur-1) var(--ease-standard);
+    transition: color var(--duration-fast) var(--ease-standard);
     min-height: var(--touch-target-min);
     display: inline-block;
-    padding: var(--space-2) var(--space-1);
+    padding: var(--space-xs) var(--space-2xs);
 
     &:hover {
       color: var(--color-link-hover);

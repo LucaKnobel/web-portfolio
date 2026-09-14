@@ -97,11 +97,11 @@ const languageLinks = Object.entries(languageConfig).map(([code, label]) => ({
   }
 
   .language-toggle {
-    gap: var(--space-1);
+    gap: var(--space-2xs);
   }
 
   .language-code {
-    font-size: var(--text-small);
+    font-size: var(--text-sm);
     font-weight: var(--fw-semibold);
     letter-spacing: 0.02em;
   }
@@ -109,7 +109,7 @@ const languageLinks = Object.entries(languageConfig).map(([code, label]) => ({
   .language-chevron {
     width: 14px;
     height: 14px;
-    transition: transform var(--dur-2) var(--ease-standard);
+    transition: transform var(--duration-normal) var(--ease-standard);
   }
 
   .language-toggle[aria-expanded="true"] .language-chevron {
@@ -118,15 +118,15 @@ const languageLinks = Object.entries(languageConfig).map(([code, label]) => ({
 
   .dropdown {
     position: absolute;
-    top: calc(100% + var(--space-2));
+    top: calc(100% + var(--space-xs));
     left: 50%;
     transform: translateX(-50%);
     min-width: 120px;
     margin: 0;
     padding: 0;
-    background: var(--color-surface-2);
+    background: var(--color-surface-high);
     border: var(--border-hairline) solid var(--color-border-hairline);
-    border-radius: var(--button-radius);
+    border-radius: var(--radius-md);
     box-shadow: var(--elev-3);
     overflow: hidden;
     z-index: var(--layer-tooltip);
@@ -146,21 +146,21 @@ const languageLinks = Object.entries(languageConfig).map(([code, label]) => ({
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: var(--space-3);
+    padding: var(--space-sm);
     text-decoration: none;
     transition:
-      background-color var(--dur-2) var(--ease-standard),
-      color var(--dur-2) var(--ease-standard);
+      background-color var(--duration-normal) var(--ease-standard),
+      color var(--duration-normal) var(--ease-standard);
   }
 
   .language-option:hover,
   .language-option[aria-current="page"] {
-    background: var(--color-surface-3);
+    background: var(--color-surface-higher);
     color: var(--color-primary);
   }
 
   .label {
-    font-size: var(--text-small);
+    font-size: var(--text-sm);
     font-weight: var(--fw-medium);
   }
 

@@ -65,7 +65,7 @@ const { lang, t, action } = Astro.props;
   form {
       display: flex;
       flex-direction: column;
-      gap: var(--space-10);
+      gap: var(--space-2xl);
       container: contact-form / inline-size;
       min-inline-size: 0;
   }
@@ -79,7 +79,7 @@ const { lang, t, action } = Astro.props;
 
   legend {
       padding: 0;
-      margin-block-end: var(--space-5);
+      margin-block-end: var(--space-lg);
       font-size: 1.125rem;
       font-weight: var(--fw-semibold);
       letter-spacing: 0;
@@ -88,58 +88,58 @@ const { lang, t, action } = Astro.props;
   .personal-grid,
   .message-grid {
       display: grid;
-      gap: var(--space-5);
+      gap: var(--space-lg);
   }
 
   .privacy-fields {
       border-block-start: var(--border-hairline) solid var(--color-border-hairline);
-      padding-block-start: var(--space-5);
+      padding-block-start: var(--space-lg);
   }
 
   .privacy-fields legend {
       margin: 0;
-      padding-inline-end: var(--space-3);
+      padding-inline-end: var(--space-sm);
   }
 
   .checkbox-row {
       display: flex;
       align-items: flex-start;
-      gap: var(--space-3);
+      gap: var(--space-sm);
   }
 
   input[type="checkbox"] {
       flex-shrink: 0;
       inline-size: var(--icon-xs);
       block-size: var(--icon-xs);
-      margin: var(--space-3) 0 0;
+      margin: var(--space-sm) 0 0;
       accent-color: var(--color-primary);
       cursor: pointer;
   }
 
   .checkbox-row label {
-      font-size: var(--text-small);
+      font-size: var(--text-sm);
       min-block-size: var(--touch-target-min);
-      padding-block: var(--space-3);
+      padding-block: var(--space-sm);
       font-weight: var(--fw-regular);
       cursor: pointer;
   }
 
   .privacy-link {
-      padding-inline-start: calc(var(--icon-xs) + var(--space-3));
+      padding-inline-start: calc(var(--icon-xs) + var(--space-sm));
   }
 
   .privacy-link a {
       display: inline-flex;
       align-items: center;
       min-block-size: var(--touch-target-min);
-      font-size: var(--text-small);
+      font-size: var(--text-sm);
       text-decoration: underline;
-      text-underline-offset: var(--space-1);
+      text-underline-offset: var(--space-2xs);
   }
 
   .contact-submit {
     min-block-size: var(--control-h-lg);
-    padding: var(--space-3) var(--space-6);
+    padding: var(--space-sm) var(--space-lg);
   }
 
   .contact-submit :global(.button-icon) {

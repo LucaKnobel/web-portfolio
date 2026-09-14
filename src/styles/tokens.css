@@ -28,15 +28,14 @@
     --error-50: #fef2f2;
     --success-50: #f0f9f3;
 
-    /* Surfaces */
+    /* Surfaces - three elevation steps above the page background */
     --color-bg: light-dark(var(--neutral-0), #0a0c10);
-    --color-surface-1: light-dark(var(--neutral-10), #111419);
-    --color-surface-2: light-dark(var(--neutral-25), #181c23);
-    --color-surface-3: light-dark(var(--neutral-40), #1f242c);
-
+    --color-surface: light-dark(var(--neutral-10), #111419);
+    --color-surface-high: light-dark(var(--neutral-25), #181c23);
+    --color-surface-higher: light-dark(var(--neutral-40), #1f242c);
 
     /* Text */
-    --color-muted: light-dark(var(--neutral-600), var(--neutral-400));
+    --color-text-muted: light-dark(var(--neutral-600), var(--neutral-400));
     --color-text: light-dark(var(--neutral-900), #f8f9fa);
 
     /* Interactive states */
@@ -84,45 +83,34 @@
     --syntax-number: light-dark(#776116, #f3d675);
     --syntax-string: light-dark(#356b3f, #a7e68d);
 
-    /* FONT FAMILIES - local system fonts only */
+    /* Font families - local system fonts only */
     --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
-    /* TYPE SCALE (primitives) - do not use directly */
-    --fs-body: 1rem;
-    --fs-caption: 0.875rem;
-    --fs-display: clamp(2rem, 1.32rem + 3.41vw, 3.5rem);
-    --fs-h1: clamp(2rem, 1.66rem + 1.7vw, 2.75rem);
-    --fs-h2: clamp(1.625rem, 1.4rem + 1.14vw, 2.125rem);
-    --fs-h3: clamp(1.375rem, 1.26rem + 0.57vw, 1.625rem);
-    --fs-h4: clamp(1.25rem, 1.14rem + 0.57vw, 1.5rem);
-    --fs-small: 0.9375rem;
+    /* Type scale - fluid, one name per size, no alias chain */
+    --text-xs: 0.875rem;
+    --text-sm: 0.9375rem;
+    --text-md: 1rem;
+    --text-lg: clamp(1.25rem, 1.14rem + 0.57vw, 1.5rem);
+    --text-xl: clamp(1.375rem, 1.26rem + 0.57vw, 1.625rem);
+    --text-2xl: clamp(1.625rem, 1.4rem + 1.14vw, 2.125rem);
+    --text-3xl: clamp(2rem, 1.66rem + 1.7vw, 2.75rem);
+    --text-4xl: clamp(2rem, 1.32rem + 3.41vw, 3.5rem);
     --fw-medium: 500;
     --fw-regular: 400;
     --fw-semibold: 600;
     --lh: 1.5;
 
-    /* TYPE ALIASES (semantic) - use these in components */
-    --display-xl: var(--fs-display);
-    --heading-lg: var(--fs-h1);
-    --heading-md: var(--fs-h2);
-    --heading-sm: var(--fs-h3);
-    --heading-xs: var(--fs-h4);
-    --text-body: var(--fs-body);
-    --text-caption: var(--fs-caption);
-    --text-small: var(--fs-small);
-
-    /* Small spacing stays stable; larger layout spacing scales fluidly. */
-    --space-1: 0.25rem;
-    --space-10: clamp(2rem, 1.77rem + 1.14vw, 2.5rem);
-    --space-12: clamp(3rem, 2.55rem + 2.27vw, 4rem);
-    --space-16: clamp(4rem, 3.55rem + 2.27vw, 5rem);
-    --space-2: 0.5rem;
-    --space-3: 0.75rem;
-    --space-4: 1rem;
-    --space-5: 1.25rem;
-    --space-6: clamp(1.25rem, 1.14rem + 0.57vw, 1.5rem);
-    --space-8: clamp(1.5rem, 1.27rem + 1.14vw, 2rem);
+    /* Spacing scale - fluid from lg upward */
+    --space-2xs: 0.25rem;
+    --space-xs: 0.5rem;
+    --space-sm: 0.75rem;
+    --space-md: 1rem;
+    --space-lg: clamp(1.25rem, 1.14rem + 0.57vw, 1.5rem);
+    --space-xl: clamp(1.5rem, 1.27rem + 1.14vw, 2rem);
+    --space-2xl: clamp(2rem, 1.77rem + 1.14vw, 2.5rem);
+    --space-3xl: clamp(3rem, 2.55rem + 2.27vw, 4rem);
+    --space-4xl: clamp(4rem, 3.55rem + 2.27vw, 5rem);
 
     /* Global layout tokens */
     --content-max: 75rem;
@@ -130,23 +118,21 @@
     --gutter: clamp(1rem, 0.55rem + 2.27vw, 2rem);
     --measure: 65ch;
 
-    /* SHAPE & BORDERS */
+    /* Shape & borders */
     --border-hairline: 1px;
-    --button-radius: 0.375rem;
-    --card-radius: 0.5rem;
-    --radius-lg: 0.5rem;
-    --radius-md: 0.375rem;
     --radius-sm: 0.25rem;
+    --radius-md: 0.375rem;
+    --radius-lg: 0.5rem;
 
-    /* ELEVATION & MOTION */
-    --dur-1: 150ms;
-    --dur-2: 230ms;
+    /* Elevation & motion */
+    --duration-fast: 150ms;
+    --duration-normal: 230ms;
     --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
     --elev-1: 0 1px 3px 0 var(--shadow-color);
     --elev-2: 0 2px 6px -1px var(--shadow-color);
     --elev-3: 0 4px 12px -2px var(--shadow-color);
 
-    /* A11Y & TOUCH */
+    /* A11y & touch */
     --control-h-xl: 56px;
     --control-h-lg: 48px;
     --icon-lg: 32px;
@@ -155,10 +141,10 @@
     --icon-xs: 20px;
     --touch-target-min: 44px;
 
-    /* GRADIENTS */
-    --grad-surface-soft: linear-gradient(180deg, var(--color-surface-1) 0%, var(--color-surface-2) 100%);
+    /* Gradients */
+    --grad-surface-soft: linear-gradient(180deg, var(--color-surface) 0%, var(--color-surface-high) 100%);
 
-    /* Z-INDEX LAYERS */
+    /* Z-index layers */
     --layer-header: 100;
     --layer-tooltip: 600;
 }
@@ -182,7 +168,7 @@
 /* Reduced motion keeps state feedback without transitions. */
 @media (prefers-reduced-motion: reduce) {
     :root {
-        --dur-1: 0s;
-        --dur-2: 0s;
+        --duration-fast: 0s;
+        --duration-normal: 0s;
     }
 }

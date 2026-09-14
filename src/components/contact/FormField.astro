@@ -21,12 +21,12 @@ const { name, id = name, label, wide = false, type = "text", required, ...attrib
   .field {
       display: flex;
       flex-direction: column;
-      gap: var(--space-2);
+      gap: var(--space-xs);
       min-inline-size: 0;
   }
 
   label {
-      font-size: var(--text-small);
+      font-size: var(--text-sm);
       font-weight: var(--fw-medium);
   }
 
@@ -34,13 +34,13 @@ const { name, id = name, label, wide = false, type = "text", required, ...attrib
   .field :global(textarea) {
       inline-size: 100%;
       min-block-size: var(--control-h-lg);
-      padding: var(--space-3);
+      padding: var(--space-sm);
       border: var(--border-hairline) solid var(--color-border);
       border-radius: var(--radius-md);
-      background: var(--color-surface-1);
+      background: var(--color-surface);
       color: var(--color-text);
-      font-size: var(--text-body);
-      transition: border-color var(--dur-1) var(--ease-standard);
+      font-size: var(--text-md);
+      transition: border-color var(--duration-fast) var(--ease-standard);
   }
 
   .field :global(textarea) {
@@ -55,7 +55,7 @@ const { name, id = name, label, wide = false, type = "text", required, ...attrib
 
   .field :global(input::placeholder),
   .field :global(textarea::placeholder) {
-      color: var(--color-muted);
+      color: var(--color-text-muted);
       opacity: 1;
   }
 

@@ -29,7 +29,7 @@ const { as: Tag = "button", label, variant = "surface", class: className, ...att
     min-inline-size: var(--touch-target-min);
     min-block-size: var(--touch-target-min);
     padding: 0;
-    background: var(--color-surface-1);
+    background: var(--color-surface);
     list-style: none;
   }
 
@@ -44,7 +44,7 @@ const { as: Tag = "button", label, variant = "surface", class: className, ...att
   }
 
   .icon-control[aria-expanded="true"] {
-    background: var(--color-surface-2);
+    background: var(--color-surface-high);
     border-color: var(--color-border-hairline);
     color: var(--color-link);
   }
@@ -55,13 +55,13 @@ const { as: Tag = "button", label, variant = "surface", class: className, ...att
 
   @media (hover: hover) {
     .icon-control:hover {
-      background: var(--color-surface-2);
+      background: var(--color-surface-high);
       border-color: var(--color-border-hairline);
       color: var(--color-link);
     }
   }
 
   .icon-control:active {
-    background: var(--color-surface-3);
+    background: var(--color-surface-higher);
   }
 </style>

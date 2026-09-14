@@ -2,20 +2,20 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-2);
+  gap: var(--space-xs);
   max-inline-size: 100%;
-  padding: var(--space-2) var(--space-4);
+  padding: var(--space-xs) var(--space-md);
   border: var(--border-hairline) solid var(--color-border-hairline);
-  border-radius: var(--button-radius);
+  border-radius: var(--radius-md);
   color: var(--color-text);
-  font-size: var(--text-body);
+  font-size: var(--text-md);
   font-weight: var(--fw-medium);
   text-decoration: none;
   cursor: pointer;
   transition:
-    background-color var(--dur-1) var(--ease-standard),
-    border-color var(--dur-1) var(--ease-standard),
-    color var(--dur-1) var(--ease-standard);
+    background-color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
 }
 
 .button[data-size="m"] {
@@ -41,7 +41,7 @@
 }
 
 .button[data-variant="secondary"] {
-  background: var(--color-surface-1);
+  background: var(--color-surface);
 }
 
 @media (hover: hover) {
@@ -50,7 +50,7 @@
   }
 
   .button[data-variant="secondary"]:hover {
-    background: var(--color-surface-2);
+    background: var(--color-surface-high);
     color: var(--color-link);
     border-color: var(--color-border);
   }
@@ -61,7 +61,7 @@
 }
 
 .button[data-variant="secondary"]:active {
-  background: var(--color-surface-3);
+  background: var(--color-surface-higher);
 }
 
 .button-text {

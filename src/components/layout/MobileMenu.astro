@@ -155,8 +155,8 @@ const isActive = (href: string) =>
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--space-4);
-    padding: var(--space-3) var(--gutter);
+    gap: var(--space-md);
+    padding: var(--space-sm) var(--gutter);
     min-height: 60px;
   }
 
@@ -164,7 +164,7 @@ const isActive = (href: string) =>
     color: var(--color-text);
     text-decoration: none;
     font-weight: var(--fw-semibold);
-    font-size: var(--heading-xs);
+    font-size: var(--text-lg);
     line-height: 1.1;
     min-width: 0;
   }
@@ -172,13 +172,13 @@ const isActive = (href: string) =>
   .header-controls {
     display: flex;
     align-items: center;
-    gap: var(--space-5);
+    gap: var(--space-lg);
   }
 
   .settings-group {
     display: flex;
     align-items: center;
-    gap: var(--space-2);
+    gap: var(--space-xs);
   }
 
   .close-icon {
@@ -200,19 +200,19 @@ const isActive = (href: string) =>
     width: 100%;
     max-width: 300px;
     margin: 0;
-    padding: var(--space-12);
+    padding: var(--space-3xl);
     display: flex;
     flex-direction: column;
-    gap: var(--space-8);
+    gap: var(--space-xl);
   }
 
   .nav-link {
     display: block;
-    padding: var(--space-8);
+    padding: var(--space-xl);
     border: var(--border-hairline) solid transparent;
-    border-radius: var(--button-radius);
+    border-radius: var(--radius-md);
     color: var(--color-text);
-    font-size: var(--heading-xs);
+    font-size: var(--text-lg);
     font-weight: var(--fw-medium);
     text-align: center;
     text-decoration: none;
@@ -220,7 +220,7 @@ const isActive = (href: string) =>
 
   @media (hover: hover) {
     .nav-link:hover {
-      background: var(--color-surface-2);
+      background: var(--color-surface-high);
       color: var(--color-link);
     }
   }

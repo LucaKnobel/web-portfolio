@@ -41,7 +41,15 @@ The frontend follows official **Astro architectural patterns**, focusing on serv
 
 - **Pages & Routing (`src/pages/`)**:
   - File-based routing providing SSR HTML pages.
-  - Multi-language routing handling localized page endpoints.
+  - Multi-language routing handling localized page endpoints. Astro's `i18n` config
+    (`astro.config.mjs`) drives locale detection and redirects, but each route is
+    currently duplicated as a separate file under `src/pages/de/` and `src/pages/en/`
+    with identical content — the language itself is resolved at render time via
+    `getLangFromUrl`. Collapsing this into a single `src/pages/[lang]/` tree is a
+    known, not-yet-done simplification.
+  - `system-info.astro` renders the running build's version (`APP_VERSION`, baked
+    in by the Dockerfile/CD pipeline) and server start time, for verifying which
+    deployment is live.
 
 - **Layouts (`src/layouts/`)**:
   - Wraps pages with common HTML document scaffolding, meta tags, and global stylesheets.
@@ -106,3 +114,10 @@ The architecture strictly enforces the **Dependency Inversion Principle (DIP)**:
 
 4. **Configuration (`src/server/config/`) & Environment (`astro:env`)**:
    - Centralized, type-safe configuration values validated through Astro's `astro:env` API.
+
+5. **Middleware Pipeline (`src/middleware/`)**:
+   - `src/middleware/index.ts` sequences three middlewares on every request, in this
+     order: `version` (stamps the `X-App-Version` response header first, so it
+     survives the CSP rebuild), `originCheck` (validates the request origin against
+     `src/server/config/trusted-origins.ts`, replacing Astro's built-in check — see
+     the comment in `astro.config.mjs` for why), then `csp` (applies security headers).

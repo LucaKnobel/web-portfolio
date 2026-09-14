@@ -25,32 +25,32 @@ const { lang, t } = Astro.props;
 
 <style>
   .about {
-    padding-block: var(--space-16);
+    padding-block: var(--space-4xl);
   }
 
   .about-grid {
     display: grid;
-    gap: var(--space-4);
+    gap: var(--space-md);
   }
 
   .about-eyebrow {
     margin: 0;
-    font-size: var(--text-small);
+    font-size: var(--text-sm);
     font-weight: var(--fw-semibold);
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--color-muted);
+    color: var(--color-text-muted);
   }
 
   .about-copy {
-    --flow: var(--space-4);
+    --flow: var(--space-md);
     max-width: 62ch;
   }
 
   .about-copy p {
     margin: 0;
     color: var(--color-text);
-    font-size: var(--text-body);
+    font-size: var(--text-md);
     line-height: 1.7;
   }
 
@@ -58,8 +58,8 @@ const { lang, t } = Astro.props;
     color: var(--color-link);
     font-weight: var(--fw-medium);
     text-decoration: none;
-    padding: var(--space-1);
-    margin-inline-start: calc(var(--space-1) * -1);
+    padding: var(--space-2xs);
+    margin-inline-start: calc(var(--space-2xs) * -1);
   }
 
   .about-link:hover,
@@ -71,12 +71,12 @@ const { lang, t } = Astro.props;
   @media (min-width: 1024px) {
     .about-grid {
       grid-template-columns: 12rem 1fr;
-      gap: var(--space-10);
+      gap: var(--space-2xl);
       align-items: start;
     }
 
     .about-eyebrow {
-      padding-block-start: var(--space-1);
+      padding-block-start: var(--space-2xs);
     }
   }
 </style>

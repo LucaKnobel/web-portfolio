@@ -21,12 +21,12 @@ const { lang, t } = Astro.props;
 
 <style>
   .contact-cta {
-    padding-block-start: var(--space-16);
+    padding-block-start: var(--space-4xl);
     padding-block-end: clamp(6rem, 18dvh, 11rem);
   }
 
   .contact-cta-inner {
-    --flow: var(--space-4);
+    --flow: var(--space-md);
     align-items: flex-start;
     text-align: left;
     max-width: 60ch;
@@ -34,21 +34,21 @@ const { lang, t } = Astro.props;
 
   .contact-cta-inner h2 {
     margin: 0;
-    font-size: var(--heading-md);
+    font-size: var(--text-2xl);
   }
 
   .contact-cta-inner p {
     margin: 0;
-    color: var(--color-muted);
-    font-size: var(--text-body);
+    color: var(--color-text-muted);
+    font-size: var(--text-md);
   }
 
   .contact-cta-link {
     display: inline-flex;
     align-items: center;
     min-height: var(--touch-target-min);
-    padding-inline: var(--space-1);
-    margin-inline-start: calc(var(--space-1) * -1);
+    padding-inline: var(--space-2xs);
+    margin-inline-start: calc(var(--space-2xs) * -1);
     color: var(--color-link);
     font-weight: var(--fw-medium);
     text-decoration: none;

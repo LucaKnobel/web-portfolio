@@ -37,7 +37,7 @@ describe.each<Theme>(["light", "dark"])("text contrast in %s theme", (theme) => 
     "--syntax-accent", "--syntax-comment", "--syntax-code",
     "--syntax-number", "--syntax-string", "--color-text", "--color-link",
   ])("keeps %s readable on code backgrounds", (foreground) => {
-    for (const background of ["--color-surface-1", "--color-surface-2"]) {
+    for (const background of ["--color-surface", "--color-surface-high"]) {
       expect(contrast(foreground, background, theme)).toBeGreaterThanOrEqual(4.5);
     }
   });

@@ -58,12 +58,12 @@ const { title, description, date, tags, coverSrc, href } = Astro.props;
     display: flex;
     flex-direction: column;
     min-inline-size: 0;
-    background: var(--color-surface-1);
-    border-radius: var(--card-radius);
+    background: var(--color-surface);
+    border-radius: var(--radius-lg);
     box-shadow: var(--elev-1);
     text-decoration: none;
     color: var(--color-text);
-    transition: border-color var(--dur-1) var(--ease-standard);
+    transition: border-color var(--duration-fast) var(--ease-standard);
     cursor: pointer;
     overflow: hidden;
     border: var(--border-hairline) solid var(--color-border-hairline);
@@ -92,11 +92,11 @@ const { title, description, date, tags, coverSrc, href } = Astro.props;
   .project-card-content {
     inline-size: 100%;
     flex: 1;
-    padding: var(--space-6);
+    padding: var(--space-lg);
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: var(--space-3);
+    gap: var(--space-sm);
     overflow-wrap: anywhere;
   }
 
@@ -110,8 +110,8 @@ const { title, description, date, tags, coverSrc, href } = Astro.props;
 
   .project-card-desc {
     margin: 0;
-    color: var(--color-muted);
-    font-size: var(--text-body);
+    color: var(--color-text-muted);
+    font-size: var(--text-md);
     line-height: var(--lh);
     text-align: start;
   }
@@ -121,35 +121,35 @@ const { title, description, date, tags, coverSrc, href } = Astro.props;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: var(--space-2);
-    font-size: var(--text-small);
+    gap: var(--space-xs);
+    font-size: var(--text-sm);
     margin-block-start: auto;
-    padding-block-start: var(--space-5);
+    padding-block-start: var(--space-lg);
   }
 
   .project-card-date {
-    color: var(--color-muted);
+    color: var(--color-text-muted);
     font-variant-numeric: tabular-nums;
   }
 
   .project-card-tags {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-2);
+    gap: var(--space-xs);
   }
 
   .project-card-tag {
     background: color-mix(
       in srgb,
       var(--color-link) 8%,
-      var(--color-surface-1)
+      var(--color-surface)
     );
     color: color-mix(in srgb, var(--color-link) 65%, var(--color-text));
     border: var(--border-hairline) solid
       color-mix(in srgb, var(--color-link) 20%, var(--color-border-hairline));
     border-radius: var(--radius-md);
-    padding: var(--space-1) var(--space-3);
-    font-size: var(--text-caption);
+    padding: var(--space-2xs) var(--space-sm);
+    font-size: var(--text-xs);
     font-weight: var(--fw-medium);
     letter-spacing: 0;
     max-inline-size: 100%;
