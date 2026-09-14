@@ -1,0 +1,60 @@
+---
+import PageSection from "@/components/ui/PageSection.astro";
+import ContactForm from "@/components/contact/ContactForm.astro";
+import type { Language, Translator, TranslationKey } from "@/i18n/utils";
+
+interface Props {
+  lang: Language;
+  t: Translator;
+  action: string;
+  state: "ready" | "success" | "rate-limited" | "error";
+}
+
+const { lang, t, action, state } = Astro.props;
+const messages = {
+  success: "contact.successMessage",
+  "rate-limited": "contact.rateLimit",
+  error: "contact.errorMessage",
+} satisfies Record<Exclude<Props["state"], "ready">, TranslationKey>;
+---
+
+<PageSection title={t("contact.pageTitle")} titleId="contact-title" width="narrow" spacing="roomy">
+  <p slot="header" class="form-description">{t("contact.formDescription")}</p>
+  {state !== "ready" && (
+    <div class:list={["message", state === "success" ? "success" : "error"]} role={state === "success" ? "status" : "alert"}>
+      <p>{t(messages[state])}</p>
+    </div>
+  )}
+  {(state === "ready" || state === "error") && <ContactForm lang={lang} t={t} action={action} />}
+</PageSection>
+
+<style>
+  .form-description {
+      margin: 0;
+      max-inline-size: var(--measure);
+      color: var(--color-text-muted);
+  }
+
+  .message {
+      padding: var(--space-lg);
+      border-radius: var(--radius-md);
+      border: var(--border-hairline) solid;
+  }
+
+  .message p {
+      margin: 0;
+  }
+
+  .success {
+      background: var(--msg-success-bg);
+      border-color: var(--msg-success-border);
+      color: var(--msg-success-fg);
+  }
+
+  .error {
+      background: var(--msg-error-bg);
+      border-color: var(--msg-error-border);
+      color: var(--msg-error-fg);
+  }
+
+</style>

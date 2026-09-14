@@ -10,8 +10,14 @@ This document describes the overall system architecture of the web portfolio, co
 src/
 ├── actions/             # Astro Actions (Type-safe Controllers)
 ├── assets/              # Static & processed media assets (Images, Icons)
-├── components/          # Astro UI components & UI framework islands (Vue)
-├── composables/         # Reusable client-side logic & UI state
+├── components/          # Astro components grouped by responsibility
+│   ├── layout/          # Header, footer, navigation and their controls
+│   ├── ui/              # Shared page frames, buttons and utility views
+│   ├── home/            # Landing page sections
+│   ├── contact/         # Contact section, form and fields
+│   ├── career/          # Career page, sections and entries
+│   ├── projects/        # Project listing, cards and details
+│   └── legal/           # Imprint and privacy content
 ├── content/             # Astro Content Collections (Markdown & JSON data)
 ├── content.config.ts    # Content Collections Schema Definitions
 ├── i18n/                # Internationalization dictionaries & helpers
@@ -35,13 +41,22 @@ The frontend follows official **Astro architectural patterns**, focusing on serv
 
 - **Pages & Routing (`src/pages/`)**:
   - File-based routing providing SSR HTML pages.
-  - Multi-language routing handling localized page endpoints.
+  - Multi-language routing handling localized page endpoints. Astro's `i18n` config
+    (`astro.config.mjs`) drives locale detection and redirects, but each route is
+    currently duplicated as a separate file under `src/pages/de/` and `src/pages/en/`
+    with identical content — the language itself is resolved at render time via
+    `getLangFromUrl`. Collapsing this into a single `src/pages/[lang]/` tree is a
+    known, not-yet-done simplification.
+  - `system-info.astro` renders the running build's version (`APP_VERSION`, baked
+    in by the Dockerfile/CD pipeline) and server start time, for verifying which
+    deployment is live.
 
 - **Layouts (`src/layouts/`)**:
   - Wraps pages with common HTML document scaffolding, meta tags, and global stylesheets.
 
 - **Components (`src/components/`)**:
   - **Astro Components (`.astro`)**: Server-rendered templates with small, local scripts only where native browser behavior needs enhancement.
+  - Components with inputs declare a local `Props` type; callers are checked by `astro check`.
   - Interactive controls use native HTML elements such as `<dialog>` and `<details>` instead of a client-side UI framework.
 
 - **Content Collections (`src/content/` & `src/content.config.ts`)**:
@@ -99,3 +114,10 @@ The architecture strictly enforces the **Dependency Inversion Principle (DIP)**:
 
 4. **Configuration (`src/server/config/`) & Environment (`astro:env`)**:
    - Centralized, type-safe configuration values validated through Astro's `astro:env` API.
+
+5. **Middleware Pipeline (`src/middleware/`)**:
+   - `src/middleware/index.ts` sequences three middlewares on every request, in this
+     order: `version` (stamps the `X-App-Version` response header first, so it
+     survives the CSP rebuild), `originCheck` (validates the request origin against
+     `src/server/config/trusted-origins.ts`, replacing Astro's built-in check — see
+     the comment in `astro.config.mjs` for why), then `csp` (applies security headers).

@@ -1,17 +1,17 @@
 ---
-import Navigation from "./Navigation.astro";
-import ActionButton from "./ActionButton.astro";
-import Copyright from "./Copyright.astro";
+import Navigation from "@/components/layout/Navigation.astro";
+import ActionButton from "@/components/ui/ActionButton.astro";
+import Copyright from "@/components/layout/Copyright.astro";
 import type { Language, Translator } from "@/i18n/utils";
 
-export interface FooterProps {
+export interface Props {
   /** Language code for constructing localized links */
   lang: Language;
   /** Translation function for UI strings */
   t: Translator;
 }
 
-const { lang, t } = Astro.props as FooterProps;
+const { lang, t } = Astro.props;
 
 const footerLinks = [
   { href: `/${lang}/projects`, label: t("nav.projects") },
@@ -49,8 +49,8 @@ const footerLinks = [
 <style>
   .footer {
     margin-block-start: auto;
-    padding-block: var(--space-6);
-    background: var(--color-surface-1);
+    padding-block: var(--space-lg);
+    background: var(--color-surface);
     border-block-start: var(--border-hairline) solid var(--color-border-hairline);
     text-align: center;
   }
@@ -60,7 +60,7 @@ const footerLinks = [
   }
 
   .socials {
-    gap: var(--space-3);
+    gap: var(--space-sm);
     justify-content: center;
   }
 </style>

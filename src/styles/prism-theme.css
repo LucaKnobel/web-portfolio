@@ -3,30 +3,7 @@
   .prose pre,
   pre[class*="language-"] {
     color: var(--color-text);
-    background: var(--color-surface-2);
-    font-family: var(--font-mono);
-    text-align: start;
-    white-space: pre;
-    word-break: normal;
-    overflow-wrap: normal;
-    line-height: 1.5;
-    tab-size: 2;
-    hyphens: none;
-  }
-
-  pre[class*="language-"] {
-    margin: 0;
-    padding: var(--space-8);
-    overflow: auto;
-    border: var(--border-hairline) solid var(--color-border);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--elev-2);
-  }
-
-  :not(pre) > code[class*="language-"] {
-    padding: 0.1em 0.3em;
-    border-radius: var(--radius-sm);
-    white-space: normal;
+    background: var(--color-surface-high);
   }
 
   .token.comment,

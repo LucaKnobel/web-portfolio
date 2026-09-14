@@ -86,7 +86,7 @@ describe("sendMail action", () => {
     });
   });
 
-  it("handles EmailSendError by converting to BAD_REQUEST ActionError", async () => {
+  it("handles EmailSendError by converting to INTERNAL_SERVER_ERROR ActionError", async () => {
     vi.mocked(sendEmail).mockRejectedValue(
       new EmailSendError("SMTP connection failed"),
     );
@@ -94,8 +94,8 @@ describe("sendMail action", () => {
     await expect(
       sendMail.orThrow(validInput() as unknown as FormData),
     ).rejects.toMatchObject({
-      code: "BAD_REQUEST",
-      message: "SMTP connection failed",
+      code: "INTERNAL_SERVER_ERROR",
+      message: "Email could not be sent. Please try again later.",
     });
   });
 });

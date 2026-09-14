@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 
 vi.mock("astro:actions", () => {
   class ActionError extends Error {
@@ -26,51 +26,58 @@ import { ApplicationError } from "@/server/application/errors/application-error.
 import { RateLimitExceededError } from "@/server/application/errors/rate-limit-exceeded-error.js";
 import { handleActionError } from "@/actions/handle-action-error.js";
 
+import { EmailSendError } from "@/server/application/errors/email-send-error.js";
+import { logger } from "@/server/infrastructure/composition.js";
+
+// Fail explicitly if error mapping ever stops throwing.
+function captureActionError(error: unknown): ActionError {
+  try {
+    handleActionError(error);
+  } catch (caught) {
+    expect(caught).toBeInstanceOf(ActionError);
+    return caught as ActionError;
+  }
+  throw new Error("Expected handleActionError to throw");
+}
+
 describe("handleActionError", () => {
-  it("re-throws ActionError as is", () => {
-    const actionErr = new ActionError({
-      code: "BAD_REQUEST",
-      message: "Custom action error",
+  beforeEach(() => vi.clearAllMocks());
+
+  it("preserves intentional input ActionErrors", () => {
+    const inputError = new ActionError({ code: "BAD_REQUEST", message: "Invalid input" });
+    expect(captureActionError(inputError)).toBe(inputError);
+  });
+
+  it("maps rate limits to a safe TOO_MANY_REQUESTS response", () => {
+    expect(captureActionError(new RateLimitExceededError("Internal quota details"))).toMatchObject({
+      code: "TOO_MANY_REQUESTS",
+      message: "Daily email limit reached. Please try again tomorrow.",
     });
-
-    expect(() => handleActionError(actionErr)).toThrow(actionErr);
   });
 
-  it("converts RateLimitExceededError to TOO_MANY_REQUESTS ActionError", () => {
-    const rateErr = new RateLimitExceededError("Limit reached");
-
-    try {
-      handleActionError(rateErr);
-    } catch (err) {
-      expect(err).toBeInstanceOf(ActionError);
-      expect((err as any).code).toBe("TOO_MANY_REQUESTS");
-      expect((err as any).message).toBe("Limit reached");
-    }
+  it("keeps SMTP diagnostics and the original cause in server logs only", () => {
+    const cause = new Error("Connection to private SMTP host failed");
+    const error = new EmailSendError("SMTP authentication failed for internal account", cause);
+    expect(captureActionError(error)).toMatchObject({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "Email could not be sent. Please try again later.",
+    });
+    expect(logger.error).toHaveBeenCalledWith(
+      "Application error during action execution",
+      { code: "EMAIL_SEND_ERROR", message: error.message },
+      error,
+    );
   });
 
-  it("converts general ApplicationError to BAD_REQUEST ActionError", () => {
-    const appErr = new ApplicationError("Invalid domain state", "DOMAIN_ERROR");
-
-    try {
-      handleActionError(appErr);
-    } catch (err) {
-      expect(err).toBeInstanceOf(ActionError);
-      expect((err as any).code).toBe("BAD_REQUEST");
-      expect((err as any).message).toBe("Invalid domain state");
-    }
-  });
-
-  it("converts unknown error to INTERNAL_SERVER_ERROR ActionError", () => {
-    const unknownErr = new Error("Database crashed");
-
-    try {
-      handleActionError(unknownErr);
-    } catch (err) {
-      expect(err).toBeInstanceOf(ActionError);
-      expect((err as any).code).toBe("INTERNAL_SERVER_ERROR");
-      expect((err as any).message).toBe(
-        "An unexpected error occurred. Please try again later.",
-      );
-    }
+  it.each([
+    new ApplicationError("Internal domain state", "DOMAIN_ERROR"),
+    new Error("Database crashed"),
+    "Unexpected internal failure",
+  ])("does not expose unclassified failures: %s", (error) => {
+    expect(captureActionError(error)).toMatchObject({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "An unexpected error occurred. Please try again later.",
+    });
+    expect(logger.error).toHaveBeenCalled();
   });
 });

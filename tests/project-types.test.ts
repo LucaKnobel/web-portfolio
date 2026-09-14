@@ -1,8 +1,8 @@
 import { expectTypeOf, it } from "vitest";
 import type { ComponentProps } from "astro/types";
 import type { CollectionEntry, render } from "astro:content";
-import type ProjectCard from "@/components/ProjectCard.astro";
-import type ProjectDetail from "@/components/ProjectDetail.astro";
+import type ProjectCard from "@/components/projects/ProjectCard.astro";
+import type ProjectDetail from "@/components/projects/ProjectDetail.astro";
 import type { getProjectDetail } from "@/content/get-project-detail";
 
 type Project = CollectionEntry<"projects">;

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Git Pre-Commit Hook - Fast local security checks
+# Git Pre-Commit Hook - Local quality checks
 # Installation: git config core.hooksPath .githooks
 
 set -e
@@ -20,6 +20,12 @@ npm run typecheck > /dev/null 2>&1 || {
 }
 echo "### TypeScript OK"
 
+# 3. ESLint and Stylelint (required)
+npm run lint || {
+    echo "### Lint checks failed"
+    exit 1
+}
+echo "### Lint checks passed"
 
 # Note: Trivy and Semgrep scan runs in CI only
 # You can do them manually before commit if needed

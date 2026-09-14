@@ -1,15 +1,15 @@
 ---
 import { Icon } from "astro-icon/components";
-import ActionButton from "@/components/ActionButton.astro";
+import ActionButton from "@/components/ui/ActionButton.astro";
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 
 export type ErrorStatus = 404 | 500;
 
-export interface ErrorPageProps {
+export interface Props {
   status: ErrorStatus;
 }
 
-const { status } = Astro.props as ErrorPageProps;
+const { status } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
@@ -46,12 +46,12 @@ const content =
 
 <style>
   .error-page {
-    --flow: var(--space-3);
+    --flow: var(--space-sm);
     max-inline-size: 26.25rem;
     margin-block: 10vh 0;
-    padding: var(--space-8) var(--gutter);
-    background: var(--color-surface-1);
-    border-radius: var(--card-radius);
+    padding: var(--space-xl) var(--gutter);
+    background: var(--color-surface);
+    border-radius: var(--radius-lg);
     box-shadow: var(--elev-2);
     text-align: center;
     color: var(--color-text);
@@ -65,7 +65,7 @@ const content =
     inline-size: 3.5rem;
     block-size: 3.5rem;
     border-radius: 50%;
-    background: var(--color-surface-2);
+    background: var(--color-surface-high);
     color: var(--color-primary);
   }
 
@@ -81,8 +81,8 @@ const content =
 
   .error-status {
     margin: 0;
-    color: var(--color-muted);
-    font-size: var(--text-small);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
     font-weight: var(--fw-medium);
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -91,15 +91,15 @@ const content =
   .error-page h1 {
     margin: 0;
     color: var(--color-primary);
-    font-size: var(--heading-lg);
+    font-size: var(--text-3xl);
     font-weight: var(--fw-semibold);
     letter-spacing: 0.01em;
   }
 
   .error-message {
     margin: 0;
-    color: var(--color-muted);
-    font-size: var(--text-body);
+    color: var(--color-text-muted);
+    font-size: var(--text-md);
     line-height: var(--lh);
   }
 </style>

@@ -1,9 +1,9 @@
 ---
-import CareerCard from "@/components/CareerCard.astro";
+import CareerCard from "@/components/career/CareerCard.astro";
 import { getCollection } from "astro:content";
 import type { Language, Translator } from "@/i18n/utils";
 
-export interface CareerSectionProps {
+export interface Props {
   /** Current language (e.g., 'de' or 'en')*/
   lang: Language;
   /** Translation function for UI strings */
@@ -14,24 +14,21 @@ export interface CareerSectionProps {
   title: string;
 }
 
-const { lang, t, type, title } = Astro.props as CareerSectionProps;
+const { lang, t, type, title } = Astro.props;
 
-let entries = [];
-try {
-  if (type === "education") {
-    const allEducationEntries = await getCollection("education");
-    const educationFile = allEducationEntries.find(
-      (entry) => entry.id === lang,
-    );
-    entries = educationFile?.data || [];
-  } else {
-    const allCareerEntries = await getCollection("career");
-    const careerFile = allCareerEntries.find((entry) => entry.id === lang);
-    entries = careerFile?.data || [];
-  }
-} catch (err) {
-  throw err;
+let entries;
+if (type === "education") {
+  const allEducationEntries = await getCollection("education");
+  const educationFile = allEducationEntries.find(
+    (entry) => entry.id === lang,
+  );
+  entries = educationFile?.data || [];
+} else {
+  const allCareerEntries = await getCollection("career");
+  const careerFile = allCareerEntries.find((entry) => entry.id === lang);
+  entries = careerFile?.data || [];
 }
+
 ---
 
 <section class="career-section" id={type} aria-labelledby={`${type}-heading`}>
@@ -46,11 +43,11 @@ try {
 <style>
   .career-section {
     min-inline-size: 0;
-    scroll-margin-block-start: calc(var(--header-height) + var(--space-6));
+    scroll-margin-block-start: calc(var(--header-height) + var(--space-lg));
   }
 
   .career-section h2 {
-    margin: 0 0 var(--space-8);
+    margin: 0 0 var(--space-xl);
     font-size: 1.5rem;
     letter-spacing: 0;
   }

@@ -1,15 +1,15 @@
 ---
 import type { Language, Translator } from "@/i18n/utils";
-import PageSection from "@/components/PageSection.astro";
+import PageSection from "@/components/ui/PageSection.astro";
 
-export interface ImprintSectionProps {
+export interface Props {
   /** Language code for constructing localized links */
   lang: Language;
   /** Translation function for UI strings */
   t: Translator;
 }
 
-const { lang, t } = Astro.props as ImprintSectionProps;
+const { lang, t } = Astro.props;
 ---
 
 <PageSection title={t("impressum.title")} align="center">
@@ -36,17 +36,17 @@ const { lang, t } = Astro.props as ImprintSectionProps;
   p {
     margin: 0;
     color: var(--color-text);
-    font-size: var(--text-body);
+    font-size: var(--text-md);
     line-height: var(--lh);
   }
 
   a {
     color: var(--color-link);
     text-decoration: underline;
-    transition: color var(--dur-1) var(--ease-standard);
+    transition: color var(--duration-fast) var(--ease-standard);
     min-height: var(--touch-target-min);
     display: inline-block;
-    padding: var(--space-2) var(--space-1);
+    padding: var(--space-xs) var(--space-2xs);
 
     &:hover {
       color: var(--color-link-hover);

@@ -1,0 +1,38 @@
+---
+import PageSection from "@/components/ui/PageSection.astro";
+import CareerSection from "@/components/career/CareerSection.astro";
+import type { Language, Translator } from "@/i18n/utils";
+
+interface Props {
+  lang: Language;
+  t: Translator;
+}
+
+const { lang, t } = Astro.props;
+---
+
+<PageSection title={t("career.pageTitle")} width="wide" spacing="roomy" gap="large">
+  <nav slot="header" class="career-navigation" aria-label={t("career.pageTitle")}>
+    <a href="#professional">{t("career.professionalCareer")}</a>
+    <a href="#education">{t("career.education")}</a>
+  </nav>
+  <CareerSection lang={lang} t={t} type="professional" title={t("career.professionalCareer")} />
+  <CareerSection lang={lang} t={t} type="education" title={t("career.education")} />
+</PageSection>
+
+<style>
+  .career-navigation {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: var(--space-lg);
+  }
+
+  .career-navigation a {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: var(--touch-target-min);
+    font-size: var(--text-sm);
+    text-decoration: underline;
+    text-underline-offset: var(--space-2xs);
+  }
+</style>

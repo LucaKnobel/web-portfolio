@@ -8,12 +8,17 @@ The application presents my professional experience, education, and software pro
 
 - **Astro 7** – application framework, routing, rendering, and content
 - **TypeScript** – type-safe application development
+- **Zod** – schema validation for content collections and form input
 - **Node.js 24** – server runtime
 - **Nodemailer** – SMTP-based email delivery
+- **Pino** – structured, level-based server logging with secret redaction
 - **CSS** – custom design system without a UI framework
-- **GitHub Actions** – CI and automated quality checks
-- **Semgrep & Trivy** – static analysis and security scanning
-- **Docker** – containerized deployment
+- **Vitest** – unit and type-level testing
+- **ESLint & Stylelint** – code and style linting
+- **GitHub Actions** – CI (tests, type checks, linting, security scans) and CD (build, scan, deploy)
+- **Semgrep & Trivy** – static analysis, dependency scanning, and container image scanning
+- **Docker** – containerized build, published to GitHub Container Registry
+- **Coolify** – self-hosted deployment platform on my own infrastructure
 - **Infomaniak** – hosting infrastructure in Switzerland
 
 ## Architecture
@@ -52,9 +57,10 @@ The application includes measures such as:
 - Server-side rate limiting
 - Separation of secrets from client-side code
 - No third-party tracking or analytics
+- Structured server-side logging with automatic redaction of credentials and cookies
 - Automated static analysis and security scans
 
-Semgrep and Trivy are integrated into the CI workflow to identify potential security issues, vulnerable dependencies, secrets, and configuration problems before changes are merged.
+Semgrep and Trivy run in CI on every change (source code, dependencies, and configuration) and Trivy scans the built container image again in the CD workflow before it is pushed, to catch issues introduced by the base image or installed packages.
 
 ## Content & Internationalization
 
@@ -74,13 +80,30 @@ Dark and light themes are implemented using CSS custom properties. The interface
 
 Changes are checked through automated CI workflows before being merged. The project uses automated testing, type checking, linting, and security analysis to detect regressions and implementation issues early.
 
+Tests run on Vitest and cover server-side logic (validation, rate limiting, email sending, error handling), content schemas, i18n utilities, CSP headers, colour-contrast of the design tokens, and type-level checks tying Astro components to their content collection types.
+
+- `npm run test`: run tests in watch mode.
+- `npm run test:run`: run tests once (used by CI).
+
+Linting uses ESLint with the recommended JavaScript, TypeScript, and Astro rules, plus Stylelint for CSS and Astro styles. Generated output is excluded from ESLint.
+
+- `npm run lint`: run both linters (also used by CI).
+- `npm run lint:code`: check JavaScript, TypeScript, and Astro components.
+- `npm run lint:styles`: check CSS and Astro styles.
+- `npm run lint:fix`: apply available automatic fixes; review the resulting diff.
+- `npm run typecheck`: run Astro's separate type checks.
+
+VS Code recommends the ESLint extension and enables linting for Astro and TypeScript files.
+
 The application is continuously developed and serves as both my public portfolio and a practical environment for improving my knowledge of Astro, TypeScript, web security, accessibility, performance, and software architecture.
 
 ## Deployment
 
 The application runs on Node.js and is deployed as a container on my own hosting infrastructure at Infomaniak in Switzerland.
 
-The deployment setup keeps application configuration and secrets outside the container image and provides the server-side runtime required for features such as the contact form.
+On every push to `main`, the CD workflow builds the production image, scans it with Trivy, and pushes it to the GitHub Container Registry tagged with the commit SHA. It then triggers a deployment on [Coolify](https://coolify.io) — the self-hosted platform documented in my [Coolify project](src/content/projects/en/coolify.md) — and polls the live site's `X-App-Version` response header until it matches the deployed commit, so a deployment only counts as successful once the new version is actually serving traffic. The `/system-info` page exposes the same version and the server start time for manual verification.
+
+Application configuration and secrets stay outside the container image and are provided at runtime.
 
 ## License
 

@@ -1,4 +1,5 @@
 ---
+import "@/styles/buttons.css";
 import type { HTMLAttributes } from "astro/types";
 
 type Props = {
@@ -16,7 +17,7 @@ const { as: Tag = "button", label, variant = "surface", class: className, ...att
 <Tag
   {...attributes}
   type={Tag === "button" ? "button" : undefined}
-  class:list={["icon-control", className]}
+  class:list={["button", "icon-control", className]}
   data-variant={variant}
   aria-label={label}
 >
@@ -25,22 +26,11 @@ const { as: Tag = "button", label, variant = "surface", class: className, ...att
 
 <style>
   .icon-control {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
     min-inline-size: var(--touch-target-min);
     min-block-size: var(--touch-target-min);
     padding: 0;
-    border: var(--border-hairline) solid var(--color-border-hairline);
-    border-radius: var(--button-radius);
-    background: var(--color-surface-1);
-    color: var(--color-text);
-    cursor: pointer;
+    background: var(--color-surface);
     list-style: none;
-    transition:
-      background-color var(--dur-1) var(--ease-standard),
-      border-color var(--dur-1) var(--ease-standard),
-      color var(--dur-1) var(--ease-standard);
   }
 
   .icon-control::-webkit-details-marker {
@@ -54,7 +44,7 @@ const { as: Tag = "button", label, variant = "surface", class: className, ...att
   }
 
   .icon-control[aria-expanded="true"] {
-    background: var(--color-surface-2);
+    background: var(--color-surface-high);
     border-color: var(--color-border-hairline);
     color: var(--color-link);
   }
@@ -65,13 +55,13 @@ const { as: Tag = "button", label, variant = "surface", class: className, ...att
 
   @media (hover: hover) {
     .icon-control:hover {
-      background: var(--color-surface-2);
+      background: var(--color-surface-high);
       border-color: var(--color-border-hairline);
       color: var(--color-link);
     }
   }
 
   .icon-control:active {
-    background: var(--color-surface-3);
+    background: var(--color-surface-higher);
   }
 </style>

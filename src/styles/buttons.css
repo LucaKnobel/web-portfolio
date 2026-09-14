@@ -1,0 +1,77 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  max-inline-size: 100%;
+  padding: var(--space-xs) var(--space-md);
+  border: var(--border-hairline) solid var(--color-border-hairline);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  font-size: var(--text-md);
+  font-weight: var(--fw-medium);
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+}
+
+.button[data-size="m"] {
+  min-inline-size: min(150px, 100%);
+  min-block-size: var(--control-h-lg);
+}
+
+.button[data-size="l"] {
+  min-inline-size: min(180px, 100%);
+  min-block-size: var(--control-h-xl);
+}
+
+.button[data-size="square"] {
+  inline-size: var(--touch-target-min);
+  block-size: var(--touch-target-min);
+  padding: 0;
+}
+
+.button[data-variant="primary"] {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.button[data-variant="secondary"] {
+  background: var(--color-surface);
+}
+
+@media (hover: hover) {
+  .button[data-variant="primary"]:hover {
+    background: var(--color-primary-hover);
+  }
+
+  .button[data-variant="secondary"]:hover {
+    background: var(--color-surface-high);
+    color: var(--color-link);
+    border-color: var(--color-border);
+  }
+}
+
+.button[data-variant="primary"]:active {
+  background: var(--color-primary-active);
+}
+
+.button[data-variant="secondary"]:active {
+  background: var(--color-surface-higher);
+}
+
+.button-text {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+
+.button-icon {
+  flex-shrink: 0;
+  inline-size: var(--icon-sm);
+  block-size: var(--icon-sm);
+}

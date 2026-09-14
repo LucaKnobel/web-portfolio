@@ -1,0 +1,55 @@
+---
+import "@/styles/buttons.css";
+import { Icon } from "astro-icon/components";
+
+export interface Props {
+  /** The URL to navigate to */
+  href: string;
+  /** Text to display (optional) */
+  text?: string;
+  /** Icon name from iconify (optional) */
+  icon?: string;
+  /** Visual variant of the button */
+  variant?: "primary" | "secondary";
+  /** Additional CSS classes */
+  class?: string;
+  /** Aria label for accessibility (auto-generated if not provided) */
+  ariaLabel?: string;
+  /** Button size: m, l, square */
+  size?: "m" | "l" | "square";
+}
+
+const {
+  href,
+  text,
+  icon,
+  variant = "primary",
+  class: customClass = "",
+  ariaLabel,
+  size = "m",
+} = Astro.props;
+
+/* Detect if link is external */
+const isExternal = href.startsWith("http") || href.startsWith("//");
+
+/* Auto-generate aria-label if not provided */
+const computedAriaLabel = ariaLabel || text || `Navigate to ${href}`;
+
+/* Render the supplied text and icon. */
+const hasText = !!text;
+const hasIcon = !!icon;
+---
+
+<a
+  href={href}
+  class:list={["button", "action-button", customClass]}
+  data-variant={variant}
+  data-size={size}
+  aria-label={computedAriaLabel}
+  target={isExternal ? "_blank" : undefined}
+  rel={isExternal ? "noopener noreferrer" : undefined}
+>
+  {hasIcon && <Icon name={icon} class="button-icon" aria-hidden="true" />}
+  {hasText && <span class="button-text">{text}</span>}
+</a>
+

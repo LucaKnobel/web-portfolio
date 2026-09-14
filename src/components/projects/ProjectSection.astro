@@ -1,28 +1,17 @@
 ---
-import { compareProjectsByDate } from "@/content/project-utils";
-import ProjectCard from "@/components/ProjectCard.astro";
-import PageSection from "@/components/PageSection.astro";
-import { getCollection } from "astro:content";
+import ProjectCard from "@/components/projects/ProjectCard.astro";
+import PageSection from "@/components/ui/PageSection.astro";
+import type { CollectionEntry } from "astro:content";
 import type { Language, Translator } from "@/i18n/utils";
 
-export interface ProjectSectionProps {
-  /** Current language (e.g., 'de' or 'en') */
+interface Props {
   lang: Language;
-  /** Translation function for UI strings */
   t: Translator;
+  projects: CollectionEntry<"projects">[];
 }
-const { lang, t } = Astro.props as ProjectSectionProps;
 
-let projects = [];
-try {
-  const allProjects = await getCollection("projects");
-  const languageProjects = allProjects.filter(
-    (project) => project.data.lang === lang,
-  );
-  projects = languageProjects.sort(compareProjectsByDate);
-} catch (err) {
-  throw err;
-}
+const { lang, t, projects } = Astro.props;
+
 ---
 
 <div class="projects-page">
@@ -46,12 +35,12 @@ try {
 
 <style>
   .projects-page {
-    padding-block: var(--space-6) var(--space-12);
+    padding-block: var(--space-lg) var(--space-3xl);
   }
 
   .project-card-wrapper {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(min(25rem, 100%), 1fr));
-    gap: var(--space-8);
+    gap: var(--space-xl);
   }
 </style>

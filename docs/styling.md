@@ -155,7 +155,7 @@ precedence over normal author styles inside layers; within the layers, the decla
 That cascade behaviour — not the scoping mechanism itself — is why a component can override a
 global default without inflating selector specificity.
 
-`syntax` sits after `prose` so that `prism-theme.css` wins for Prism-highlighted code blocks.
+`syntax` sits after `prose` and owns code colours and token emphasis. Code block layout, typography, overflow and spacing live in `prose.css`; the syntax layer does not reset their margins.
 `prose.css` must therefore exclude them:
 
 ```css
@@ -179,14 +179,25 @@ global default without inflating selector specificity.
 ### 5.2 Three categories
 
 **Primitive tokens** — raw scale values, used directly by components:
-`--space-*`, `--text-*`, `--radius-*`, `--duration-*`, `--ease-*`
+`--space-*`, `--text-*`, `--radius-*`, `--duration-*`, `--ease-standard`, `--fw-*`
 
 **Semantic tokens** — roles whose meaning is stable project-wide:
-`--color-bg`, `--color-surface`, `--color-text`, `--color-text-muted`, `--color-border`,
-`--color-primary`
+`--color-bg`, `--color-surface` / `--color-surface-high` / `--color-surface-higher`,
+`--color-text`, `--color-text-muted`, `--color-border` / `--color-border-hairline`,
+`--color-primary` (+ `-hover` / `-active` / `-on-primary`), `--color-link` (+ `-hover` /
+`-visited`), `--focus-ring-*`, `--selection-*`, `--msg-error-*` / `--msg-success-*`,
+`--syntax-*`, `--elev-1/2/3`, `--icon-*`, `--control-h-*`, `--touch-target-min`,
+`--layer-header` / `--layer-tooltip`, `--glass-bg` / `--glass-blur`.
+
+These extra categories exist beyond colour because their meaning is just as
+project-wide as a colour role: a message box, a code token, an icon size or a
+z-index layer is a single design decision that every consumer must share, not
+a per-component detail. The rule from §2.1 still applies — a new semantic
+token is added only when a real, recurring design decision needs one, never
+speculatively.
 
 **Global layout tokens** — single project-wide layout decisions:
-`--content-max`, `--measure`, `--gutter`
+`--content-max`, `--measure`, `--gutter`, `--header-height`
 
 Component-specific tokens (`--project-card-padding`, `--career-card-gap`,
 `--contact-form-radius`) do **not** belong in `tokens.css`. A component consumes primitives
@@ -201,49 +212,70 @@ directly:
 ### 5.3 Typography & Spacing — fluid by default
 
 Fluid scales replace responsive token remaps and most component media queries.
+The values below are the actual current scale in
+[`tokens.css`](../src/styles/tokens.css) — condensed from the project's earlier
+per-heading names (`--fs-h1`, `--heading-lg`, `--display-xl`, …) into one flat
+naming scheme with no alias chain.
 
 ```css
 :root {
-  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
-  --text-xs: 0.75rem;
-  --text-sm: 0.875rem;
+  --text-xs: 0.875rem;
+  --text-sm: 0.9375rem;
   --text-md: 1rem;
-  --text-lg: clamp(1.125rem, 1.05rem + 0.35vw, 1.375rem);
-  --text-xl: clamp(1.375rem, 1.2rem + 0.85vw, 1.75rem);
-  --text-2xl: clamp(1.75rem, 1.4rem + 1.5vw, 2.5rem);
-  --text-3xl: clamp(2.25rem, 1.7rem + 2.5vw, 3.5rem);
+  --text-lg: clamp(1.25rem, 1.14rem + 0.57vw, 1.5rem);
+  --text-xl: clamp(1.375rem, 1.26rem + 0.57vw, 1.625rem);
+  --text-2xl: clamp(1.625rem, 1.4rem + 1.14vw, 2.125rem);
+  --text-3xl: clamp(2rem, 1.66rem + 1.7vw, 2.75rem);
+  --text-4xl: clamp(2rem, 1.32rem + 3.41vw, 3.5rem);
 
   --space-2xs: 0.25rem;
   --space-xs: 0.5rem;
   --space-sm: 0.75rem;
   --space-md: 1rem;
-  --space-lg: clamp(1.5rem, 1.2rem + 1vw, 2rem);
-  --space-xl: clamp(2rem, 1.5rem + 2vw, 3rem);
-  --space-2xl: clamp(3rem, 2rem + 4vw, 5rem);
+  --space-lg: clamp(1.25rem, 1.14rem + 0.57vw, 1.5rem);
+  --space-xl: clamp(1.5rem, 1.27rem + 1.14vw, 2rem);
+  --space-2xl: clamp(2rem, 1.77rem + 1.14vw, 2.5rem);
+  --space-3xl: clamp(3rem, 2.55rem + 2.27vw, 4rem);
+  --space-4xl: clamp(4rem, 3.55rem + 2.27vw, 5rem);
 
   --content-max: 75rem;
-  --measure: 70ch;
-  --gutter: clamp(1rem, 3vw, 2rem);
+  --measure: 65ch;
+  --gutter: clamp(1rem, 0.55rem + 2.27vw, 2rem);
 }
 ```
 
 Because these scale with the viewport, `tokens.css` needs **no** `@media` remaps.
 
+Both scales run one tier past the `xs`–`3xl` names used elsewhere in this
+document (`--space-4xl`, `--text-4xl`): real content needed a distinct step
+for hero/display text and for the largest section gaps, and collapsing it
+into `3xl` would have visibly flattened that hierarchy. That is the §2.1 rule
+in practice — a repeated visual size is only worth merging when it is
+genuinely the same design decision.
+
 ### 5.4 Shape, Motion, Elevation
 
 ```css
 :root {
-  --radius-sm: 0.375rem;
-  --radius-md: 0.625rem;
-  --radius-lg: 1rem;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
 
   --duration-fast: 150ms;
-  --duration-normal: 250ms;
-  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --duration-normal: 230ms;
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+
+  --elev-1: 0 1px 3px 0 var(--shadow-color);
+  --elev-2: 0 2px 6px -1px var(--shadow-color);
+  --elev-3: 0 4px 12px -2px var(--shadow-color);
 }
 ```
+
+`--elev-*` is the only place a `box-shadow` value is assembled; components
+consume the finished token, never `--shadow-color` directly.
 
 ---
 
@@ -277,22 +309,23 @@ Both values live in one declaration, which removes the duplicated dark-theme blo
 :root {
   color-scheme: light dark;
 
-  --color-bg: light-dark(#ffffff, #0a0c10);
-  --color-surface: light-dark(#f6f8fa, #14171c);
-  --color-surface-high: light-dark(#ffffff, #1b1f26);
+  --color-bg: light-dark(var(--neutral-0), #0a0c10);
+  --color-surface: light-dark(var(--neutral-10), #111419);
+  --color-surface-high: light-dark(var(--neutral-25), #181c23);
+  --color-surface-higher: light-dark(var(--neutral-40), #1f242c);
 
-  --color-text: light-dark(#1a2129, #f8f9fa);
-  --color-text-muted: light-dark(#5d6b7a, #9ca8b6);
+  --color-text: light-dark(var(--neutral-900), #f8f9fa);
+  --color-text-muted: light-dark(var(--neutral-600), var(--neutral-400));
 
-  --color-border: light-dark(rgb(20 30 40 / 15%), rgb(255 255 255 / 12%));
+  --color-border: light-dark(var(--neutral-200), rgba(248, 249, 250, 0.12));
 
-  --color-primary: light-dark(#4a6892, #769ac2);
+  --color-primary: light-dark(var(--primary-600), var(--primary-400));
 }
 
-[data-theme="light"] {
+:root[data-theme="light"] {
   color-scheme: light;
 }
-[data-theme="dark"] {
+:root[data-theme="dark"] {
   color-scheme: dark;
 }
 ```
@@ -300,17 +333,28 @@ Both values live in one declaration, which removes the duplicated dark-theme blo
 Benefits: one source of truth per colour, and native form controls plus scrollbars adapt
 automatically via `color-scheme`.
 
+`--neutral-*` and `--primary-*` above are a private raw palette: plain hex values
+that exist only to be paired inside `light-dark()`. Nothing outside `tokens.css`
+references them directly (enforced by the Stylelint `color-no-hex` rule — see
+§14) — components only ever see the semantic name. That is the one level of
+indirection this document allows for colour.
+
 ### 6.3 Derived states
 
-Hover and active variants are computed, not hand-maintained:
+Hover and active variants for primary and surface roles are each their own
+explicit `light-dark()` pair rather than a computed `color-mix()`, because the
+target colours were chosen by eye per theme, not derived by formula:
 
 ```css
---color-primary-hover: color-mix(
-  in oklab,
-  var(--color-primary) 85%,
-  var(--color-text)
-);
+--color-primary: light-dark(var(--primary-600), var(--primary-400));
+--color-primary-hover: light-dark(var(--primary-700), var(--primary-400));
+--color-primary-active: light-dark(var(--primary-750), var(--primary-400));
 ```
+
+`color-mix()` remains the right tool for a one-off derived tint inside a single
+component (see `--project-card-tag` background in `ProjectCard.astro`), where
+computing from the token in place is simpler than adding a new semantic token
+for a single use.
 
 ### 6.4 Remaining theme block
 
@@ -369,7 +413,7 @@ Choose `auto-fill` or `auto-fit` according to the intended behaviour of empty tr
   exist.
 - **`auto-fit`** collapses empty tracks. Existing items expand to fill the available space.
 
-For [`ProjectSection`](../src/components/ProjectSection.astro), `auto-fill` is recommended because
+For [`ProjectSection`](../src/components/projects/ProjectSection.astro), `auto-fill` is recommended because
 cards should keep their width with few projects. That is a component decision, not a global rule.
 
 ### 7.3 Container queries
@@ -451,7 +495,7 @@ its own API, and its own scoped styles. Use Astro as the component model — not
 
 `src/components/ui/PageSection.astro` owns the shared section padding, vertical flow and
 optional page heading. Projects, career, contact, imprint and privacy use this component.
-It composes `.container` and `.stack`; component-specific layouts remain in their owners.
+It uses `.container` with a grid. `width` (`full`, `narrow`, `wide`), `spacing` (`normal`, `roomy`) and `gap` (`normal`, `large`) cover the existing layouts. The named `header` slot accepts a description or section navigation; component-specific layouts remain in their owners.
 
 Header, footer, project details and the landing page also use `.container`, so the horizontal
 content boundary is defined once. The landing page retains its viewport-height minimum and
@@ -461,13 +505,13 @@ contact form uses a named container query for its field layout.
 
 ### Shared icon controls
 
-`IconControl.astro` owns the shared target size, surface, border and interaction states for
+`src/styles/buttons.css` owns the shared `.button` base, primary/secondary states, sizes and icon/text styling. Link buttons, icon controls and the native contact submit button import it. `IconControl.astro` adds target size, surface and interaction states for
 the theme toggle, language selector, menu trigger and close button. Its default element is
 `button type="button"`; the language selector explicitly uses `as="summary"` inside native
 `details`. Event hooks, ARIA attributes and autofocus are forwarded to that element.
 
 The `surface` and `ghost` variants use `data-variant`. `ActionButton.astro` remains a link
-component, with the used `primary` / `gradient` variants and `m` / `l` / `square` sizes,
+component, with the `primary` / `secondary` variants and `m` / `l` / `square` sizes,
 expressed through `data-variant` and `data-size`. Cards retain their own components and use
 flat selectors for their owned elements.
 
@@ -758,23 +802,15 @@ that the exemptions do not disable the normal rules.
 
 ---
 
-## 15. Migration Path
+## 15. Status
 
-Incremental, with a working site after every step.
-
-| #   | Step                                                                | Outcome                                               |
-| --- | ------------------------------------------------------------------- | ----------------------------------------------------- |
-| 1   | Fix known CSS bugs                                                  | Correctness before restructuring                      |
-| 2   | Inventory current styles and tokens                                 | Find undefined token references and duplicated blocks |
-| 3   | Consolidate `tokens.css`, introduce `light-dark()` and fluid scales | Removes responsive remaps and the large dark block    |
-| 4   | Split `reset.css` / `base.css`, add global focus and reduced motion | Removes per-component duplicates                      |
-| 5   | Create `prose.css`, migrate project detail, privacy policy, imprint | Largest single reduction                              |
-| 6   | Introduce `utilities.css`, migrate sections and grids               | Removes container/grid duplication                    |
-| 7   | Normalise form styling                                              | Addresses the remaining large scoped block            |
-| 8   | Identify genuine shared UI primitives, extract Astro components     | Removes card duplication                              |
-| 9   | Add Stylelint to CI                                                 | Prevents regression                                   |
-
-Steps 3–8 each end with a visual check in both themes and at mobile, tablet and desktop widths.
+The token migration this document specifies is complete: `tokens.css` and every
+component now use the single flat naming scheme described in §5 — no
+`--fs-*`/`--heading-*`/`--display-*` alias chains, no `--space-1..16` or
+`--color-surface-1..3` numbered scale. `light-dark()`, cascade layers,
+`prose.css`, `utilities.css` and Stylelint in CI (§14) were already in place
+before this final rename. Checked in both themes at mobile, tablet and desktop
+widths (see §16) before landing.
 
 ---
 

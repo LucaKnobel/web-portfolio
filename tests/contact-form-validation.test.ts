@@ -50,4 +50,43 @@ describe("contactFormSchema", () => {
 
     expect(result.success).toBe(false);
   });
+
+  it.each(["firstName", "lastName", "subject", "message"])(
+    "rejects whitespace-only %s",
+    (field) => {
+      expect(contactFormSchema.safeParse({ ...validPayload, [field]: " \t\n " }).success).toBe(false);
+    },
+  );
+
+  it.each(["firstName", "lastName"])("checks %s length after trimming", (field) => {
+    expect(contactFormSchema.safeParse({ ...validPayload, [field]: " A " }).success).toBe(false);
+  });
+
+  it("trims required text while preserving message line breaks", () => {
+    const result = contactFormSchema.parse({
+      ...validPayload,
+      firstName: " Max ",
+      lastName: " Mustermann ",
+      subject: " Inquiry ",
+      message: " Hello\nWorld ",
+    });
+    expect(result).toMatchObject({
+      firstName: "Max",
+      lastName: "Mustermann",
+      subject: "Inquiry",
+      message: "Hello\nWorld",
+    });
+  });
+
+  it.each([true, "on", "true"])("accepts explicit consent %s", (privacy) => {
+    expect(contactFormSchema.parse({ ...validPayload, privacy }).privacy).toBe(true);
+  });
+
+  it.each([false, "false", "0", 0, 1, "off", "yes", "", null, undefined])(
+    "rejects absent or unsupported consent %s",
+    (privacy) => {
+      expect(contactFormSchema.safeParse({ ...validPayload, privacy }).success).toBe(false);
+    },
+  );
+
 });

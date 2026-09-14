@@ -49,7 +49,7 @@ flowchart TD
     DispatchEmail -- Success --> Complete[Keep Reservation & Return 200 OK]
     DispatchEmail -- Exception / Failure --> Release[rateLimiter.release reservation]
     Release --> RefundCounter[Decrement counter - 1]
-    RefundCounter --> ReturnError[Action Error Response: 400 BAD_REQUEST]
+    RefundCounter --> ReturnError[Action Error Response: 500 INTERNAL_SERVER_ERROR]
 ```
 
 ---

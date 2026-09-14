@@ -1,0 +1,160 @@
+---
+import "@/styles/buttons.css";
+import { Icon } from "astro-icon/components";
+import FormField from "@/components/contact/FormField.astro";
+import type { Language, Translator } from "@/i18n/utils";
+
+interface Props {
+  lang: Language;
+  t: Translator;
+  action: string;
+}
+
+const { lang, t, action } = Astro.props;
+---
+
+<form method="post" action={action}>
+  <!-- Honeypot: hidden from visitors and assistive technology. -->
+  <div aria-hidden="true" hidden>
+    <label for="website">Website (leave empty):</label>
+    <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" value="" />
+  </div>
+
+  <fieldset>
+    <legend>{t("contact.personalLegend")}</legend>
+    <div class="personal-grid">
+      <FormField name="firstName" label={t("contact.firstName")} minlength={2} maxlength={50} required autocomplete="given-name" />
+      <FormField name="lastName" label={t("contact.lastName")} minlength={2} maxlength={60} required autocomplete="family-name" />
+      <FormField name="email" label={t("contact.email")} type="email" maxlength={254} required autocomplete="email" wide />
+      <FormField name="company" label={t("contact.company")} maxlength={100} autocomplete="organization" />
+      <FormField name="phone" label={t("contact.phone")} type="tel" inputmode="tel" maxlength={20} autocomplete="tel" />
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>{t("contact.messageLegend")}</legend>
+    <div class="message-grid">
+      <FormField name="subject" label={t("contact.subject")} required minlength={1} maxlength={100} placeholder={t("contact.subjectPlaceholder")} />
+      <FormField name="message" label={t("contact.message")} required>
+        <textarea id="message" name="message" required minlength="1" maxlength="3000" rows="6" placeholder={t("contact.messagePlaceholder")}></textarea>
+      </FormField>
+    </div>
+  </fieldset>
+
+  <fieldset class="privacy-fields">
+    <legend>{t("contact.privacyLegend")}</legend>
+    <div class="checkbox-row">
+      <input type="checkbox" id="privacy" name="privacy" required />
+      <label for="privacy">{t("contact.privacyAccept")}*</label>
+    </div>
+    <div class="privacy-link">
+      <a href={`/${lang}/privacy-policy`} target="_blank" rel="noopener noreferrer">
+        {t("nav.privacyPolicy")}
+      </a>
+    </div>
+  </fieldset>
+
+  <button type="submit" class="button contact-submit" data-variant="primary">
+    <Icon name="mdi:send-outline" class="button-icon" aria-hidden="true" />
+    {t("contact.send")}
+  </button>
+
+</form>
+
+<style>
+  form {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2xl);
+      container: contact-form / inline-size;
+      min-inline-size: 0;
+  }
+
+  fieldset {
+      min-inline-size: 0;
+      border: 0;
+      margin: 0;
+      padding: 0;
+  }
+
+  legend {
+      padding: 0;
+      margin-block-end: var(--space-lg);
+      font-size: 1.125rem;
+      font-weight: var(--fw-semibold);
+      letter-spacing: 0;
+  }
+
+  .personal-grid,
+  .message-grid {
+      display: grid;
+      gap: var(--space-lg);
+  }
+
+  .privacy-fields {
+      border-block-start: var(--border-hairline) solid var(--color-border-hairline);
+      padding-block-start: var(--space-lg);
+  }
+
+  .privacy-fields legend {
+      margin: 0;
+      padding-inline-end: var(--space-sm);
+  }
+
+  .checkbox-row {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-sm);
+  }
+
+  input[type="checkbox"] {
+      flex-shrink: 0;
+      inline-size: var(--icon-xs);
+      block-size: var(--icon-xs);
+      margin: var(--space-sm) 0 0;
+      accent-color: var(--color-primary);
+      cursor: pointer;
+  }
+
+  .checkbox-row label {
+      font-size: var(--text-sm);
+      min-block-size: var(--touch-target-min);
+      padding-block: var(--space-sm);
+      font-weight: var(--fw-regular);
+      cursor: pointer;
+  }
+
+  .privacy-link {
+      padding-inline-start: calc(var(--icon-xs) + var(--space-sm));
+  }
+
+  .privacy-link a {
+      display: inline-flex;
+      align-items: center;
+      min-block-size: var(--touch-target-min);
+      font-size: var(--text-sm);
+      text-decoration: underline;
+      text-underline-offset: var(--space-2xs);
+  }
+
+  .contact-submit {
+    min-block-size: var(--control-h-lg);
+    padding: var(--space-sm) var(--space-lg);
+  }
+
+  .contact-submit :global(.button-icon) {
+    inline-size: var(--icon-xs);
+    block-size: var(--icon-xs);
+  }
+
+  @container contact-form (width >= 36rem) {
+      .personal-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      button {
+          align-self: flex-start;
+          min-inline-size: 10rem;
+      }
+  }
+</style>
