@@ -3,20 +3,20 @@
         "id": "ifa-dipl-informatiker",
         "organizationName": "IFA - Die Höhere Fachschule der Digitalen Wirtschaft",
         "organizationWebsite": "https://ipso.ch/schulen/ifa",
-        "title": "Dipl. Informatiker/-in HF, Applikationsentwicklung mit Schwerpunkt Application-Security",
+        "title": "Professional Bachelor (Dipl. Informatiker/-in HF)",
         "studyMode": "Teilzeit",
         "period": {
             "start": "10/2023",
             "end": "10/2026"
         },
         "keySkills": [
-            "Softwareentwicklung mit Fokus auf OOP, Web und Sicherheit",
+            "Softwareentwicklung mit Fokus auf OOP, Web und Applikationssicherheit",
             "IT-Systeme, Scripting, Netzwerke und Automatisierung",
             "Projekt- und IT-Management",
             "Wirtschaftliches Grundlagenwissen",
             "Kommunikation und analytisches Denken"
         ],
-        "finalGrade": ""
+        "finalGrade": "5.4"
     },
     {
         "id": "ifa-hwd",
