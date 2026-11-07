@@ -3,20 +3,20 @@
         "id": "ifa-high-tech-school",
         "organizationName": "IFA - The Higher Technical School of Digital Economy",
         "organizationWebsite": "https://ipso.ch/schulen/ifa",
-        "title": "Advanced Federal Diploma of Higher Education in Information Technology – Application Development, specializing in Application Security",
+        "title": "Professional Bachelor (Advanced Federal Diploma of Higher Education in Information Technology)",
         "studyMode": "Part-time",
         "period": {
             "start": "10/2023",
             "end": "10/2026"
         },
         "keySkills": [
-            "Software development with focus on OOP, web, and security",
+            "Software development with focus on OOP, web, and application security",
             "IT systems, scripting, networks, and automation",
             "Project and IT management",
             "Basic business knowledge",
             "Communication and analytical thinking"
         ],
-        "finalGrade": ""
+        "finalGrade": "5.4"
     },
     {
         "id": "ifa-hbd",
