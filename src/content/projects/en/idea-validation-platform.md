@@ -24,11 +24,11 @@ The thesis was based on the research question of which requirements, structures,
 
 To address this question, I first developed a validation model that structures the process from a business idea through assumptions and testable hypotheses to experiments and their results. Based on this model, the requirements for the platform were derived and progressively translated into a technical system design and, ultimately, a functional prototype.
 
-> <a href="https://evidara.app/en" target="_blank" rel="noopener noreferrer">Try Evidara</a>
+> <a href="https://evidara.lucaknobel.ch/en" target="_blank" rel="noopener noreferrer">Try Evidara</a>
 
-> <a href="https://evidara.app/en/how-it-works" target="_blank" rel="noopener noreferrer">How Evidara Works</a>
+> <a href="https://evidara.lucaknobel.ch/en/how-it-works" target="_blank" rel="noopener noreferrer">How Evidara Works</a>
 
-> <a href="https://evidara.app/en/documentation" target="_blank" rel="noopener noreferrer">Extended Evidara Documentation</a>
+> <a href="https://evidara.lucaknobel.ch/en/documentation" target="_blank" rel="noopener noreferrer">Extended Evidara Documentation</a>
 
 # From Research Question to Application
 

@@ -24,11 +24,11 @@ Ausgangspunkt der Arbeit war die Forschungsfrage, welche Anforderungen, Struktur
 
 Dafür entwickelte ich zunächst ein fachliches Validierungsmodell, das den Weg von einer Geschäftsidee über Annahmen und überprüfbare Hypothesen bis zu Experimenten und deren Ergebnissen strukturiert. Auf dieser Grundlage wurden die Anforderungen an die Plattform abgeleitet und schrittweise in eine technische Systemkonzeption und schliesslich in einen funktionsfähigen Prototyp überführt.
 
-> <a href="https://evidara.app/de" target="_blank" rel="noopener noreferrer">Evidara ausprobieren</a>
+> <a href="https://evidara.lucaknobel.ch/de" target="_blank" rel="noopener noreferrer">Evidara ausprobieren</a>
 
-> <a href="https://evidara.app/de/how-it-works" target="_blank" rel="noopener noreferrer">Funktionsweise von Evidara</a>
+> <a href="https://evidara.lucaknobel.ch/de/how-it-works" target="_blank" rel="noopener noreferrer">Funktionsweise von Evidara</a>
 
-> <a href="https://evidara.app/de/documentation" target="_blank" rel="noopener noreferrer">Erweiterte Dokumentation von Evidara</a>
+> <a href="https://evidara.lucaknobel.ch/de/documentation" target="_blank" rel="noopener noreferrer">Erweiterte Dokumentation von Evidara</a>
 
 # Von der Forschungsfrage zur Anwendung
 
